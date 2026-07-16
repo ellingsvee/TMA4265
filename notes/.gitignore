@@ -1,0 +1,4 @@
+# Start by ignoring all PDFs
+*.pdf
+
+# Un-ignore specific PDFs once finished
