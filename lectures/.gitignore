@@ -1,4 +1,4 @@
-outcasts
+*
 
-*.pdf
+!week34.typ
 
