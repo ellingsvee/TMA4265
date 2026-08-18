@@ -1,3 +1,4 @@
+
 #import "@local/icml:1.0.0": *
 #import "@preview/muchpdf:0.1.2": muchpdf
 
@@ -15,13 +16,13 @@
 
   authors: (
     (
-      name: "Elling Svee",
-      email: "elling.svee@ntnu.no",
+      name: "Elling Svee (elling.svee@ntnu.no)",
+      // email: "elling.svee@ntnu.no",
     ),
   ),
   n_columns: 1,
   paper-size: "a4",
-  bibliography: bibliography("refs.bib"),
+  bibliography: bibliography("../refs.bib"),
 )
 
 _These notes are written by myself, and errors may and will occur. When in doubt, trust the book and Gunnars lectures!_
@@ -56,45 +57,36 @@ Informally, a _random experiment_ has the following objects:
 ]
 
 #definition(name: [Random variable])[
-  A random variable is a function $X: Omega -> RR$ such that
+  A random variable (RV) is a function $X: Omega -> RR$ such that
   $
     X^(-1)(B) = {omega in Omega: X(omega) in B} in cal(E)
   $
   for every $B in cal(B)(RR)$. Here $cal(B)(RR)$ denotes the Borel $sigma$-algebra on $RR$, which is the smallest $sigma$-algebra containing all open intervals in $RR$ @karr1993probability.
 ]
 
-#proposition(name: [Simplified criteria for random variable])[
-  A function $X: Omega -> RR$ is a random variable if $(X <= x) in cal(E)$ for every $x in RR$. See #tc(<karr1993probability>) for a proof.
+#proposition(name: [Simplified criteria for RV])[
+  A function $X: Omega -> RR$ is a RV if $(X <= x) in cal(E)$ for every $x in RR$. See #tc(<karr1993probability>) for a proof.
 ]<random-variable-simplified-criteria>
 
-#definition(name: [Simple random variable])[
-  A random variable $X$ is simple if it takes on only finitely many values. One way to write this is
+#definition(name: [Simple RV])[
+  A RV $X$ is simple if it takes on only finitely many values. One way to write this is
   $
-    X = sum_(i=1)^n a_i bb(1)(A_i)
+    X = sum_(i=1)^n a_i bb(1)_(A_i)
   $
   where $n < oo$, $a_i in RR$, $A_i in cal(E)$, and $bb(1)(dot)$ is the indicator function. Alternatively, we can write a $X(Omega) = {X(omega) | omega in Omega} = {x_1, ... , x_n}$.
 ]
 
-#definition(name: [Expectation of simple random variables])[
-  The expectation of a simple random variable $X = sum_(i=1)^n a_i bb(1)(A_i)$ is defined as
+#definition(name: [Expectation of simple RVs])[
+  The expectation of a simple RV $X = sum_(i=1)^n a_i bb(1)_(A_i)$ is defined as
   $
     EE[X] = sum_(i=1)^n a_i P(A_i).
   $
-]
-#proposition(name: [Some important properties of expectation])[
-  Let $X$ and $Y$ be random variables, and let $alpha, beta in RR$. Then
-  - Constants are preserved: If $X = c$ for some $c in RR$, then $EE[X] = c$.
-  - Monotonicity: If $X <= Y$, then $EE[X] <= EE[Y]$.
-  - Linearity: $EE[alpha X + beta Y] = alpha EE[X] + beta EE[Y]$.
-  - Relation to probability: If $A in cal(E)$, then $EE[bb(1)(A)] = P(A)$.
-
-
 ]
 
 #pagebreak()
 = Problems
 
-#problem()[
+#problem(name: [Sample spaces and events])[
   Let $Omega = {1, 2, 3}$ and $cal(E) = {emptyset, Omega, {1}, {2, 3}}$.
   + Show that $Omega$ equipped with $cal(E)$ is a sample space (i.e. a measurable space).
   + Is ${1, 2}$ an event?
@@ -109,12 +101,12 @@ Informally, a _random experiment_ has the following objects:
 ]
 
 #pagebreak()
-#problem()[
+#problem(name: [CDFs and RVs])[
   Let $X: Omega → RR$ be such that $(X <= q)$ is an event for all $q in QQ$.
   + Prove that the CDF $F(x) = P(X <= x)$ is defined for all real $x$.
   + Prove that $(X <= x)$ is an event.
   + Prove that $(X in A)$ is an event when $A$ is an interval.
-  + Prove that $X$ is a random variable.
+  + Prove that $X$ is a RV.
   + Is $(X in A)$ an event when $A$ is an arbitrary set?
 ]
 #solution()[
@@ -152,7 +144,7 @@ Informally, a _random experiment_ has the following objects:
     $
     Hence $(X in A)$ is an event whenever $A$ is an interval.
 
-  + We have shown that $(X <= x)$ is an event for every $x in RR$. The simplified criterion in @random-variable-simplified-criteria therefore shows that $X$ is a random variable.
+  + We have shown that $(X <= x)$ is an event for every $x in RR$. The simplified criterion in @random-variable-simplified-criteria therefore shows that $X$ is a RV.
 
   + Not necessarily. The definition only guarantees this when $A$ is a Borel set. For example, let
     $
@@ -161,27 +153,66 @@ Informally, a _random experiment_ has the following objects:
     If $A$ is a non-Borel subset of $RR$, then $(X in A) = A$ is not an event. Such subsets exist, but we do not show this here.
 ]
 
+
 #pagebreak()
-#problem()[
+#problem(name: [Probing some important properties of expectation for simple RVs])[
+  Let $X$ and $Y$ be simple RVs, and let $alpha, beta in RR$. Then
+  - Constants are preserved: If $X = c$ for some $c in RR$, then $EE[X] = c$.
+  - Monotonicity: If $X <= Y$, then $EE[X] <= EE[Y]$.
+  - Linearity: $EE[alpha X + beta Y] = alpha EE[X] + beta EE[Y]$.
+  - Relation to probability: If $A in cal(E)$, then $EE[bb(1)(A)] = P(A)$.
+]
+#proof()[
+  Denote the simple RVs as $X = sum_(i=1)^n a_i bb(1)_(A_i)$ and $Y = sum_(j=1)^m b_j bb(1)_(B_j)$.
+  - If $X(omega) = c in RR$ for every $omega in Omega$, then $EE[X] = EE[c] = c P(Omega) = c$.
+  - If $X <= Y$, then $a_i <= b_j$ whenever $A_i inter B_j != emptyset$. Since both $A_i$ and $B_j$ give a disjoint partitions of $Omega$, we have
+    $
+      EE[X] = sum_(i=1)^n a_i P(A_i)
+      = sum_(i=1)^n sum_(j=1)^m a_i P(A_i inter B_j)
+      <= sum_(i=1)^n sum_(j=1)^m b_j P(A_i inter B_j)
+      = sum_(j=1)^m b_j P(B_j)
+      = EE[Y].
+    $
+  - We can express
+    $
+      alpha X + beta Y
+      = sum_(i=1)^n sum_(j=1)^m (alpha a_i + beta b_j) bb(1)_(A_i inter B_j),
+    $
+    meaning that $alpha X + beta Y$ is also simple. Thus
+    $
+      EE[alpha X + beta Y] & = sum_(i=1)^n sum_(j=1)^m (alpha a_i + beta b_j) P(A_i inter B_j) \
+                           & = alpha sum_(i=1)^n sum_(j=1)^m a_i P(A_i inter B_j)
+                             + beta sum_(i=1)^n sum_(j=1)^m b_j P(A_i inter B_j) \
+                           & = alpha sum_(i=1)^n a_i P(A_i)
+                             + beta sum_(j=1)^m b_j P(B_j) \
+                           & = alpha EE[X] + beta EE[Y].
+    $
+  - As $bb(1)_(A) = 1 dot bb(1)_(A) + 0 dot bb(1)_(A^C)$, the indicator function is clearly simple. This means
+    $
+      EE[bb(1)(A)] = 1 dot P(A) + 0 dot P(A^C) = P(A).
+    $
+
+]
+
+#pagebreak()
+#problem(name: [Slightly generalizing the notion of the RV])[
   Let $X : Omega → Omega_X$ be such that $(X in A) = {omega : X(omega) in A}$ is an event in $Omega$ whenever $A$ is an event in $Omega_X$, e.g. $X$ is a random element in $Omega_X$.
   + Show that $P_X (A) = P(X in A)$ defines a probability distribution. This $P_X$ is the distribution of $X$ with a corresponding expectation $EE[X]$.
   + Show that $EE[phi(X)] = EE_X [phi]$ when $phi : Omega_X -> RR$ is simple and measurable.
-  + Assume that $X(Omega) = {X(omega) | omega in Omega} = {x_1, ... , x_n}$, i.e. $X$ is simple. Prove $E[phi(X)] = sum_x phi(x) f(x)$, where $f(x) = P(X = x)$.
-  + Let $X$ and $Y$ be simple random variables. Prove that $Z = (X, Y)$ is simple.
-  + Use $phi(x, y) = alpha x + beta y$ to prove $EE[alpha X + beta Y] = alpha EE[X] + beta EE[Y]$
+  + Let $X$ and $Y$ be simple RVs. Prove that $Z = (X, Y)$ is simple.
 ]
 #solution()[
-  + For $P_X(dot)$ to define a probability distribution on $(Omega_X, cal(E)_X)$, we simply check the three conditions:
-  - For $A in cal(E)_X$ we have $P_X(A) = P(X in A) >= 0$ since $P(dot)$ is a probability.
-  - $P_X (Omega_X) = P(X in Omega_X) = P({w in Omega: X(w) in Omega_X}) = P(Omega) = 1$.
-  - For pairwise disjoint $A_1, A_2, ... in cal(E)_X$, we have
-    $
-      P_X (union.big_(i=1)^(oo) A_i)
-      = P(X in union.big_(i=1)^(oo) A_i)
-      = P(union.big_(i=1)^(oo) (X in A_i))
-      = sum_(i=1)^(oo) P(X in A_i)
-      = sum_(i=1)^(oo) P_X (A_i).
-    $
+  + For $P_X$ to define a probability distribution on $(Omega_X, cal(E)_X)$, we simply check the three conditions:
+    - With $A in cal(E)_X$ we have $P_X(A) = P(X in A) >= 0$ since $P(dot)$ is a probability.
+    - $P_X (Omega_X) = P(X in Omega_X) = P({w in Omega: X(w) in Omega_X}) = P(Omega) = 1$.
+    - With pairwise disjoint $A_1, A_2, ... in cal(E)_X$, we have
+      $
+        P_X (union.big_(i=1)^(oo) A_i)
+        = P(X in union.big_(i=1)^(oo) A_i)
+        = P(union.big_(i=1)^(oo) (X in A_i))
+        = sum_(i=1)^(oo) P(X in A_i)
+        = sum_(i=1)^(oo) P_X (A_i).
+      $
 
 
   + As $phi(dot)$ is simple and measurable, we can write $phi(dot) = sum_(i=1)^n a_i bb(1)_(A_i) (dot)$ for some $a_i in RR$ and $A_i in cal(E)_X$. Then
