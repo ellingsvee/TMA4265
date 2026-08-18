@@ -93,60 +93,65 @@ Informally, a _random experiment_ has the following objects:
 #pagebreak()
 = Problems
 
-#problem(name: [Sample spaces, events and measurable spaces])[
+#problem(name: [Measurable spaces and probabilities])[
   Let $Omega = {1, 2, 3}$ and $cal(E) = {emptyset, Omega, {1}, {2, 3}}$.
   + Show that ($Omega$, $cal(E)$) is a measurable space.
-  + Is ${1, 2}$ an event?
-  + How many subsets of $Omega$ are events?
-  + Every event is a set, but every set is not an event. Explain this.
+  + How many subsets of $Omega$ are events? Can you give an example of a set that is not an event?
+  + Give an example of a probability $P$ on $(Omega, cal(E))$.
+
 ]
 #solution[
   + Need to show that $cal(E)$ is a $sigma$-algebra on $Omega$. All the conditions listed in @sigma-algebra are easy to verify.
-  + As ${1, 2} in.not cal(E)$, it is not an event.
-  + There are four events, as listed in $cal(E)$.
-  + Only the sets in $cal(E)$ are events. There are a total of $2^3 = 8$ subsets of $Omega$, but only four of them are events.
+  + There are four events, as listed in $cal(E)$. For an examples of a  set that is not an event, we can consider ${1, 2}$. An example is ${1, 2} subset Omega$, which is not an event since  ${1, 2} in.not cal(E)$.
+  // + Only the sets in $cal(E)$ are events. There are a total of $2^3 = 8$ subsets of $Omega$, but only four of them are events.
+  + One example is
+    $
+      P(emptyset) = 0, quad
+      P({1}) = 1 \/ 3, quad
+      P({2, 3}) = 2 \/ 3, quad
+      P(Omega) = 1.
+    $
+    It is easy to verify that this function satisfies the conditions of a probability.
 ]
 
 #pagebreak()
-#problem(name: [Probabilities and RVs])[
+#problem(name: [Random variables])[
   Let $X: Omega -> RR$ be such that $(X <= q)$ is an event for all $q in QQ$.
   + Prove that $X^(-1)((-oo, x]) = (X <= x)$ is an event for every $x in RR$.
   + Prove that $X^(-1)(I)$ is an event for every interval $I subset.eq RR$.
   + Define
     $
-      cal(E)_X := {B subset.eq RR: X^(-1)(B) in cal(E)},
+      cal(E)_X := {A subset.eq RR: X^(-1)(A) in cal(E)},
     $
     and that $cal(E)_X$ is a $sigma$-algebra on $RR$.
   + Use the preceding parts to prove that $X$ is a RV. Conclude that its CDF $F_X (x)$ is defined for every $x in RR$.
 ]
+#pagebreak()
 #solution()[
-  + For each positive integer $n$, choose $q_n in QQ$ such that
+  + There is a rational number between any two different real numbers. Choose $q_n in QQ$ for every $n in NN$ such that
     $
       x < q_n < x + 1/n.
     $
-    Such rational numbers exist because there is a rational number between any two different real numbers.
-
-
-    If $X <= x$, then $X <= q_n$ for every $n$, and if $X > x$, then eventually $q_n < X$. Therefore we have
+    If $X <= x$ then $X <= q_n$, and if $X > x$ then eventually $q_n < X$. Therefore we have
     $
       (X <= x) = inter.big_(n=1)^oo (X <= q_n).
     $<event-intersection>
-    Each $(X <= q_n)$ is an event by assumption. A $sigma$-algebra is closed under countable intersections, since
+    Since
     $
-      inter.big_(n=1)^oo E_n
-      = (union.big_(n=1)^oo E_n^C)^C.
+      inter.big_(n=1)^oo (X <= q_n)
+      = (union.big_(n=1)^oo (X <= q_n)^C)^C in cal(E),
     $
-    Thus $(X <= x)$ is an event.
-  + We also have that strict inequalities define events. This is because
+    the $sigma$-algebra is closed under countable intersections, giving that $(X <= x)$ is an event.
+  + We also have that strict inequalities are events. This is because
     $
-      (X < x) = union.big_(q in QQ, q < x) (X <= q).
+      (X < x) = union.big_(q in QQ \ q < x) (X <= q).
     $
     which is a countable union of events. Complements give
     $
       (X > a) = (X <= a)^C, quad
-      (X >= a) = (X < a)^C.
+      (X >= a) = (X < a)^C,
     $
-    Any interval can be made by intersecting sets of these four types. For example,
+    meaning these are also events. Any interval can be made by intersecting sets of these four types. For example,
     $
       (a < X <= b) = (X > a) inter (X <= b),
     $
@@ -154,15 +159,15 @@ Informally, a _random experiment_ has the following objects:
 
   + First, $RR in cal(E)_X$ because $X^(-1)(RR) = Omega in cal(E)$. If $B in cal(E)_X$, then
     $
-      X^(-1)(B^C) = (X^(-1)(B))^C in cal(E),
+      X^(-1)(A^C) = (X^(-1)(A))^C in cal(E),
     $
-    so $B^C in cal(E)_X$. Finally, if $B_1, B_2, ... in cal(E)_X$ are pairwise disjoint, then
+    so $A^C in cal(E)_X$. Finally, if $A_1, A_2, ... in cal(E)_X$ then
     $
-      X^(-1)(union.big_(n=1)^oo B_n)
-      = union.big_(n=1)^oo X^(-1)(B_n)
+      X^(-1)(union.big_(n=1)^oo A_n)
+      = union.big_(n=1)^oo X^(-1)(A_n)
       in cal(E).
     $
-    Therefore $union.big_(n=1)^oo B_n in cal(E)_X$, and $cal(E)_X$ is a $sigma$-algebra on $RR$.
+    Therefore $union.big_(n=1)^oo A_n in cal(E)_X$, and $cal(E)_X$ is a $sigma$-algebra on $RR$.
 
   + Let $cal(I)$ be the family of open intervals in $RR$. Part 2 shows that $cal(I) subset.eq cal(E)_X$. Since the Borel $sigma$-algebra $cal(B)(RR)$ is the smallest $sigma$-algebra containing all open intervals, we have
     $
