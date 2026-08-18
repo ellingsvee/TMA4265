@@ -64,22 +64,6 @@ Informally, a _random experiment_ has the following objects:
   for every $B in cal(B)(RR)$. Here $cal(B)(RR)$ denotes the Borel $sigma$-algebra on $RR$, which is the smallest $sigma$-algebra containing all open intervals in $RR$ @karr1993probability.
 ]
 
-#proposition(name: [Probability associated with RV])[
-  If $X$ is a RV, then the function $P_X: cal(B)(RR) -> RR$ defined by
-  $
-    P_X (B) := P(X in B) = P(X^(-1)(B))
-  $
-  is a probability on $RR$. We will prove this in the last problem.
-]
-
-
-#definition(name: [Cumulative distribution function associated with an RV])[
-  The cumulative distribution function (CDF) of $X$ is the function $F_X: RR -> [0, 1]$ defined by
-  $
-    F_X (x) := P_X ((-oo, x]) = P(X <= x).
-  $
-
-]
 
 #definition(name: [Simple RV])[
   A RV $X$ is simple if it takes on only finitely many values. We can write this as $X(Omega) = {X(omega) | omega in Omega} = {x_1, ... , x_n}$ for a finite $n$. Defining $A_i = {omega in Omega: X(omega) = x_i}$, we have that $A_1, ... , A_n$ is a disjoint partition of $Omega$, and $X$ can be expressed as $X = sum_(i=1)^n x_i bb(1)_(A_i)$.
@@ -124,7 +108,8 @@ Informally, a _random experiment_ has the following objects:
       cal(E)_X := {A subset.eq RR: X^(-1)(A) in cal(E)},
     $
     and that $cal(E)_X$ is a $sigma$-algebra on $RR$.
-  + Use the preceding parts to prove that $X$ is a RV. Conclude that its CDF $F_X (x)$ is defined for every $x in RR$.
+  + Use the preceding parts to prove that $X$ is a RV.
+  // Conclude that its CDF $F_X (x)$ is defined for every $x in RR$.
 ]
 #pagebreak()
 #solution()[
@@ -173,12 +158,36 @@ Informally, a _random experiment_ has the following objects:
     $
       cal(B)(RR) subset.eq cal(E)_X.
     $
-    Consequently, $X^(-1)(B) in cal(E)$ for every $B in cal(B)(RR)$, which proves that $X$ is a RV. Furthermore, $(X <= x)$ is an event for every $x in RR$, so
-    $
-      F_X (x) = P(X <= x)
-    $
-    is defined for every $x in RR$.
+    Consequently, $X^(-1)(B) in cal(E)$ for every $B in cal(B)(RR)$, which proves that $X$ is a RV.
+  // Furthermore, $(X <= x)$ is an event for every $x in RR$, so
+  //   $
+  //     F_X (x) = P(X <= x)
+  //   $
+  //   is defined for every $x in RR$.
 ]
+
+#pagebreak()
+#problem(name: [Probability associated with RV])[
+  Let $X$ be a RV. Show that the function $P_X: cal(B)(RR) -> RR$ defined by
+  $
+    P_X (B) := P(X in B) = P(X^(-1)(B))
+  $
+  is a probability on $RR$.
+]
+#solution()[
+  For $P_X$ to define a probability distribution on $(RR, cal(E)_X)$, we simply check the three conditions:
+  - With $A in cal(E)_X$ we have $P_X (B) = P(X in B) >= 0$ since $P(dot)$ is a probability.
+  - $P_X (RR) = P(X in RR) = P(Omega) = 1$.
+  - With pairwise disjoint $B_1, B_2, ... in cal(B)(RR)$, we have
+    $
+      P_X (union.big_(i=1)^(oo) B_i)
+      = P(X^(-1) (union.big_(i=1)^(oo) B_i))
+      = P(union.big_(i=1)^(oo) X^(-1)(B_i))
+      = sum_(i=1)^(oo) P(X^(-1)(B_i))
+      = sum_(i=1)^(oo) P_X (B_i).
+    $
+]
+
 
 
 #pagebreak()
@@ -222,49 +231,18 @@ Informally, a _random experiment_ has the following objects:
 ]
 
 #pagebreak()
-#problem(name: [Towards a more general definition of the expectation])[
-  Let $X : Omega -> RR$ be an RV, and let $phi: cal(B)(RR) -> RR$ be a simple and measurable function.
-  + Show that $P_X (B) = P(X in B)$ defines a probability on $(RR, cal(E)_X)$.
-  + Show that $EE[phi(X)] = EE_X [phi]$ with $EE_X [dot]$ denoting the expectation with respect to the probability $P_X$.
-]
-#solution()[
-  + For $P_X$ to define a probability distribution on $(RR, cal(E)_X)$, we simply check the three conditions:
-    - With $A in cal(E)_X$ we have $P_X (B) = P(X in B) >= 0$ since $P(dot)$ is a probability.
-    - $P_X (RR) = P(X in RR) = P(Omega) = 1$.
-    - With pairwise disjoint $B_1, B_2, ... in cal(E)_X$, we have
-      $
-        P_X (union.big_(i=1)^(oo) B_i)
-        = P(X^(-1) (union.big_(i=1)^(oo) B_i))
-        = P(union.big_(i=1)^(oo) X^(-1)(B_i))
-        = sum_(i=1)^(oo) P(X^(-1)(B_i))
-        = sum_(i=1)^(oo) P_X (B_i).
-      $
-
-
-  + As $phi$ simple we can write $phi = sum_(i=1)^n a_i bb(1)_(B_i)$ for some $a_i in RR$ and $B_i in cal(E)_X$. Then, by linearity of the expectation, we see
-    $
-      EE[phi(X)]
-      = EE[sum_(i=1)^n a_i bb(1)_(B_i) (X)]
-      = sum_(i=1)^n a_i EE[bb(1)_(B_i) (X)]
-      = sum_(i=1)^n a_i P(X in B_i)
-      = sum_(i=1)^n a_i P_X (B_i)
-      = EE_X [phi].
-    $
-]
-
-
-#proposition(name: [General definition of the expectation])[
+#proposition(name: [A more General definition of the expectation])[
   A more general definition of expectation is using the Lebesgue integral
   $
-    EE[phi(X)] = integral_Omega phi(X) dif P
+    EE[X] = integral_Omega X dif P.
   $
-  which is beyond the scope of this course. However, for a RV $X: Omega -> RR$ with $X(omega) = x$, we can rewrite this as an integral over $RR$
+  All the details of this is likely beyond the scope of this course. However, we can still try to gain a bit of insight. For a RV $X: Omega -> RR$ with $X(omega) = x$, we can rewrite this as an integral over $RR$
   $
-    EE[phi(X)] = integral_Omega phi(X(omega)) dif P(omega) = integral_RR phi(x) dif P(X^(-1)(x)) = integral_RR phi(x) dif P_X (x)
+    EE[X] = integral_Omega X(omega) dif P(omega) = integral_RR x dif P(X^(-1)(x)) = integral_RR x dif P_X (x).
   $
-  For a simple RV, the $dif P_X (x)$ is a discrete measure, and the integral reduces to the sum in @expectation-for-simple-rvs. If $X$ is a continuous RV, then the $dif P_X (x) = f_X (x) dif x$, where $f_X$ is the probability density function of $X$. This gives the familiar expression
+  For a simple RV, the $dif P_X (x)$ is a discrete measure, and the integral reduces to the sum in @expectation-for-simple-rvs. If $X$ is a continuous RV, then the $dif P_X (x) = f_X (x) dif x$, where $f_X$ is the probability density function of $X$. For the $dif x$ we can use the standard Riemann integral. This gives the familiar expression
   $
-    EE[phi(X)] = integral_RR phi(x) f_X (x) dif x,
+    EE[X] = integral_RR x f_X (x) dif x,
   $
   that you might remember from the first course in statistics.
 ]
