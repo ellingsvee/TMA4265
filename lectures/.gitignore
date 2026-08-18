@@ -1,3 +1,6 @@
 outcasts
 *.pdf
 
+!week34/notes.pdf
+!week34/presentation.pdf
+
