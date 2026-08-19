@@ -30,14 +30,15 @@
 // inside all figures unbreakable, so restore normal page breaking for them.
 #show figure.where(kind: "solution-group"): set block(breakable: true)
 
-_These notes are written by myself, and errors may and will occur. When in doubt, trust the book and Gunners lectures!_
+_These notes are written by myself, and errors may and will occur. When in doubt, trust the book and Gunnars lectures!_
 
 = Theory based on #tc(<karr1993probability>)
 
 Informally, a _random experiment_ has the following objects:
 + Sample space: Set $Omega$ with possible outcomes $omega in Omega$.
-+ Events: Subsets of $Omega$ for which probabilities are defined.
-+ Measurable space: Sample space $Omega$ equipped with a family of events $cal(E)$.
++ Events: Set $cal(E)$, where each event in $cal(E)$ contains zero or more outcomes.
++ Probabilities: A function $P$ that assigns a probability to each event.
+We sometimes call $(Omega, cal(E))$ a _measurable space_, and $(Omega, cal(E), P)$ a _probability space_.
 
 #definition(name: [$sigma$-algebra])[
   A $sigma$-algebra $cal(E)$ on $Omega$ is a family of subsets of $Omega$ satisfying
@@ -55,7 +56,6 @@ Informally, a _random experiment_ has the following objects:
   - $P(A) >= 0$ for all $A in cal(E)$.
   - $P(Omega) = 1$.
   - If $A_1, A_2, ... in cal(E)$ are pairwise disjoint, then $P(union_(i=1)^(oo) A_i) = sum_(i=1)^(oo) P(A_i)$.
-  We often call the tuple $(Omega, cal(E), P)$ a _probability space_.
 ]
 
 
@@ -85,7 +85,7 @@ so $X$ is indeed a RV.
 ]
 
 #definition(name: [Expectation of simple RVs])[
-  The expectation of a simple RV $X = sum_(i=1)^n a_i bb(1)_(A_i)$ is defined as $EE[X] = sum_(i=1)^n a_i P(A_i)$.
+  The expectation of a simple RV $X = sum_(i=1)^n x_i bb(1)_(A_i)$ is defined as $EE[X] = sum_(i=1)^n x_i P(A_i)$.
 ]<expectation-for-simple-rvs>
 
 
@@ -101,7 +101,7 @@ so $X$ is indeed a RV.
 ]
 #solution[
   + Need to show that $cal(E)$ is a $sigma$-algebra on $Omega$. All the conditions listed in @sigma-algebra are easy to verify.
-  + There are four events, as listed in $cal(E)$. For an examples of a  set that is not an event, we can consider ${1, 2} subset Omega$. This is not an event since  ${1, 2} in.not cal(E)$.
+  + There are four events, as listed in $cal(E)$. For an example of a set that is not an event, we can consider ${1, 2} subset Omega$. This is not an event since  ${1, 2} in.not cal(E)$.
   // + Only the sets in $cal(E)$ are events. There are a total of $2^3 = 8$ subsets of $Omega$, but only four of them are events.
   + One example is
     $
@@ -114,7 +114,29 @@ so $X$ is indeed a RV.
 ]
 
 #pagebreak()
-#problem(name: [Random variables])[
+#problem(name: [Probability associated with RV])[
+  Let $X$ be a RV for the probability space. Show that the function $P_X: cal(B)(RR) -> RR$ defined by
+  $
+    P_X (B) := P(X in B) = P(X^(-1)(B))
+  $
+  is a probability on $(RR, cal(B)(RR))$ when $P: cal(E) -> RR$ is a probability on $(Omega, cal(E))$.
+]
+#solution()[
+  For $P_X$ to define a probability distribution on $(RR, cal(B)(RR))$, we simply check the three conditions:
+  - With $B in cal(B)(RR)$ we have $P_X (B) = P(X in B) >= 0$ since $P$ is a probability.
+  - $P_X (RR) = P(X^(-1)(RR)) = P(Omega) = 1$.
+  - With pairwise disjoint $B_1, B_2, ... in cal(B)(RR)$, we have
+    $
+      P_X (union.big_(i=1)^(oo) B_i)
+      = P(X^(-1) (union.big_(i=1)^(oo) B_i))
+      = P(union.big_(i=1)^(oo) X^(-1)(B_i))
+      = sum_(i=1)^(oo) P(X^(-1)(B_i))
+      = sum_(i=1)^(oo) P_X (B_i).
+    $
+]
+
+#pagebreak()
+#problem(name: [More on random variables])[
   Let $X: Omega -> RR$ be such that $(X <= q)$ is an event for all $q in QQ$.
   + Prove that $X^(-1)((-oo, x]) = (X <= x)$ is an event for every $x in RR$.
   + Prove that $X^(-1)(I)$ is an event for every interval $I subset.eq RR$.
@@ -128,7 +150,7 @@ so $X$ is indeed a RV.
     $
       x < q_n < x + 1/n.
     $
-    If $X <= x$ then $X <= q_n$. If $X > x$ then eventually $q_n < x + 1\/n < X$. Therefore we have
+    If $X <= x$ then $X <= q_n$. If $X > x$ then for a sufficiently large $n$ we have $q_n < x + 1\/n < X$. Therefore
     $
       (X <= x) = inter.big_(n=1)^oo (X <= q_n).
     $<event-intersection>
@@ -169,33 +191,9 @@ so $X$ is indeed a RV.
 ]
 
 #pagebreak()
-#problem(name: [Probability associated with RV])[
-  Let $X$ be a RV. Show that the function $P_X: cal(B)(RR) -> RR$ defined by
-  $
-    P_X (B) := P(X in B) = P(X^(-1)(B))
-  $
-  is a probability on $RR$.
-]
-#solution()[
-  For $P_X$ to define a probability distribution on $(RR, cal(B)(RR))$, we simply check the three conditions:
-  - With $B in cal(B)(RR)$ we have $P_X (B) = P(X in B) >= 0$ since $P(dot)$ is a probability.
-  - $P_X (RR) = P(X^(-1)(RR)) = P(Omega) = 1$.
-  - With pairwise disjoint $B_1, B_2, ... in cal(B)(RR)$, we have
-    $
-      P_X (union.big_(i=1)^(oo) B_i)
-      = P(X^(-1) (union.big_(i=1)^(oo) B_i))
-      = P(union.big_(i=1)^(oo) X^(-1)(B_i))
-      = sum_(i=1)^(oo) P(X^(-1)(B_i))
-      = sum_(i=1)^(oo) P_X (B_i).
-    $
-]
-
-
-
-#pagebreak()
 #problem(name: [Proving some important properties of expectation for simple RVs])[
   Let $X$ and $Y$ be simple RVs, and let $alpha, beta in RR$. Prove
-  - Relation to probability: If $A in cal(E)$, then $EE[bb(1)(A)] = P(A)$.
+  - Relation to probability: If $A in cal(E)$, then $EE[bb(1)_(A)] = P(A)$.
   - Constants are preserved: If $X = c$ for some $c in RR$, then $EE[X] = c$.
   - Monotonicity: If $X <= Y$, then $EE[X] <= EE[Y]$.
   - Linearity: $EE[alpha X + beta Y] = alpha EE[X] + beta EE[Y]$.
@@ -204,10 +202,10 @@ so $X$ is indeed a RV.
   Denote the simple RVs as $X = sum_(i=1)^n a_i bb(1)_(A_i)$ and $Y = sum_(j=1)^m b_j bb(1)_(B_j)$.
   - As $bb(1)_(A) = 1 dot bb(1)_(A) + 0 dot bb(1)_(A^C)$, the indicator function is clearly simple. This means
     $
-      EE[bb(1)(A)] = 1 dot P(A) + 0 dot P(A^C) = P(A).
+      EE[bb(1)_(A)] = 1 dot P(A) + 0 dot P(A^C) = P(A).
     $
   - If $X(omega) = c in RR$ for every $omega in Omega$, then $EE[X] = EE[c bb(1)_Omega] = c P(Omega) = c$.
-  - If $X(omega) <= Y(omega)$ for all $omega in Omega$, then $a_i <= b_j$ whenever $A_i inter B_j != emptyset$. Since both $A_i$ and $B_j$ give a disjoint partitions of $Omega$, we have
+  - If $X(omega) <= Y(omega)$ for all $omega in Omega$, then $a_i <= b_j$ whenever $A_i inter B_j != emptyset$. Since both $A_i$ and $B_j$ give disjoint partitions of $Omega$, we have
     $
       EE[X] = sum_(i=1)^n a_i P(A_i)
       = sum_(i=1)^n sum_(j=1)^m a_i P(A_i inter B_j)
@@ -233,22 +231,22 @@ so $X$ is indeed a RV.
 ]
 
 #pagebreak()
-#proposition(name: [A more general definition of the expectation])[
-  A more general definition of expectation is using the Lebesgue integral
-  $
-    EE[X] = integral_Omega X dif P.
-  $
-  All the details of this is likely beyond the scope of this course. However, we can still try to gain a bit of insight. For a RV $X: Omega -> RR$, we can rewrite this as an integral over $RR$ using the induced probability measure $P_X$
-  $
-    EE[X] = integral_Omega X(omega) dif P(omega) = integral_RR x dif P_X (x).
-  $
-  For a simple RV $X = sum_(i=1)^n x_i bb(1)_(A_i)$ the distribution is discrete $P_X ({x_i}) = P(A_i)$, so
-  $
-    integral_RR x dif P_X (x) = sum_(i=1)^n x_i P_X ({x_i}) = sum_(i=1)^n x_i P(A_i)
-  $
-  becomes the same as @expectation-for-simple-rvs. If the distribution instead is continuous with a probability density function $f_X$, then $dif P_X (x) = f_X (x) dif x$. For the $dif x$ we can use the standard Riemann integral. This gives the familiar expression
-  $
-    EE[X] = integral_RR x f_X (x) dif x,
-  $
-  that you might remember from the first course in statistics.
-]
+= A more general definition of the expectation
+
+A more general definition of expectation is using the Lebesgue integral
+$
+  EE[X] = integral_Omega X dif P.
+$
+All the details of this are likely beyond the scope of this course. However, we can still try to gain a bit of insight. For a RV $X: Omega -> RR$, we can rewrite this as an integral over $RR$ using the induced probability measure $P_X$
+$
+  EE[X] = integral_Omega X(omega) dif P(omega) = integral_RR x dif P_X (x).
+$
+For a simple RV $X = sum_(i=1)^n x_i bb(1)_(A_i)$ the distribution is discrete $P_X ({x_i}) = P(A_i)$, so
+$
+  integral_RR x dif P_X (x) = sum_(i=1)^n x_i P_X ({x_i}) = sum_(i=1)^n x_i P(A_i)
+$
+becomes the same as @expectation-for-simple-rvs. If the distribution instead is continuous with a probability density function $f_X$, then $dif P_X (x) = f_X (x) dif x$. For the $dif x$ we can use the standard Riemann integral. This gives the familiar expression
+$
+  EE[X] = integral_RR x f_X (x) dif x,
+$
+that you might remember from the first course in statistics.
