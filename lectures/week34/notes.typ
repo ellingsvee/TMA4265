@@ -3,10 +3,9 @@
 #import "@preview/muchpdf:0.1.2": muchpdf
 
 #import "@preview/lemmify:0.1.7": default-theorems, new-theorems, thm-numbering-heading
+#show figure.where(kind: "solution-group"): set block(breakable: true)
+
 #import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
-
-
-
 
 #show link: set text(fill: blue)
 
@@ -26,6 +25,10 @@
   paper-size: "a4",
   bibliography: bibliography("../refs.bib"),
 )
+
+// Lemmify implements solutions as figures. The ICML template makes content
+// inside all figures unbreakable, so restore normal page breaking for them.
+#show figure.where(kind: "solution-group"): set block(breakable: true)
 
 _These notes are written by myself, and errors may and will occur. When in doubt, trust the book and Gunners lectures!_
 
@@ -129,11 +132,7 @@ so $X$ is indeed a RV.
     $
       (X <= x) = inter.big_(n=1)^oo (X <= q_n).
     $<event-intersection>
-    Since
-    $
-      inter.big_(n=1)^oo (X <= q_n)
-      = (union.big_(n=1)^oo (X <= q_n)^C)^C in cal(E),
-    $
+    Since $inter.big_(n=1)^oo (X <= q_n) = (union.big_(n=1)^oo (X <= q_n)^C)^C in cal(E)$,
     the $sigma$-algebra is closed under countable intersections, giving that $(X <= x)$ is an event.
   + We also have that strict inequalities are events. This is because
     $

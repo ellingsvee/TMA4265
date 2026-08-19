@@ -21,6 +21,7 @@
   - I will go over some relevant theory
   - You will have a bit of time to work on exercises
   - I will go over my suggestions for solutions
+- Will try to choose problems from previous exams, but you can also suggest problems.
 - The timeslot is terrible. Please suggest alternative times that would work for you?
 - I am away throughout October, so no lectures then. Will inform on Wiki.
 
@@ -84,11 +85,7 @@ Let $Omega = {1, 2, 3}$ and $cal(E) = {emptyset, Omega, {1}, {2, 3}}$.
 Let $X: Omega -> RR$ be such that $(X <= q)$ is an event for all $q in QQ$.
 + Prove that $X^(-1)((-oo, x]) = (X <= x)$ is an event for every $x in RR$.
 + Prove that $X^(-1)(I)$ is an event for every interval $I subset.eq RR$.
-+ Define
-  $
-    cal(E)_X := {A subset.eq RR: X^(-1)(A) in cal(E)},
-  $
-  and that $cal(E)_X$ is a $sigma$-algebra on $RR$.
++ Define $cal(M)_X := {A subset.eq RR: X^(-1)(A) in cal(E)}$, and show that $cal(M)_X$ is a $sigma$-algebra on $RR$.
 + Use the preceding parts to prove that $X$ is a RV.
 
 == Problem 3
@@ -114,10 +111,12 @@ is a probability on $RR$.
 
 == Problem 4
 Let $X$ and $Y$ be simple RVs, and let $alpha, beta in RR$. Prove
-- Constants are preserved: If $X = c$ for some $c in RR$, then $EE[X] = c$.
+- Relation to probability: If $A in cal(E)$, then $EE[bb(1)(A)] = P(A)$.
+- Constants are preserved: If $X = c in RR$, then $EE[X] = c$.
 - Monotonicity: If $X <= Y$, then $EE[X] <= EE[Y]$.
 - Linearity: $EE[alpha X + beta Y] = alpha EE[X] + beta EE[Y]$.
-- Relation to probability: If $A in cal(E)$, then $EE[bb(1)(A)] = P(A)$.
 
 
 = To conclude...a more general definition of expectation
+
+= Thank you for showing up!
