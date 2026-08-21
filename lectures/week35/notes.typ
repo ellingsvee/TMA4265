@@ -7,21 +7,9 @@
 
 #import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
 
-#import "../utils.typ": transition-diagram
-
-// The ICML template floats figures of kind `image`.  Lemmify's examples and
-// solutions are themselves figure-based blocks, so a nested floating figure
-// may be placed outside its enclosing block.  Give transition diagrams their
-// own non-floating figure kind instead.
-#let transition-figure(body, caption: none) = figure(
-  body,
-  caption: if caption == none { none } else { h(0.25em) + caption },
-  kind: "transition-diagram",
-  supplement: [Figure],
-)
+#import "../utils.typ": transition-diagram, transition-figure
 
 #show link: set text(fill: blue)
-#set math.mat(delim: "[")
 
 
 #show: icml.with(
@@ -32,7 +20,6 @@
   authors: (
     (
       name: "Elling Svee (elling.svee@ntnu.no)",
-      // email: "elling.see@nine.no",
     ),
   ),
   n_columns: 1,
@@ -135,9 +122,9 @@ _These notes are written by myself, and errors may and will occur. When in doubt
       0, 0.5, 0.5
     ).
   $<example-drawing-transition-diagrams>
-  The corresponding transition diagram is illustrated in @first-tranition-diagram.
+  The corresponding transition diagram is
 
-  #transition-figure(caption: [Transition diagram for @example-drawing-transition-diagrams])[
+  #transition-figure()[
     #transition-diagram(
       ($0$, $1$, $2$),
       (
@@ -149,6 +136,64 @@ _These notes are written by myself, and errors may and will occur. When in doubt
   ]<first-tranition-diagram>
 ]
 
+#pagebreak()
+#problem(name: [Problem 1 in Exercise 2])[
+  Consider the Markov chain ${X_n : n = 0, 1, 2, ...}$ with state space $Omega = {"A", "B", "C"}$ and transition probability
+  matrix given by
+  $
+    P = mat(
+      0.1, 0.7, 0.2;
+      0.5, 0.1, 0.4;
+      0.3, 0.6, 0.1;
+    )
+  $
+  The probability distribution of the initial state $X_0$ is given by $P(X_0 = "A") = 0.2$, $P(X_0 = B) = 0.5$ and $P(X_0 = C) = 0.3$. Compute the following probabilities:
+  - $P(X_3 = "A")$
+  - $P(X_3 = "A" | X_1 = "B", X_0 = "A")$
+  - $P(X_6 = "A" | X_3 = "C")$
+  - $P(X_3 = "C" | X_6 = "A")$
+
+  Note that
+  $
+    P^(2) = mat(
+      0.42, 0.26, 0.32;
+      0.22, 0.6, 0.18;
+      0.36, 0.33, 0.31;
+    )
+    quad "and" quad
+    P^(3) = mat(
+      0.268, 0.512, 0.220;
+      0.376, 0322, 0.302;
+      0.294, 0.471, 0.235;
+    ).
+  $
+
+]
+#solution()[
+  - By the law of total probability, we have
+    $
+      P(X_3 = "A") & = sum_(k in {"A", "B", "C"}) P(X_3 = "A" | X_0 = k) P(X_0 = k) \
+                   & = 0.268 * 0.2 + 0.376 * 0.5 + 0.294 * 0.3 \
+                   & = 0.3298.
+    $
+  - By the Markov property, we have
+    $
+      P(X_3 = "A" | X_1 = "B", X_0 = "A") = P(X_3 = "A" | X_1 = "B") = P_("B", "A")^((2)) = 0.22.
+    $
+  - Again by the Markov property, we have
+    $
+      P(X_6 = "A" | X_3 = "C") = P(X_3 = "A" | X_0 = "C") = P_("C", "A")^((3)) = 0.294.
+    $
+  - Here we need to use Bayes' theorem, the law of total probabilities and the Markov properties. We have
+    $
+      P(X_3 = "C" | X_6 = "A")
+      & = P(X_6 = "A" , X_3 = "C") / P(X_6 = "A") \
+      & = (P(X_6 = "A" | X_3 = "C") P(X_3 = "C")) / (sum_(k in {"A", "B", "C"}) P(X_6 = "A" | X_3 = k) P(X_3 = k)) \
+      & = (P(X_3 = "A" | X_0 = "C") P(X_3 = "C")) / (sum_(k in {"A", "B", "C"}) P(X_3 = "A" | X_0 = k) P(X_3 = k)) \
+      &= 0.245
+    $
+]
+
 
 #pagebreak()
 #problem(name: [Exam August 2025])[
@@ -158,54 +203,140 @@ _These notes are written by myself, and errors may and will occur. When in doubt
   - Explain that Maria’s mood is a three-state Markov chain.
   - Illustrate with a transition probability graph, and determine the transition probability matrix $P$.
   - Assume that Maria is cheerful at day $1$, what is the probability that she is cheerful at day $3$?
-  - Are $X_1$ and $X_2$ independent random variables?
-  - What is the mathematical definition of a stochastic process $X$? Use $X_1, X_2, dots$ to define the stochastic process $X$ in this case. What is the probability distribution of $X$ in this case?
+  - Are $X_0$ and $X_1$ independent random variables?
+  - What is the mathematical definition of a stochastic process $X$? Use $X_0, X_1, dots$ to define the stochastic process $X$ in this case. What is the probability distribution of $X$ in this case?
 ]<problem-marias-mood>
 #solution()[
   - Maria’s mood is a three-state Markov chain because the probability of her mood tomorrow depends only on her mood today, and not on her mood on previous days. This satisfies the Markov property.
-  - The transition diagram is illustrated in @marias-mood-tranition-diagram, and the transition probability matrix $P$ is given by
-  $
-    P = mat(
-      0.5, 0.4, 0.1;
-      0.3, 0.4, 0.3;
-      0.2, 0.3, 0.5
-    ).
-  $
-
-
-  #transition-figure(caption: [Transition diagram for @problem-marias-mood])[
-    #transition-diagram(
-      ($"C"$, $"S"$, $"G"$),
-      (
-        (0.5, 0.4, 0.1),
-        (0.3, 0.4, 0.3),
-        (0.2, 0.3, 0.5),
+  - The transition probability matrix $P$ is given by
+    $
+      P = mat(
+        0.5, 0.4, 0.1;
+        0.3, 0.4, 0.3;
+        0.2, 0.3, 0.5
       ),
-    )
-  ]<marias-mood-tranition-diagram>
+    $
+    while the corresponding transition diagram is
+    #transition-figure()[
+      #transition-diagram(
+        ($"C"$, $"S"$, $"G"$),
+        (
+          (0.5, 0.4, 0.1),
+          (0.3, 0.4, 0.3),
+          (0.2, 0.3, 0.5),
+        ),
+      )
+    ]<marias-mood-tranition-diagram>
 
-  - We compute
+  - We can compute this probability by summing over all possible states at day $2$
     $
-      P(X_3 = "C" | X_1 = "C") = P(X_2 = "C" | X_0 = "C") = P_("C", "C")^((2))
+      P(X_2 = "C" | X_0 = "C") = & sum_(k in {"C", "S", "G"}) P(X_2 = "C" | X_1 = k) P(X_1 = k | X_0 = "C") \
+                               = & P(X_1 = "C" | X_0 = "C") P(X_1 = "C" | X_0 = "C") \
+                                 & + P(X_2 = "C" | X_1 = "S") P(X_1 = "S" | X_0 = "C") \
+                                 & + P(X_2 = "C" | X_1 = "G") P(X_1 = "G" | X_0 = "C") \
+                               = & 0.5 * 0.5 + 0.3 * 0.4 + 0.1 * 0.2 = 0.39.
     $
-    Doing the matrix multiplication, we find
+    Alternatively, and in my opinion more elegant, we can use the $n$-step transition probabilities matrices. We have
     $
-      "TODO"
+      P(X_2 = "C" | X_0 = "C") = P_("C", "C")^((2)),
     $
-    meaning that $P(X_3 = "C" | X_1 = "C") = 0.39$. Alternatively, we can compute this probability by summing over all possible states at day $2$
+    and doing the matrix multiplication, we find
     $
-      P(X_3 = "C" | X_1 = "C") & = sum_(k in {"C", "S", "G"}) P(X_3 = "C" | X_2 = k) P(X_2 = k | X_1 = "C") \
-                               & = "TODO".
+      P^((2)) = P dot P = mat(
+        0.5, 0.4, 0.1;
+        0.3, 0.4, 0.3;
+        0.2, 0.3, 0.5
+      ) dot mat(
+        0.5, 0.4, 0.1;
+        0.3, 0.4, 0.3;
+        0.2, 0.3, 0.5
+      ) = mat(
+        0.39, 0.39, 0.22;
+        0.33, 0.37, 0.30;
+        0.29, 0.35, 0.36
+      ).
     $
+    Therefore $P(X_2 = "C" | X_0 = "C") = 0.39$. Alternatively,
+
+
   - Since we know the state at day $1$ is $X_1 = "C"$, the second day $X_2$ is independent of the first.
   - In Gunnars words: A stochastic process is an indexed family of random elements in a state space. The index set can be an arbitrary non-empty set. The state space can be an arbitrary sample space $S$. Each random element is a function $X_i : Omega -> S$ so that
     $
-      X_i^(-1)(A) = {omega in Omega : X_i(omega) in A}
+      X_i^(-1)(A) = {omega in Omega : X_i (omega) in A}
     $
     is an event in $S$. The probability distribution of a stochastic process is defined by all finite dimensional distributions. In this particular case it is determined by
     $
       P(X_1 = x_1, dots, X_n = x_n) = f(x_1, dots, x_n) = f(x_1) f(x_2 | x_1) dot dots dot f(x_n | x_(n-1))
     $
-    with $x_i in {"C", "S", "G"}$,a and where $f(x_i|x_(i-1)) = P_(i-1, i)$.
+    with $x_i in {"C", "S", "G"}$ and where $f(x_i|x_(i-1)) = P_(i-1, i)$.
 
 ]
+
+
+#pagebreak()
+#problem(name: [Exam December 2024])[
+  A taxi driver provides service in two zones of a city. Fares picked up in zone A will have destinations in zone A with probability $0.6$ or in zone B with probability $0.4$. Fares picked up in zone B will have destinations in zone A with probability $0.3$ or in zone B with probability $x$.
+  - Explain that $x = 0.7$.
+  - Write down the transition matrix for the resulting Markov chain and illustrate with a graph with transition probabilities.
+  - What is the state space? What is the index set of the stochastic process?
+  - Assume the driver starts in zone A. What is the probability that the driver ends in zone A after two fares? After four fares?
+]
+#solution()[
+  - Since the total probability must sum to $1$, we have $x = 1 - 0.3 = 0.7$.
+  - The transition matrix is given by
+    $
+      P = mat(
+        0.6, 0.4;
+        0.3, 0.7
+      ),
+    $
+    while the corresponding transition diagram is
+    #transition-figure()[
+      #transition-diagram(
+        ($"A"$, $"B"$),
+        (
+          (0.6, 0.4),
+          (0.3, 0.7),
+        ),
+      )]
+  - As we have two zones, the state space is ${"A", "B"}$. The index set of the stochastic process is ${0, 1, dots}$, where $0$ corresponds to the initial fare and $n$ corresponds to the $n$-th fare.
+  - We have $X_0 = "A"$, and want to compute $P(X_2 = "A" | X_0 = "A")$ and $P(X_4 = "A" | X_0 = "A")$. Using the transition matrix, we can compute
+    $
+      P^((2))
+      = P dot P
+      = mat(
+        0.6, 0.4;
+        0.3, 0.7
+      ) dot mat(
+        0.6, 0.4;
+        0.3, 0.7
+      )
+      = mat(
+        0.48, 0.52;
+        0.39, 0.61
+      ),
+    $
+    and
+    $
+      P^((4))
+      = P^(2) dot P^(2)
+      = mat(
+        0.48, 0.52;
+        0.39, 0.61
+      ) dot mat(
+        0.48, 0.52;
+        0.39, 0.61
+      )
+      = mat(
+        0.4332, 0.5668;
+        0.4251, 0.5749
+      ).
+    $
+    Picking the corresponding entries, we find
+    $
+      P(X_2 = "A" | X_0 = "A") = P^((2))_(0, 0) = 0.48
+      quad "and" quad
+      P(X_4 = "A" | X_0 = "A") = P^((4))_(0, 0) = 0.4332.
+    $
+]
+

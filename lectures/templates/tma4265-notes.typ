@@ -17,7 +17,7 @@
  */
 
 #import "tma4265-shared.typ": *
-#import "tma4265-icml-logo.typ": LaTeX, TeX
+// #import "tma4265-icml-logo.typ": LaTeX, TeX
 
 // ---------------------------------------------------------------------------
 // Constants and definitions.
@@ -591,6 +591,12 @@
 
   // Math equation numbering and referencing.
   set math.equation(numbering: "(1)")
+
+
+  // Default square brackets.
+  set math.mat(delim: "[")
+
+
   // Only number block equations that carry a label (i.e. ones that can be
   // referenced). Unlabelled equations are rendered without a number, and the
   // equation counter is rolled back so labelled equations stay sequential.

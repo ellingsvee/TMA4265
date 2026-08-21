@@ -16,7 +16,7 @@
 // A circular layout, with nicer special cases for one and two states.
 #let _transition-positions(count, radius) = {
   if count == 1 {
-    (((0, 0)),)
+    ((0, 0),)
   } else if count == 2 {
     ((180deg, radius), (0deg, radius))
   } else {
@@ -27,8 +27,7 @@
 
 // Draw the transition diagram of a finite-state, discrete-time Markov chain.
 //
-// `states` is an array of node labels. `transitions` is a square array of
-// rows, with transitions.at(i).at(j) equal to P(i -> j). Numeric zeroes and
+// `states` is an array of node labels. `transitions` is a square array of rows, with transitions.at(i).at(j) equal to P(i -> j). Numeric zeroes and
 // `none` are omitted by default. Probability entries may be numbers, strings,
 // or content such as `$1/2$`.
 //
@@ -78,9 +77,7 @@
   }
 
   let layout-radius = if radius == auto {
-    if count <= 2 { 18mm }
-    else if count <= 4 { 24mm }
-    else { 25mm + (count - 4) * 4mm }
+    if count <= 2 { 18mm } else if count <= 4 { 24mm } else { 25mm + (count - 4) * 4mm }
   } else {
     radius
   }
@@ -166,3 +163,11 @@
     },
   )
 }
+
+
+#let transition-figure(body, caption: none) = figure(
+  body,
+  caption: if caption == none { none } else { h(0.25em) + caption },
+  kind: "transition-diagram",
+  supplement: [Figure],
+)
