@@ -1,5 +1,5 @@
 
-#import "@local/icml:1.0.0": *
+#import "../templates/tma4265-notes.typ": *
 #import "@preview/muchpdf:0.1.2": muchpdf
 
 #import "@preview/lemmify:0.1.7": default-theorems, new-theorems, thm-numbering-heading

@@ -1,5 +1,5 @@
 
-#import "@local/icml:1.0.0": *
+#import "../templates/tma4265-notes.typ": *
 #import "@preview/muchpdf:0.1.2": muchpdf
 
 #import "@preview/lemmify:0.1.7": default-theorems, new-theorems, thm-numbering-heading
@@ -8,6 +8,17 @@
 #import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
 
 #import "../utils.typ": transition-diagram
+
+// The ICML template floats figures of kind `image`.  Lemmify's examples and
+// solutions are themselves figure-based blocks, so a nested floating figure
+// may be placed outside its enclosing block.  Give transition diagrams their
+// own non-floating figure kind instead.
+#let transition-figure(body, caption: none) = figure(
+  body,
+  caption: if caption == none { none } else { h(0.25em) + caption },
+  kind: "transition-diagram",
+  supplement: [Figure],
+)
 
 #show link: set text(fill: blue)
 #set math.mat(delim: "[")
@@ -126,7 +137,7 @@ _These notes are written by myself, and errors may and will occur. When in doubt
   $<example-drawing-transition-diagrams>
   The corresponding transition diagram is illustrated in @first-tranition-diagram.
 
-  #figure(caption: [Transition diagram for @example-drawing-transition-diagrams])[
+  #transition-figure(caption: [Transition diagram for @example-drawing-transition-diagrams])[
     #transition-diagram(
       ($0$, $1$, $2$),
       (
@@ -162,7 +173,7 @@ _These notes are written by myself, and errors may and will occur. When in doubt
   $
 
 
-  #figure(caption: [Transition diagram for @problem-marias-mood])[
+  #transition-figure(caption: [Transition diagram for @problem-marias-mood])[
     #transition-diagram(
       ($"C"$, $"S"$, $"G"$),
       (
@@ -198,4 +209,3 @@ _These notes are written by myself, and errors may and will occur. When in doubt
     with $x_i in {"C", "S", "G"}$,a and where $f(x_i|x_(i-1)) = P_(i-1, i)$.
 
 ]
-

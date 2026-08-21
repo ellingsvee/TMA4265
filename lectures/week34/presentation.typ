@@ -1,4 +1,4 @@
-#import "@local/icml-presentation:1.0.0": *
+#import "../templates/tma4265-presentation.typ": *
 
 #import "@preview/muchpdf:0.1.2": muchpdf
 
