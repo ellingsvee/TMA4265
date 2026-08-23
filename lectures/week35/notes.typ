@@ -31,6 +31,23 @@
 
 _These notes are written by myself, and errors may and will occur. When in doubt, trust the book and Gunnars lectures!_
 
+= Motivation and cool uses of Markov chains
+
+Some interesting applications of Markov chains:
+- *Google's PageRank algorithm:* Google’s original PageRank algorithm models a person randomly clicking from one webpage to another. The long-run probability of being on each page, i.e. the stationary distribution of the Markov chain, provides a measure of how “important” that page is.
+- *Diffusion models for generative AI:* Image generators based on diffusion gradually add noise to an image and then learn how to reverse this process to generate new images. The forward diffusion process is sometimes formulated as a Markov chain. Here, the next noisy image depends only on the current noisy image, not on the entire previous history.
+- *Language models and early text generation:* Before LLMs, Markov models were commonly used to generate text by predicting the next word or character from the current one (or from the last few).
+- *Monte Carlo and MCMC methods:* Very important in statistics and machine learning, Markov chains are used to sample from complex distributions.
+
+Some research questions we might attempt to answer:
+- How much uranium do we need to build a nuclear bomb?
+- How many people will get Covid within the next 6 months?
+- How many times do we need to shuffle a deck of cards before it is sufficiently random?
+
+See #link("https://youtu.be/KZeIEiBrT_w?si=bvamNeo_-fDDLxxx", "Veritasium: The Strange Math That Predicts (Almost) Anything") for a nice video on Markov chains.
+
+
+#pagebreak()
 = Theory
 
 #definition(name: [Discrete-time stochastic process])[
@@ -88,30 +105,6 @@ _These notes are written by myself, and errors may and will occur. When in doubt
   Let ${X_n : n=0,1,dots}$ be a discrete-time Markov chain. A _state transition diagram_ visualizes the transition probabilities as a weighted directed graph, where the nodes are the states and the edges are the possible transitions marked with the transition probabilities.
 ]
 
-#theorem(name: [$n$-step transition probabilities])[
-  For a Markov chain ${X_n : n=0,1,dots}$ and any $m >= 0$, we have
-  $
-    P(X_(m+n) = j | X_m = i) = P_(i, j)^((n)) = sum_(k=0)^(oo) P_(i, k) P_(k, j)^((n-1)), quad n > 0,
-  $
-  where we define
-  $
-    P_(i, j)^((0)) = cases(
-      1 "if" i = j,
-      0 "otherwise"
-    )
-  $
-]
-
-
-#theorem()[
-  The $n$-step transition probabilities can be computed be matrix multiplication. If $P^(n) = [P_(i, j)^((n))]$, then
-  $
-    P^(n) = underbrace(P dot P dot dots dot P, n) = P^n.
-  $
-]
-
-
-
 
 #example(name: [Drawing transition diagrams])[
   For a state space $(0, 1, 2)$, consider the $3 times 3$ transition probability matrix
@@ -135,6 +128,67 @@ _These notes are written by myself, and errors may and will occur. When in doubt
     )
   ]<first-tranition-diagram>
 ]
+
+#theorem(name: [$n$-step transition probabilities])[
+  For a Markov chain ${X_n : n=0,1,dots}$ and any $m >= 0$, we have
+  $
+    P(X_(m+n) = j | X_m = i) = P_(i, j)^((n)) = sum_(k=0)^(oo) P_(i, k) P_(k, j)^((n-1)), quad n > 0,
+  $
+  where we define
+  $
+    P_(i, j)^((0)) = cases(
+      1 "if" i = j,
+      0 "otherwise"
+    )
+  $
+]
+
+
+#theorem()[
+  The $n$-step transition probabilities can be computed be matrix multiplication. If $P^(n) = [P_(i, j)^((n))]$, then
+  $
+    P^(n) = underbrace(P dot P dot dots dot P, n) = P^n.
+  $
+]
+
+#definition(name: [Hitting time])[
+  For ${X_n: n= 0, 1, dots}$ be a Markov chain and $A$ be a set of states. The _hitting time_ of $A$ is the random variable
+  $
+    T_A = min {n >= 0 : X_n in A}
+  $
+]
+
+#definition(name: [Absorbing state])[
+  For a Markov chain, a state $i$ such that $P_(i,j) = 0$ for all $j != i$ is called absorbing. A set of states $A$ is absorbing if $P_(i,j) = 0$ for all $i in A$ and $j in.not A$.
+]
+
+#theorem()[
+  Let ${X_n: n= 0, 1, dots}$ be a Markov chain with state space $S = {0, 1, dots, N}$ and transition probability matrix $P$. Let $A subset S$ be an absorbing set of states.
+  - If $u_i$ is the probability of absorption in $j in A$ starting on $X_0 = i$. Then
+    $
+      u_i = P(X_(T_A) = j | X_0 = i) = cases(
+        1 quad & "if" i = j,
+        0 quad & "if" i in A "and" i != j,
+        P_(i, j) + sum_(k in S \\ A) P_(i,k) u_k quad & "otherwise".
+      )
+    $
+  - If $v_i = EE[T_A | X_0 = i]$ is the expected time until absorption starting on $X_0 = i$, then
+    $
+      v_i = cases(
+        0 quad & "if" i in A,
+        1 + sum_(k in S \\ A) P_(i,k) v_k quad & "otherwise"
+      )
+    $<thm-expected-time-to-absorption>
+]
+
+For next week, we are interested in exploring the long-term behavior of Markov chains, meaning determining the limit
+$
+  lim_(n -> oo) P_(i, j)^((n)) = lim_(n -> oo) P(X_n = j | X_0 = i).
+$
+This is one of the most important questions in Markov chain theory, and we will see some interesting applications!
+
+
+
 
 #pagebreak()
 #problem(name: [Problem 1 in Exercise 2])[
@@ -340,3 +394,42 @@ _These notes are written by myself, and errors may and will occur. When in doubt
     $
 ]
 
+
+#problem(name: "Expected time to absorption")[
+  Let ${X_n | n = 0, 1, dots}$ be  a Markov chain with transition probability matrix
+  $
+    P = mat(
+      1, 0, 0;
+      alpha, beta, gamma;
+      0, 0, 1;
+    ),
+  $
+  where $alpha, beta, gamma > 0$ and $alpha + beta + gamma = 1$. Assume $x_0 = 1$.
+  - What is the probability of absorption in state $0$?
+  - What is the expected time until absorption in state $0$ or $2$?
+]
+#solution()[
+  - For $T_A = min {n >= 0: X_n in A}$ we denote $u_i = P(X_(T_A) = 0 | X_0 = i)$ for $i = 0, 1, 2$. We want to find $u_1$. Clearly, $u_0 = 1$ and $u_2 = 0$. For $i = 1$, we have
+    $
+      u_1 & = sum_(k in {0, 1, 2}) P(X_(T_A) = 0, X_1 = k | X_0 = 1) \
+          & = sum_(k in {0, 1, 2}) P(X_(T_A) = 0 | X_1 = k, X_0 = 1) P(X_1 = k | X_0 = 1) \
+          & = sum_(k in {0, 1, 2}) P(X_(T_A) = 0 | X_1 = k) P_(1, k) \
+          & = sum_(k in {0, 1, 2}) u_k P_(1, k) \
+          & = u_0 alpha + u_1 beta + u_2 gamma \
+          & = alpha + beta u_1.
+    $
+    Hence, we have
+    $
+      u_1 = alpha / (1 - beta) = alpha / (alpha + gamma).
+    $
+  - Using @thm-expected-time-to-absorption, we see that $v_0 = v_2 = 0$, while
+    $
+      v_1 & = 1 + sum_(k in {0, 1, 2}) P_(1, k) v_k \
+          & = 1 + P_(1, 1) v_1 \
+          & = 1 + beta v_1.
+    $
+    Hence, we have
+  $
+    v_1 = 1 / (1 - beta) = 1 / (alpha + gamma).
+  $
+]
