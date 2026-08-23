@@ -36,6 +36,20 @@ _These notes are written by myself, and errors may and will occur. When in doubt
 Some interesting applications of Markov chains:
 - *Google's PageRank algorithm:* Google’s original PageRank algorithm models a person randomly clicking from one webpage to another. The long-run probability of being on each page, i.e. the stationary distribution of the Markov chain, provides a measure of how “important” that page is.
 - *Diffusion models for generative AI:* Image generators based on diffusion gradually add noise to an image and then learn how to reverse this process to generate new images. The forward diffusion process is sometimes formulated as a Markov chain. Here, the next noisy image depends only on the current noisy image, not on the entire previous history.
+
+#figure(
+  image(
+    "figures/diffusion.jpg",
+    width: 40%,
+  ),
+  // scope: "parent",
+  kind: "inside-fig",
+  supplement: [Figure],
+)
+
+
+
+
 - *Language models and early text generation:* Before LLMs, Markov models were commonly used to generate text by predicting the next word or character from the current one (or from the last few).
 - *Monte Carlo and MCMC methods:* Very important in statistics and machine learning, Markov chains are used to sample from complex distributions.
 
@@ -46,9 +60,14 @@ Some research questions we might attempt to answer:
 
 See #link("https://youtu.be/KZeIEiBrT_w?si=bvamNeo_-fDDLxxx", "Veritasium: The Strange Math That Predicts (Almost) Anything") for a nice video on Markov chains.
 
-
 #pagebreak()
 = Theory
+
+We will go through the basics of discrete-time Markov chains and their first-step analysis. Next week we will explore the long-term behavior of Markov chains.
+
+
+
+
 
 #definition(name: [Discrete-time stochastic process])[
   A discrete-time stochastic process is a family of random variables ${X_t : t in T}$ where $T$ is discrete.
