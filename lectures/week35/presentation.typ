@@ -35,18 +35,15 @@
 )
 
 = Fundamentals
-
 ==
-
-
 #definition(name: [Discrete-time stochastic process])[
-  A discrete-time stochastic process is a family of random variables ${X_t : t in T}$ where $T$ is discrete.
+  A discrete-time stochastic process is a family of random variables ${X_t : t in T}$ where the index set $T$ is discrete.
 
-  We call $X_t$ the _state_ at time $t$, and the set of all possible states the _state space_.
+  Call $X_t$ the _state_ at time $t$, and the set of all possible states the _state space_.
 ]
 
 #definition(name: [Discrete-time Markov chain])[
-  A discrete-time Markov chain is a discrete-time stochastic process ${X_t : t in 0,1,dots}$ that satisfies the _Markov property_
+  A DT-MC is a discrete-time stochastic process ${X_t : t in 0,1,dots}$ satisfying the _Markov property_
   $
     P(X_(t+1) = j | X_0 = i_0, dots, X_t = i_t) = P(X_(t+1) = j | X_t = i_t),
   $
@@ -54,40 +51,13 @@
 ]
 
 ==
-#definition(name: [One-step transition probabilities])[
-  For a discrete-time Markov chain ${X_t : t in 0,1,dots}$, we call
-  $
-    P_(i, j)^(t,t+1) = P(X_(t+1) = j | X_t = i)
-  $
-  the _one-step transition probabilities_ from state $i$ to state $j$ at time $n$.
-
-  // From now on, we always assume _time-homogeneous_ transition probabilities, meaning $P_(i, j)^(t, t+1) = P_(i, j)$ for all $t=0,1,dots$ and all states $i$ and $j$.
-]
-
-
-#definition(name: [Transition probability matrix])[
-  For a discrete-time Markov chain with a finite state space ${0,1,dots,N}$, we call
-  $
-    bf(P) = mat(
-      P_(0,0), P_(0,1), dots, P_(0,N);
-      P_(1,0), P_(1,1), , dots.v;
-      dots.v, , dots.down, ;
-      P_(N,0), dots, , P_(N,N)
-    )
-  $
-  the _transition probability matrix_.
-
-  // Note that for an infinite state space ${0, 1, dots}$, we can envision an infinitely-sized matrix. Also be aware that I use the convention of writing matrices in bold $bf(P)$, and the entries of the matrix in normal font $P_(i, j)$.
-]
-
-==
 #definition(name: [Transition diagram])[
-  Let ${X_n : n=0,1,dots}$ be a discrete-time Markov chain. A _state transition diagram_ visualizes the transition probabilities as a weighted directed graph, where the nodes are the states and the edges are the possible transitions marked with the transition probabilities.
+  Let ${X_t : t=0,1,dots}$ be a DT-MC. A _state transition diagram_ visualizes the transition probabilities as a weighted directed graph, where the nodes are the states and the edges are the possible transitions marked with the transition probabilities.
 ]
 
 #transition-figure()[
   #transition-diagram(
-    ($""$, $""$),
+    ($"A"$, $"B"$),
     (
       (0.2, 0.8),
       (0.5, 0.5),
@@ -99,8 +69,45 @@
     label-size: 16pt,
   )]
 
+== Example: Trondheim student
+
+#subpar.grid(
+  figure(image("figures/glos.jpg", width: 80%), caption: [Gløshaugen (G)]),
+  figure(image("figures/samf.jpg", width: 110%), caption: [Samfundet (S)]),
+  figure(image("figures/sit.jpg", width: 100%), caption: [Hjem (H)]),
+
+  columns: (auto, auto, auto),
+)
+
+==
+#definition(name: [One-step transition probabilities])[
+  For a DT-MC ${X_t : t in 0,1,dots}$, we call
+  $
+    P_(i, j)^(t,t+1) = P(X_(t+1) = j | X_t = i)
+  $
+  the _one-step transition probabilities_ from state $i$ to state $j$ at time $n$.
+
+  // From now on, we always assume _time-homogeneous_ transition probabilities, meaning $P_(i, j)^(t, t+1) = P_(i, j)$ for all $t=0,1,dots$ and all states $i$ and $j$.
+]
+
+Always assume _time-homogeneous_ transition probabilities, meaning $P_(i, j)^(t, t+1) = P_(i, j)$ for all $t=0,1,dots$ and states $i$ and $j$.
+
+#definition(name: [Transition probability matrix])[
+  For a DT-MC with a finite state space ${0,1,dots,N}$, the _transition probability matrix_ is
+  $
+    bf(P) = mat(
+      P_(0,0), P_(0,1), dots, P_(0,N);
+      P_(1,0), P_(1,1), , dots.v;
+      dots.v, , dots.down, ;
+      P_(N,0), dots, , P_(N,N)
+    ).
+  $
+
+  // Note that for an infinite state space ${0, 1, dots}$, we can envision an infinitely-sized matrix. Also be aware that I use the convention of writing matrices in bold $bf(P)$, and the entries of the matrix in normal font $P_(i, j)$.
+]
+
 == Problem 1: From Exercise 2
-Consider the Markov chain ${X_n : n = 0, 1, 2, ...}$ with state space ${"A", "B", "C"}$ and transition probability
+Consider the DT-MC ${X_t : t = 0, 1, 2, ...}$ with state space ${"A", "B", "C"}$ and transition probability
 matrix given by
 $
   bf(P) = mat(
@@ -120,7 +127,7 @@ Knowing that $P(X_0 = "A") = 0.2$, $P(X_0 = "B") = 0.5$ and $P(X_0 = "C") = 0.3$
 ==
 
 #theorem(name: [$n$-step transition probabilities])[
-  For a time-homogeneous Markov chain ${X_n : n=0,1,dots}$ with countable state space $S$ and any $m >= 0$, we have
+  For a DT-MC ${X_n : n=0,1,dots}$ with state space $S$ and any $m >= 0$, we have
   $
     P(X_(m+n) = j | X_m = i) = P_(i, j)^((n)) = sum_(k in S) P_(i, k) P_(k, j)^((n-1)), quad n > 0,
   $<eqn-n-step-transition-probabilities>
@@ -229,3 +236,5 @@ with $alpha, beta, gamma > 0$ and $alpha + beta + gamma = 1$. Assume $X_0 = 1$.
       )
     $<thm-expected-time-to-absorption>
 ]
+
+= Towards long-term behaviour...
