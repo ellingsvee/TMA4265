@@ -179,7 +179,7 @@
     subslide-preamble: _unnumbered-subslide-preamble,
     ..footer-right-arg,
     config-page(
-      margin: (x: 3em, y: 1.5em),
+      margin: (x: 3em, y: 1.0em),
     ),
     config-common(
       breakable: false,

@@ -30,7 +30,7 @@
 
 #show: icml.with(
   title: [
-    Week 35: Introduction to discrete-time Markov chains
+    Week 35: Discrete-time Markov chains
   ],
 
   authors: (
@@ -63,7 +63,7 @@ Some interesting applications of Markov chains:
 - *Language models and early text generation:* Before LLMs, Markov models were commonly used to generate text by predicting the next word or character from the current one (or from the last few).
 - *Monte Carlo and MCMC methods:* Very important in statistics and machine learning, Markov chains are used to sample from complex distributions.
 - *Hidden Markov models:* A type of statistical model that shows up in many applications, for example speech recognition and GPS systems.
-- *Gaussian Markov Random Fields:* A type of probabilistic graphical model that I worked on during my master's thesis.
+- *Gaussian Markov Random Fields:* A computationally efficient model that I worked on during my #link("https://nva.sikt.no/registration/0199c37fabdb-cdded069-577d-44ab-b56a-2bfc82e7e20c", "master's thesis").
 
 
 #pagebreak()
@@ -132,29 +132,6 @@ We will go through the basics of discrete-time Markov chains and perform first-s
   Let ${X_n : n=0,1,dots}$ be a discrete-time Markov chain. A _state transition diagram_ visualizes the transition probabilities as a weighted directed graph, where the nodes are the states and the edges are the possible transitions marked with the transition probabilities.
 ]
 
-
-// #example(name: [Drawing transition diagrams])[
-//   For the state space ${0, 1, 2}$, consider the $3 times 3$ transition probability matrix
-//   $
-//     P = mat(
-//       0.5, 0.5, 0;
-//       0.25, 0.5, 0.25;
-//       0, 0.5, 0.5
-//     ).
-//   $<example-drawing-transition-diagrams>
-//   The corresponding transition diagram is
-//
-//   #transition-figure()[
-//     #transition-diagram(
-//       ($0$, $1$, $2$),
-//       (
-//         (0.5, 0.5, 0),
-//         (0.25, 0.5, 0.25),
-//         (0, 0.5, 0.5),
-//       ),
-//     )
-//   ]<first-tranition-diagram>
-// ]
 
 #theorem(name: [$n$-step transition probabilities])[
   For a time-homogeneous Markov chain ${X_n : n=0,1,dots}$ with countable state space $S$ and any $m >= 0$, we have
@@ -422,7 +399,7 @@ First-step analysis is a technique for analyzing Markov chains by breaking down 
 
 #pagebreak()
 #problem(name: "Expected time to absorption")[
-  Let ${X_n | n = 0, 1, dots}$ be a Markov chain on the state space ${0, 1, 2}$. The transition probability matrix is
+  Let ${X_t : t = 0, 1, dots}$ be a Markov chain on the state space ${0, 1, 2}$. The transition probability matrix is
   $
     bf(P) = mat(
       1, 0, 0;
@@ -432,7 +409,7 @@ First-step analysis is a technique for analyzing Markov chains by breaking down 
   $
   with $alpha, beta, gamma > 0$ and $alpha + beta + gamma = 1$. Assuming $X_0 = 1$, answer the following
   - What is the probability of absorption in state $0$?
-  - What is the expected time until absorption in state $0$ or $2$?
+  - What is the expected time until absorption in state $0$ or $2$? You might need the formula for a geometric series $sum_(t=0)^oo r^t = 1 \/ (1 - r)$.
 ]
 #solution()[
   - Letting $A = {0, 2}$, we denote $u_i = P(X_(T_A) = 0 | X_0 = i)$ for $i in {0, 1, 2}$. Clearly, $u_0 = 1$ and $u_2 = 0$, and the question is how to find $u_1$. Using the law of total probability, Bayes' rule and the Markov property, we have
