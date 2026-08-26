@@ -58,11 +58,11 @@ Some research questions we might attempt to answer:
 
 
 Some interesting applications of Markov chains:
-- *Google's PageRank algorithm:* Google’s original PageRank algorithm models a person randomly clicking from one webpage to another. The long-run probability of being on each page, i.e. the stationary distribution of the Markov chain, provides a measure of how “important” that page is.
-- *Diffusion models for generative AI:* Image generators based on diffusion gradually add noise to an image and then learn how to reverse this process to generate new images. The forward diffusion process is sometimes formulated as a Markov chain. Here, the next noisy image depends only on the current noisy image, not on the entire previous history.
-- *Language models and early text generation:* Before LLMs, Markov models were commonly used to generate text by predicting the next word or character from the current one (or from the last few).
-- *Monte Carlo and MCMC methods:* Very important in statistics and machine learning, Markov chains are used to sample from complex distributions.
-- *Hidden Markov models:* A type of statistical model that shows up in many applications, for example speech recognition and GPS systems.
+- *Google's PageRank algorithm:* Google’s original PageRank algorithm models a person randomly clicking from one webpage to another. The long-run probability of being on each page provides a measure of how important that page is.
+- *Diffusion models for generative AI:* Image generators based on diffusion gradually add noise to an image and then learn how to reverse this process to generate new images. We can interpret the state of the image as a Markov chain.
+- *Language models and early text generation:* Markov models were commonly used to generate text by predicting the next word. However, LLMs are likely a better choice nowadays.
+- *Monte Carlo and MCMC methods:* Very important in physics and machine learning, Markov chains are used to sample from complex distributions.
+- *Hidden Markov models:* Used in many applications, for example speech recognition, robotics, and GPS systems.
 - *Gaussian Markov Random Fields:* A computationally efficient model that I worked on during my #link("https://nva.sikt.no/registration/0199c37fabdb-cdded069-577d-44ab-b56a-2bfc82e7e20c", "master's thesis").
 
 
@@ -76,12 +76,7 @@ We will go through the basics of discrete-time Markov chains and perform first-s
 #definition(name: [Discrete-time stochastic process])[
   A discrete-time stochastic process is a family of random variables ${X_t : t in T}$ where $T$ is discrete.
 
-  We call $X_t$ the _state_ at time $t$, and the set of all possible states the _state space_.
-]
-
-#example(name: [Finite and infinite state spaces])[
-  - Consider a student in Trondheim who is either at home (H), at Gløshaugen (G), or at Samfundet (S). The student moves between these three locations, so the state space is ${H, G, S}$.
-  - Consider the number of unread messages a student has at the end of each day. New messages may arrive and old messages may be read, so the number changes from day to day. Let $X_t$ denote the number of unread messages on day $t$. The state space is ${0, 1, 2, dots}$.
+  We call $X_t$ the _state_ at time $t$, and the set of all possible states the _state space_. A typical choice of index set is $T = {0, 1, dots}$.
 ]
 
 #definition(name: [Discrete-time Markov chain])[
@@ -92,12 +87,18 @@ We will go through the basics of discrete-time Markov chains and perform first-s
   for $t = 0, 1, dots$ and all states $i_0, dots, i_t, j$ for which the conditioning event has positive probability.
 ]
 
+#example(name: [Markov chains for finite and infinite state spaces])[
+  - Consider a student in Trondheim who is either at home (H), at Gløshaugen (G), or at Samfundet (S). The student moves between these three locations, so the state space is ${H, G, S}$.
+  - Consider the number of unread messages a student has at the end of each day. New messages may arrive and old messages may be read, so the number changes from day to day. Let $X_t$ denote the number of unread messages on day $t$. The state space is ${0, 1, 2, dots}$.
+]<example-finite-infinite-state-space>
+
+
 #definition(name: [One-step transition probabilities])[
   For a discrete-time Markov chain ${X_t : t in 0,1,dots}$, we call
   $
     P_(i, j)^(t,t+1) = P(X_(t+1) = j | X_t = i)
   $
-  the _one-step transition probabilities_ from state $i$ to state $j$ at time $n$.
+  the _one-step transition probabilities_ from state $i$ to state $j$ at time $t$.
 
   From now on, we always assume _time-homogeneous_ transition probabilities, meaning $P_(i, j)^(t, t+1) = P_(i, j)$ for all $t=0,1,dots$ and all states $i$ and $j$.
 ]
@@ -113,6 +114,12 @@ We will go through the basics of discrete-time Markov chains and perform first-s
   $
 ]
 
+
+
+#definition(name: [Transition diagram])[
+  Let ${X_t : t=0,1,dots}$ be a discrete-time Markov chain. A _state transition diagram_ visualizes the transition probabilities as a weighted directed graph, where the nodes are the states and the edges are the possible transitions marked with the transition probabilities.
+]
+
 #definition(name: [Transition probability matrix])[
   For a discrete-time Markov chain with a finite state space ${0,1,dots,N}$, we call
   $
@@ -125,16 +132,38 @@ We will go through the basics of discrete-time Markov chains and perform first-s
   $
   the _transition probability matrix_.
 
-  Note that for an infinite state space ${0, 1, dots}$, we can envision an infinitely-sized matrix. Also be aware that I use the convention of writing matrices in bold $bf(P)$, and the entries of the matrix in normal font $P_(i, j)$.
+  For an infinite state space ${0, 1, dots}$, we can envision an infinitely-sized matrix. Also note that I use the convention of writing matrices in bold $bf(P)$, and the entries of the matrix in normal font $P_(i, j)$.
 ]
 
-#definition(name: [Transition diagram])[
-  Let ${X_n : n=0,1,dots}$ be a discrete-time Markov chain. A _state transition diagram_ visualizes the transition probabilities as a weighted directed graph, where the nodes are the states and the edges are the possible transitions marked with the transition probabilities.
-]
+
+
+#example()[
+  If we consider the Trondheim student from  @example-finite-infinite-state-space, the transition diagram is
+  #transition-figure()[
+    #transition-diagram(
+      ($"H"$, $"G"$, $"S"$),
+      (
+        (1, 0, 0),
+        (0.5, 0.3, 0.2),
+        (0, 0.3, 0.7),
+      ),
+      positions: ((0, 0), (2, 0), (4, 0)),
+      loop-angles: (180deg, 90deg, 0deg),
+    )
+  ]
+  and the corresponding transition probability matrix is
+  $
+    bf(P) = mat(
+      1, 0, 0;
+      0.5, 0.3, 0.2;
+      0, 0.3, 0.7,
+    ).
+  $
+]<example-trondheim-student>
 
 
 #theorem(name: [$n$-step transition probabilities])[
-  For a time-homogeneous Markov chain ${X_n : n=0,1,dots}$ with countable state space $S$ and any $m >= 0$, we have
+  For a time-homogeneous Markov chain ${X_t : t=0,1,dots}$ with countable state space $S$ and any $m >= 0$, we have
   $
     P(X_(m+n) = j | X_m = i) = P_(i, j)^((n)) = sum_(k in S) P_(i, k) P_(k, j)^((n-1)), quad n > 0,
   $<eqn-n-step-transition-probabilities>
@@ -166,38 +195,15 @@ We will go through the basics of discrete-time Markov chains and perform first-s
 First-step analysis is a technique for analyzing Markov chains by breaking down the probabilities that can arise at the end of the first step.
 
 #example(name: [Absorbing state])[
-  Let ${X_n : n = 0, 1, dots}$ be a Markov chain on the state space ${0, 1, 2}$ and with transition probability matrix
-  $
-    bf(P) = mat(
-      1, 0, 0;
-      0.2, 0.5, 0.3;
-      0, 0, 1;
-    ).
-  $
-  The corresponding transition diagram is
-  #transition-figure()[
-    #transition-diagram(
-      ($0$, $1$, $2$),
-      (
-        (1, 0, 0),
-        (0.2, 0.5, 0.3),
-        (0, 0, 1),
-      ),
-      positions: ((0, 0), (2, 0), (4, 0)),
-      loop-angles: (180deg, 90deg, 0deg),
-    )
-  ]
-
-
-  See that once the process reaches state $0$ or $2$, it will stay there forever. This is an example of _absorbing_ states.
+  Going back to the Trondheim student from @example-trondheim-student, we can see that once the student is at home, they will stay there forever. This means that state $"H"$ is an _absorbing_ state.
 ]
 
 
 
 #definition(name: [Hitting time])[
-  Let ${X_n: n= 0, 1, dots}$ be a Markov chain, and let $A$ be a set of states. The _hitting time_ of $A$ is the random variable
+  Let ${X_t: t= 0, 1, dots}$ be a Markov chain, and let $A$ be a set of states. The _hitting time_ of $A$ is the random variable
   $
-    T_A = inf {n >= 0 : X_n in A}.
+    T_A = inf {t >= 0 : X_t in A}.
   $
   We specify $inf emptyset = oo$, meaning $T_A=oo$ if the chain never reaches $A$.
 ]
@@ -207,7 +213,7 @@ First-step analysis is a technique for analyzing Markov chains by breaking down 
 ]
 
 #theorem()[
-  Let ${X_n: n= 0, 1, dots}$ be a Markov chain with state space $S = {0, 1, dots, N}$ and transition probability matrix $P$. Let $A subset.eq S$ be an absorbing set of states.
+  Let ${X_t: t= 0, 1, dots}$ be a Markov chain with state space $S = {0, 1, dots, N}$ and transition probability matrix $bf(P)$. Let $A subset.eq S$ be an absorbing set of states.
   - If $u_i$ is the probability of absorption in $j in A$ starting from $X_0 = i$, then
     $
       u_i = P(X_(T_A) = j | X_0 = i) = cases(
@@ -228,7 +234,7 @@ First-step analysis is a technique for analyzing Markov chains by breaking down 
 #pagebreak()
 #problem(name: [Problem 1 in Exercise 2: Part 1])[
 
-  Consider the Markov chain ${X_n : n = 0, 1, 2, ...}$ with state space ${"A", "B", "C"}$ and transition probability
+  Consider the Markov chain ${X_t : t = 0, 1, 2, ...}$ with state space ${"A", "B", "C"}$ and transition probability
   matrix given by
   $
     bf(P) = mat(
@@ -260,7 +266,7 @@ First-step analysis is a technique for analyzing Markov chains by breaking down 
     $
       P(X_0 = "A", X_1 = "B", X_2 = "C") & = P(X_2 = "C" | X_1 = "B", X_0 = "A") dot P(X_0 = "A", X_1 = "B") \
                                          & = P(X_2 = "C" | X_1 = "B") dot P(X_1 = "B" | X_0 = "A") dot P(X_0 = "A") \
-                                         & = P_(B, C) dot P_(A, B) dot P(X_0 = "A") \
+                                         & = P_("B", "C") dot P_("A", "B") dot P(X_0 = "A") \
                                          & = 0.4 dot 0.7 dot 0.2 = 0.056
     $
   - Using the law of total probability
@@ -275,28 +281,27 @@ First-step analysis is a technique for analyzing Markov chains by breaking down 
 
 #pagebreak()
 #problem(name: [Problem 1 in Exercise 2: Part 2])[
-  Consider the same Markov chain as in @problem-exercise-2-part-1. It has state space ${"A", "B", "C"}$ and transition probability matrix
+  Consider the same Markov chain as in @problem-exercise-2-part-1. We know that
+
   $
     bf(P) = mat(
       0.1, 0.7, 0.2;
       0.5, 0.1, 0.4;
       0.3, 0.6, 0.1;
-    )
-  $
-  The probability distribution of the initial state $X_0$ is given by $P(X_0 = "A") = 0.2$, $P(X_0 = "B") = 0.5$ and $P(X_0 = "C") = 0.3$. Note that
-  $
+    ), quad
     bf(P)^(2) = mat(
       0.42, 0.26, 0.32;
       0.22, 0.6, 0.18;
       0.36, 0.33, 0.31;
-    )
-    quad "and" quad
+    ), quad
     bf(P)^(3) = mat(
       0.268, 0.512, 0.220;
       0.376, 0.322, 0.302;
       0.294, 0.471, 0.235;
-    ).
+    ),
   $
+  and that $P(X_0 = "A") = 0.2$, $P(X_0 = "B") = 0.5$ and $P(X_0 = "C") = 0.3$.
+
   Compute the following probabilities:
   - $P(X_3 = "A")$
   - $P(X_6 = "A" | X_3 = "C")$
@@ -308,9 +313,9 @@ First-step analysis is a technique for analyzing Markov chains by breaking down 
   - Using the law of total probability
     $
       P(X_3 = "A") & = sum_(k in {"A", "B", "C"}) P(X_3 = "A" | X_0 = k) P(X_0 = k) \
-                   & = P_(A, A)^((3)) dot P(X_0 = "A") + P_(B, A)^((3)) dot P(X_0 = "B") + P_(C, A)^((3)) dot P(X_0 = "C") \
-                   & = 0.268 dot 0.2 + 0.367 dot 0.5 + 0.294 dot 0.3 \
-                   & = 0.3298.
+      & = P_("A", "A")^((3)) dot P(X_0 = "A") + P_("B", "A")^((3)) dot P(X_0 = "B") + P_("C", "A")^((3)) dot P(X_0 = "C") \
+      & = 0.268 dot 0.2 + 0.376 dot 0.5 + 0.294 dot 0.3 \
+      & = 0.3298.
     $
   - Using time-homogeneity
     $

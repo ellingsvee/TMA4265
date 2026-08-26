@@ -29,7 +29,7 @@
   figure(image("figures/drone.jpg", width: 75%), caption: [Drone localisation (HMM)]),
 
   figure(image("figures/googlesearch.png", width: 55%), caption: [Language prediction]),
-  figure(image("figures/mesh.png", width: 65%), caption: [Networks and GMRFs]),
+  figure(image("figures/mcmc.png", width: 65%), caption: [Monte Carlo and MCMC]),
 
   columns: (auto, auto),
 )
@@ -37,7 +37,7 @@
 = Fundamentals
 ==
 #definition(name: [Discrete-time stochastic process])[
-  A discrete-time stochastic process is a family of random variables ${X_t : t in T}$ where the index set $T$ is discrete.
+  A discrete-time stochastic process is a family of random variables ${X_t : t in T}$ where the _index set_ $T$ is discrete.
 
   Call $X_t$ the _state_ at time $t$, and the set of all possible states the _state space_.
 ]
@@ -50,26 +50,7 @@
   for $t = 0, 1, dots$ and all states $i_0, dots, i_t, j$ for which the conditioning event has positive probability.
 ]
 
-==
-#definition(name: [Transition diagram])[
-  Let ${X_t : t=0,1,dots}$ be a DT-MC. A _state transition diagram_ visualizes the transition probabilities as a weighted directed graph, where the nodes are the states and the edges are the possible transitions marked with the transition probabilities.
-]
-
-#transition-figure()[
-  #transition-diagram(
-    ($"A"$, $"B"$),
-    (
-      (0.2, 0.8),
-      (0.5, 0.5),
-    ),
-    node-radius: 10.5mm,
-    node-stroke: 1pt,
-    edge-stroke: 1pt,
-    positions: ((1, 0), (4, 0)),
-    label-size: 16pt,
-  )]
-
-== Example: Trondheim student
+== Example of finite state space: Trondheim student
 
 #subpar.grid(
   figure(image("figures/glos.jpg", width: 80%), caption: [Gløshaugen (G)]),
@@ -79,18 +60,44 @@
   columns: (auto, auto, auto),
 )
 
+== Example of infinite state space: Receiving and reading emails
+
+#figure(image("figures/email.jpeg", width: 50%))
+
 ==
 #definition(name: [One-step transition probabilities])[
   For a DT-MC ${X_t : t in 0,1,dots}$, we call
   $
     P_(i, j)^(t,t+1) = P(X_(t+1) = j | X_t = i)
   $
-  the _one-step transition probabilities_ from state $i$ to state $j$ at time $n$.
+  the _one-step transition probabilities_ from state $i$ to state $j$ at time $t$.
 
   // From now on, we always assume _time-homogeneous_ transition probabilities, meaning $P_(i, j)^(t, t+1) = P_(i, j)$ for all $t=0,1,dots$ and all states $i$ and $j$.
 ]
 
 Always assume _time-homogeneous_ transition probabilities, meaning $P_(i, j)^(t, t+1) = P_(i, j)$ for all $t=0,1,dots$ and states $i$ and $j$.
+
+
+
+
+==
+#definition(name: [Transition diagram])[
+  Let ${X_t : t=0,1,dots}$ be a DT-MC. A _state transition diagram_ visualizes the transition probabilities as a weighted directed graph, where the nodes are the states and the edges are the possible transitions marked with the transition probabilities.
+]
+
+// #transition-figure()[
+//   #transition-diagram(
+//     ($"A"$, $"B"$),
+//     (
+//       (0.2, 0.8),
+//       (0.5, 0.5),
+//     ),
+//     node-radius: 10.5mm,
+//     node-stroke: 1pt,
+//     edge-stroke: 1pt,
+//     positions: ((1, 0), (4, 0)),
+//     label-size: 16pt,
+//   )]
 
 #definition(name: [Transition probability matrix])[
   For a DT-MC with a finite state space ${0,1,dots,N}$, the _transition probability matrix_ is
@@ -127,7 +134,7 @@ Knowing that $P(X_0 = "A") = 0.2$, $P(X_0 = "B") = 0.5$ and $P(X_0 = "C") = 0.3$
 ==
 
 #theorem(name: [$n$-step transition probabilities])[
-  For a DT-MC ${X_n : n=0,1,dots}$ with state space $S$ and any $m >= 0$, we have
+  For a time-homogeneous DT-MC ${X_t : t=0,1,dots}$ with countable state space $S$ and any $m >= 0$, we have
   $
     P(X_(m+n) = j | X_m = i) = P_(i, j)^((n)) = sum_(k in S) P_(i, k) P_(k, j)^((n-1)), quad n > 0,
   $<eqn-n-step-transition-probabilities>
@@ -194,7 +201,7 @@ A taxi driver provides service in two zones of a city. Fares picked up in zone A
 #definition(name: [Hitting time])[
   Let ${X_t: t= 0, 1, dots}$ be a Markov chain, and let $A$ be a set of states. The _hitting time_ of $A$ is the random variable
   $
-    T_A = inf {n >= 0 : X_n in A}.
+    T_A = inf {t >= 0 : X_t in A}.
   $
   We specify $inf emptyset = oo$, meaning $T_A=oo$ if the chain never reaches $A$.
 ]
@@ -203,7 +210,7 @@ A taxi driver provides service in two zones of a city. Fares picked up in zone A
   For a Markov chain, a state $i$ such that $P_(i,j) = 0$ for all $j != i$ is called absorbing. A set of states $A$ is absorbing if $P_(i,j) = 0$ for all $i in A$ and $j in.not A$.
 ]
 
-== Problem 4: Analysing absor
+== Problem 4: Analysing absorption
 
 Let ${X_t : t = 0, 1, dots}$ be a Markov chain on the state space ${0, 1, 2}$. The transition probability matrix is
 $
@@ -219,7 +226,7 @@ with $alpha, beta, gamma > 0$ and $alpha + beta + gamma = 1$. Assume $X_0 = 1$.
 
 ==
 #theorem()[
-  Let ${X_n: n= 0, 1, dots}$ be a Markov chain with state space $S = {0, 1, dots, N}$ and transition probability matrix $P$. Let $A subset.eq S$ be an absorbing set of states.
+  Let ${X_t: t= 0, 1, dots}$ be a Markov chain with state space $S = {0, 1, dots, N}$ and transition probability matrix $bf(P)$. Let $A subset.eq S$ be an absorbing set of states.
   - If $u_i$ is the probability of absorption in $j in A$ starting from $X_0 = i$, then
     $
       u_i = P(X_(T_A) = j | X_0 = i) = cases(
@@ -238,3 +245,23 @@ with $alpha, beta, gamma > 0$ and $alpha + beta + gamma = 1$. Assume $X_0 = 1$.
 ]
 
 = Towards long-term behaviour...
+$
+  bf(P) = mat(
+    0.8, 0.2;
+    0.3, 0.7
+  ), quad
+  bf(P)^(2) = mat(
+    0.7, 0.3;
+    0.45, 0.55
+  ), quad
+  bf(P)^(10) approx mat(
+    0.600391, 0.3996090;
+    0.599414, 0.400586
+  ), quad
+  bf(P)^(100) approx mat(
+    0.6, 0.4;
+    0.6, 0.4
+  ).
+$
+
+
