@@ -232,7 +232,8 @@ with $alpha, beta, gamma > 0$ and $alpha + beta + gamma = 1$. Assume $X_0 = 1$.
       u_i = P(X_(T_A) = j | X_0 = i) = cases(
         1 quad & "if" i = j,
         0 quad & "if" i in A "and" i != j,
-        P_(i, j) + sum_(k in A^("C")) P_(i,k) u_k quad & "otherwise".
+         // P_(i, j) + sum_(k in A^("C")) P_(i,k) u_k quad & "otherwise".
+        sum_(k in S) P_(i,k) u_k quad & "otherwise".
       )
     $
   - If $v_i = EE[T_A | X_0 = i]$ is the expected time until absorption starting from $X_0 = i$, then
