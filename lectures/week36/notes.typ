@@ -13,7 +13,7 @@
 
 #show: icml.with(
   title: [
-    Week 36: Long Run Behavior of Markov Chains
+    Week 36: Long Run Behavior of Markov Chains (Part 1)
   ],
 
   authors: (
@@ -45,47 +45,60 @@ For this we have to introduce some additional terminology and definitions.
 #definition(name: [Regular Markov chain])[
   Consider a DT-MC ${X_t}$ with finite state space ${0, 1, dots, N}$ and transition probability matrix $bf(P)$. If there exists a positive integer $k>0$ so that all elements of $bf(P)^k$ are strictly positive, we call $bf(P)$ and ${X_t}$ _regular_.
 
-  Written more mathematically, we have
-  $
-    bf(P) "regular" <==> exists k > 0 "s.t." P_(i, j)^((k)) > 0 "for all" i, j in S.
-  $
+  Written more mathematically, we have $bf(P) "regular" <==> exists k > 0 "s.t." P_(i, j)^((k)) > 0 "for all" i, j in S$.
 ]
 
-#example()[
-  See that
-  $
-    bf(P) = mat(
-      1\/2, 1\/2, 0;
-      1\/2, 0, 1\/2;
-      0, 1\/2, 1\/2;
-    )
-    quad "and" quad
-    bf(P)^(2) = mat(
-      ast, ast, ast;
-      ast, ast, ast;
-      ast, ast, ast;
-    ),
-  $
-  meaning that $bf(P)$ is regular.
-]<example-regular-markov-chain>
+// #example()[
+//   See that
+//   $
+//     bf(P) = mat(
+//       1\/2, 1\/2, 0;
+//       1\/2, 0, 1\/2;
+//       0, 1\/2, 1\/2;
+//     )
+//     quad "and" quad
+//     bf(P)^(2) = mat(
+//       ast, ast, ast;
+//       ast, ast, ast;
+//       ast, ast, ast;
+//     ),
+//   $
+//   meaning that $bf(P)$ is regular.
+// ]<example-regular-markov-chain>
 
 #definition(name: [Limiting distribution])[
-  Consider a DT-MC ${X_t}$. We call $bold(pi) = (pi_0, pi_1, dots)$ the _limiting distribution_ is the following two conditions are satisfied:
-  + $pi_j = lim_(t->oo) P_(i, j)^((t))$ for $j = 0, 1, dots$ all exist and do not depend on $i$.
+  Consider a DT-MC ${X_t}$. We call $bold(pi) = (pi_0, pi_1, dots)^top$ the _limiting distribution_ if the following two conditions are satisfied:
+  + The limits $pi_j = lim_(t->oo) P_(i, j)^((t))$ exist for $j = 0, 1, dots$ and do not depend on $i$.
   + $sum_(j=0)^oo pi_j = 1$.
 
   Notes:
   - $1. ==> 2.$ for finite state spaces ${0, 1, dots, N}$, but not necessarily for infinite state spaces.
   - $pi_j$ can be interpreted as the probability of being in state $j$ after many transitions.
+  - I let $bold(pi)$ be a column vector, but some authors let it be a row vector. The two conventions are equivalent, but resulting matrix equations look different.
 ]
 
+
+
+#definition(name: [Stationary distribution])[
+  A probability distribution $bold(pi) = (pi_0, pi_1, dots)^top$ is called a _stationary distribution_ if
+  $
+    pi_j = sum_(i=0)^oo pi_i P_(i,j), quad j = 0, 1, dots,
+  $
+  or, equivalently, $bold(pi) = bf(P)^top bold(pi) <==> (bf(P)^top - bf(I))bold(pi) = bold(0)$.
+
+  An important property of stationary distributions is that if $X_0 tilde.op bold(pi)$, then $X_t tilde.op bold(pi)$ for every $t >= 0$.
+
+]<def-stationary-distribution>
+
+
 #theorem()[
-  Let ${X_t}$ be a regular DT-MC with state space ${0, 1, dots, N}$ and transition probability matrix $P$. Then the limiting distribution $bold(pi)$:
+  Let ${X_t}$ be a regular DT-MC with finite state space ${0, 1, dots, N}$ and transition probability matrix $bf(P)$. Then the limiting distribution $bold(pi)$:
   + Exists and for any initial state $i$ satisfies $pi_j = lim_(t->oo) P_(i, j)^((t)) > 0$ for all $j = 0, 1, dots, N$.
-  + Is the unique non-negative solution of $pi_j = sum_(k=0)^(N) pi_k P_(k, j)$ for $j = 0, 1, dots, N$ and $sum_(j=0)^(N) pi_j = 1$.
-  Notes:
-  - Regularity implies existence and uniqueness of the limiting distribution.
-  - $bf(P)^top bold(pi) = bold(pi) <==> (bf(P)^top - bf(I))bold(pi) = bold(0)$.
+  // + Is the unique non-negative solution of $pi_j = sum_(k=0)^(N) pi_k P_(k, j)$ for $j = 0, 1, dots, N$ and $sum_(j=0)^(N) pi_j = 1$.
+  + Is the unique non-negative solution of $bold(pi) = bf(P)bold(pi)$ and $bold(1)^top bold(pi) = 1$.
+
+  An important consequence is $"Limiting distribution" ==> "Stationary distribution"$ (but not the other way around).
+
 ]<thm-limiting-distribution>
 
 #definition(name: [Doubly stochastic])[
@@ -97,139 +110,42 @@ For this we have to introduce some additional terminology and definitions.
 ]
 
 #example()[
-  The $bf(P)$ from @example-regular-markov-chain is doubly stochastic, while the one from @problem-equivalence-classes-and-reducibility is not.
+  The $bf(C)$ from @problem-regularity is doubly stochastic. Not every transition probability matrix is doubly stochastic, its rows always sum to one, but its columns need not.
 ]
 
+
 #theorem()[
-  Let the Markov chain ${X_t : t = 0, 1, dots}$ be regular with finite state space ${0, 1, dots, N}$. Is the transition probability matrix $bf(P)$ doubly stochastic, then the limiting distribution is uniform
+  Let the Markov chain ${X_t : t = 0, 1, dots}$ be regular with finite state space ${0, 1, dots, N}$. If the transition probability matrix $bf(P)$ is doubly stochastic, then the limiting distribution is uniform
   $
     bf(pi) = (1/(N+1), 1/(N+1), dots, 1/(N+1)).
   $
-]
+]<thm-doubly-stochastic>
 
-#theorem(name: [Long-run mean fraction of time])[
-  In a regular Markov chain ${X_t: t = 0, 1, dots}$, the limiting distribution $bold(pi) = (pi_0, pi_1, dots, pi_N)$ gives the long-run mean fraction of time spent in each state
+
+#example(name: [Doubly stochastic matrices])[
+  Consider the transition probability matrix used in @problem-limiting-and-stationary-distributions
   $
-    pi_j = lim_(n->oo) EE [
-      1/n sum_(k=0)^(n-1) bb(1){X_k = j} | X_0 = i
-    ]
-  $
-  for any state $i$.
-]
-
-An important thing to be aware of is that regularity is a sufficient condition for the existence of a limiting distribution, but not a necessary one. There are Markov chains that are not regular, but still have a limiting distribution. To explore this we need some additional definitions.
-
-#definition(name: [Communication])[
-  Let ${X_t: t = 0, 1, dots}$ be a Markov chain with state space ${0, 1, dots}$ and transition probability matrix $P$.
-  - State $j$ is _accessible_ from state $i$ if there exists a positive integer $n >= 0$ so that $P_(i, j)^((t)) > 0$.
-  - If states $i$ and $j$ are accessible from each other, they are said to _communicate_ and we write $i tilde.op j$.
-]
-
-#example()[
-  In the first scenario, we have that $"B"$ is accessible from $"A"$, but $"A"$ is not accessible from $"B"$. Therefore $"A" tilde.not "B"$. In the second scenario, $"A"$ and $"B"$ are accessible from each other, so $"A" tilde.op "B"$.
-
-  #subpar.grid(
-    figure(
-      transition-diagram(
-        ($"A"$, $"B"$),
-        (
-          ($1\/2$, $1\/2$),
-          (0, 1),
-        ),
-      ),
-      // caption: [Scenario 1],
+    bf(P) = mat(
+      p, q, 0;
+      0, p, q;
+      q, 0, p;
     ),
-    figure(
-      transition-diagram(
-        ($"A"$, $"B"$),
-        (
-          ($1\/2$, $1\/2$),
-          ($1\/2$, $1\/2$),
-        ),
-      ),
-      // caption: [Scenario 2],
-    ),
-
-    columns: (auto, auto),
-    kind: "transition-diagram",
-    supplement: [Figure],
-  )
-
-]
-
-#theorem(name: [Communication is an equivalence relation])[
-  We have
-  - Reflexivity: $i tilde.op i$ for all states $i$.
-  - Symmetry: If $i tilde.op j ==> j tilde.op i$.
-  - Transitivity: If $i tilde.op j$ and $j tilde.op k$, then $i tilde.op k$.
-
-  The equivalence relation induces _equivalence classes_ consisting of sets of states that communicate.
-]
-
-#definition(name: [Irreducibility])[
-  A Markov chain is _irreducible_ if the communication equivalence relation induces exactly one equivalence class, meaning that all states communicate with each other. If not, the Markov chain is _reducible_.
-]
-
-#definition(name: [Periodicity])[
-  The _period_ of a state $i$, written $d(i)$, is
   $
-    d(i) = gcd{t >= 1: P_(i, i)^((t)) > 0}.
+  and assume that $0 < p, q < 1$ and $p + q = 1$ to avoid the edge-cases. We already showed that this Markov chain is regular. It is doubly stochastic because the rows and columns sum to one. Hence, the limiting distribution is uniform $bold(pi) = (1\/3, 1\/3, 1\/3)^top$.
+]
+
+
+
+
+#theorem(name: [Long-run fraction of time])[
+  In a regular Markov chain ${X_t: t = 0, 1, dots}$, the limiting distribution $bold(pi) = (pi_0, pi_1, dots, pi_N)^top$ gives the long-run fraction of time spent in each state. I.e.,
   $
-  If $P_(i, i)^((n)) = 0$ for all $n >= 1$, we define $d(i) = 0$. If $d(i) = 1$, we say that state $i$ is _aperiodic_.
-]
+    pi_j = lim_(n->oo) EE [1/n sum_(k=0)^(n-1) bb(1){X_k = j} | X_0=i]
+  $
+  for any state $i$
 
-#theorem()[
-  If $i tilde.op j$, then $d(i) = d(j)$.
+]<thm-long-run-fraction-of-time>
 
-  Note that this means that periodicity is a property of the equivalence class.
-]
-
-Introducing some notation, we write
-$
-  f_(i,i)^((t)) = P(X_t = i, X_nu != i, nu = 1, 2, dots, t-1 | X_0 = i), quad t>0,
-$
-and define $f_(i, i)^((0)) = 0$. The probability of ever returning to state $i$ is then
-$
-  f_(i, i) = sum_(k=1)^oo f_(i, i)^((k)) = lim_(t->oo) sum_(k=1)^t f_(i, i)^((k)).
-$
-Note that a $f_(i,i) < 1$ there is a non-zero probability of never returning to state $i$.
-
-#definition(name: [Recurrent and transient states])[
-  State $i$ is _recurrent_ if the probability of returning to state $i$ in a finite number of time steps is one, i.e., $f_(i,i) = 1$. A state that is not recurrent, i.e., $f_(i,i) < 1$, is called _transient_.
-]
-
-#theorem()[
-  A state $i$ is recurrent if and only if $sum_(t=0)^oo P_(i, i)^((t)) = oo$. Equivalently, a state $i$ is transient if and only if $sum_(t=0)^oo P_(i, i)^((t)) < oo$.
-
-  We interpret this as the expected number of returns is finite for transient states and infinite for recurrent states.
-]
-
-#theorem()[
-  If $i tilde.op j$, then $i$ is recurrent if and only if $j$ is recurrent. Equivalently, if $i$ is transient, then $j$ is transient.
-]
-
-#theorem()[
-  Consider a recurrent irreducible aperiodic Markov chain. Then
-  - $lim_(t->oo) P_(i, i)^((t)) = 1 \/m_i$ for $i = 0, 1, dots$, where $m_i = sum_(n=0)^(oo) n f_(i,i)^((n))$ is the mean duration between visits to state $i$.
-  - $lim_(t->oo) P_(j, i)^((t)) = lim_(t -> oo) P_(i,i)^((t))$ for all states $i$ and $j$.
-]
-
-
-#definition(name: [Positive and null recurrent])[
-  A state $i$ is positive recurrent if $m_i < oo$ and null recurrent if $m_i = oo$.
-
-  Note that null recurrent means that the expected number of returns is infinite and the expected time between returns is infinite.
-]
-
-#theorem()[
-  In a positive recurrent aperiodic equivalence class with states $j = 0, 1, dots$, then
-  - $lim_(n -> oo) P_(j, j)^((n)) = pi_j = sum_(i=0)^(oo)pi_i P_(i,j)$ for $i, j = 0, 1, dots$, and $sum_(i=0)^(oo)pi_i = 1$.
-  - $bold(pi) = (pi_0, pi_1, dots)$ is uniquely determined by $pi_i >= 0$ for $i = 0, 1, dots$, $sum_(i=0)^(oo)pi_i = 1$, and $pi_j = sum_(i=0)^(oo) pi_i P_(i, j)$ for $j = 0, 1, dots$.
-]
-
-#definition(name: [Stationary distribution])[
-  Any $bold(pi) = (pi_0, pi_1, dots)$ such that $pi_i >= 0$ for $i = 0, 1, dots$, $sum_(i=0)^(oo)pi_i = 1$, and $pi_j = sum_(i=0)^(oo) pi_i P_(i, j)$ for $j = 0, 1, dots$ is called a _stationary distribution_.
-]
 
 
 
@@ -241,15 +157,20 @@ Note that a $f_(i,i) < 1$ there is a non-zero probability of never returning to 
     bf(A) = mat(
       1, 0;
       0, 1
-    )
-    quad "and" quad
-    bf(B) = mat(
+    ),
+    quad bf(B) = mat(
       0, 1;
       1, 0
     )
+    quad "and/or" quad
+    bf(C) = mat(
+      1\/2, 1\/2, 0;
+      1\/2, 0, 1\/2;
+      0, 1\/2, 1\/2;
+    )
   $
   regular?
-]
+]<problem-regularity>
 #solution()[
   For $bf(A)$, we have $bf(A)^k = bf(A)$ for all $k$, and therefore $bf(A)$ is not regular. For $bf(B)$, we have
   $
@@ -263,87 +184,27 @@ Note that a $f_(i,i) < 1$ there is a non-zero probability of never returning to 
       1, 0
     ),
   $
-  so $bf(B)$ is not regular either.
+  so $bf(B)$ is not regular either. For $bf(C)$, we have
+  $
+    bf(C)^2 = mat(
+      ast, ast, ast;
+      ast, ast, ast;
+      ast, ast, ast;
+    ),
+  $
+  meaning that $bf(C)$ is regular.
+
 ]
 
 
 
 
 
-#pagebreak()
-
-#problem()[
-  Consider two Markov chain with the transition probability matrices
-  $
-    bf(A) = mat(
-      1\/3, 1\/3, 1\/3, 0;
-      1\/3, 1\/3, 0, 1\/3;
-      0, 0, 1\/2, 1\/2;
-      0, 0, 1\/2, 1\/2;
-    )
-    quad "and" quad
-    bf(B) = mat(
-      0, 1, 0;
-      0, 0, 1;
-      1, 0, 0;
-    )
-  $
-  Determine for each Markov chain how many equivalence classes it has and whether it is irreducible or reducible.
-]<problem-equivalence-classes-and-reducibility>
-#solution()[
-
-
-  Drawing the transition diagram, we see
-  // #transition-figure()[
-  //   #transition-diagram(
-  //     ($"0"$, $"1"$, $"2"$, $"3"$),
-  //     (
-  //       ($1\/3$, $1\/3$, $1\/3$, 0),
-  //       ($1\/3$, $1\/3$, 0, $1\/3$),
-  //       (0, 0, $1\/3$, $1\/3$),
-  //       (0, 0, $1\/3$, $1\/3$),
-  //     ),
-  //   )]
-
-  #subpar.grid(
-    figure(
-      transition-diagram(
-        ($"0"$, $"1"$, $"2"$, $"3"$),
-        (
-          ($1\/3$, $1\/3$, $1\/3$, 0),
-          ($1\/3$, $1\/3$, 0, $1\/3$),
-          (0, 0, $1\/3$, $1\/3$),
-          (0, 0, $1\/3$, $1\/3$),
-        ),
-      ),
-      caption: [Probability transition diagram for $bf(A)$],
-    ),
-    figure(
-      transition-diagram(
-        ($"0"$, $"1"$, $"2"$),
-        (
-          (0, 1, 0),
-          (0, 0, 1),
-          (1, 0, 0),
-        ),
-      ),
-      caption: [Probability transition diagram for $bf(B)$],
-    ),
-
-    columns: (auto, auto),
-    kind: "transition-diagram",
-    supplement: [Figure],
-  )
-
-  For $bf(A)$, it is clear that $0 tilde.op 1$ and $2 tilde.op 3$, but $0$ and $1$ do not communicate with $2$ and $3$. Therefore, there are two equivalence classes: ${0, 1}$ and ${2, 3}$. As we have more than one equivalence class, the Markov chain is reducible.
-
-  For $bf(B)$, we have $0 tilde.op 1$, $1 tilde.op 2$, and $2 tilde.op 0$. Therefore, all states communicate with each other, and there is only one equivalence class ${0, 1, 2}$ and te Markov chain is irreducible.
-]
 
 
 
 #pagebreak()
-#problem(name: [Exercise 3, Problem 3])[
+#problem(name: [Limiting and stationary distributions])[
   Consider the transition probability matrix
   $
     bf(P) = mat(
@@ -352,75 +213,127 @@ Note that a $f_(i,i) < 1$ there is a non-zero probability of never returning to 
       q, 0, p;
     ),
   $
-  where $p, q >= 0$ and $p + q = 1$. Calculate the limiting probabilities $bold(pi) = mat(delim: "(", pi_1, pi_2, pi_3;)^top$ as a function of $p$ and $q$.
-]
+  where $p, q >= 0$ and $p + q = 1$. Consider the cases
+  - $0 < p < 1$ and $q = 1 - p > 0$
+  - $p = 1$ and $q = 0$.
+  - $p = 0$ and $q = 1$
+  For each case, determine whether the limiting distribution exists and/or whether the stationary distribution exists. Compute the $bold(pi) = (pi_0, pi_1, pi_2)^top$ as a function of $p$ and $q$.
+]<problem-limiting-and-stationary-distributions>
 #solution()[
-  We set up a system of equations so that $(bf(P)^top - bf(I)) bold(pi) = bold(0)$ and $bold(1)^top bold(pi) = 1$. As we have four equations and three unknowns, we can drop one of the equations. This gives
-  $
-    mat(
-      p-1, 0, q;
-      q, p-1, 0;
-      1, 1, 1;
-    ) mat(
-      pi_1;
-      pi_2;
-      pi_3;
-    ) = mat(
-      0;
-      0;
-      1;
-    ).
-  $
-  Since $1 - p = q$, this simplifies to
-  $
-    mat(
-      -q, 0, q;
-      q, -q, 0;
-      1, 1, 1;
-    ) mat(
-      pi_1;
-      pi_2;
-      pi_3;
-    ) = mat(
-      0;
-      0;
-      1;
-    )
-    quad ==> quad
-    mat(
-      -1, 0, 1;
-      1, -1, 0;
-      1, 1, 1;
-    ) mat(
-      pi_1;
-      pi_2;
-      pi_3;
-    ) = mat(
-      0;
-      0;
-      1;
-    ),
-  $
-  meaning the limiting probabilities are independent of $p$ and $q$. Solving the system using Gauss elimination, we find $pi_0 = pi_1 = pi_2 = 1 \/ 3$.
+  - For $0 < p < 1$ and $q = 1 - p > 0$, we see
+    $
+      bf(P)^2 = mat(
+        p^2, p q, q;
+        q, p^2, p q;
+        p q, q, p^2;
+      ) = mat(
+        ast, ast, ast;
+        ast, ast, ast;
+        ast, ast, ast;
+      ),
+    $
+    meaning the chain is regular and the limiting and stationary distributions exist. We set up a system of equations so that $(bf(P)^top - bf(I)) bold(pi) = bold(0)$ and $bold(1)^top bold(pi) = 1$. As we have four equations and three unknowns, we can drop one of the equations. This gives
+    $
+      mat(
+        p-1, 0, q;
+        q, p-1, 0;
+        1, 1, 1;
+      ) mat(
+        pi_1;
+        pi_2;
+        pi_3;
+      ) = mat(
+        0;
+        0;
+        1;
+      ).
+    $
+    Since $1 - p = q$, this simplifies to
+    $
+      mat(
+        -q, 0, q;
+        q, -q, 0;
+        1, 1, 1;
+      ) mat(
+        pi_1;
+        pi_2;
+        pi_3;
+      ) = mat(
+        0;
+        0;
+        1;
+      )
+      quad ==> quad
+      mat(
+        -1, 0, 1;
+        1, -1, 0;
+        1, 1, 1;
+      ) mat(
+        pi_1;
+        pi_2;
+        pi_3;
+      ) = mat(
+        0;
+        0;
+        1;
+      ),
+    $
+    meaning the limiting probabilities are independent of $p$ and $q$. Solving the system using Gauss elimination, we find $pi_0 = pi_1 = pi_2 = 1 \/ 3$.
+
+  - Here we have $bf(P) = bf(I)$. Clearly, $bold(pi) = bf(I)bold(pi)$ for any probability distribution $bold(pi)$, so every probability distribution is stationary. However, the limiting distribution does not exist because the distribution never changes and therefore depends on the initial state.
+  - Here we have
+    $
+      bf(P) = mat(
+        0, 1, 0;
+        0, 0, 1;
+        1, 0, 0;
+      ),
+      quad
+      bf(P)^2 = mat(
+        0, 0, 1;
+        1, 0, 0;
+        0, 1, 0;
+      ),
+      quad
+      bf(P)^3 = bf(I), quad
+      bf(P)^4 = bf(P),
+    $
+    meaning that the chain moves deterministically through the three states. The entries of $bf(P)^n$ oscillate, so no limiting distribution exists. However, we can check that the uniform distribution $bold(pi) = (1\/3, 1\/3, 1\/3)^top$ is stationary
+    $
+      bf(P)^top bold(pi) = mat(
+        0, 0, 1;
+        1, 0, 1;
+        0, 1, 0;
+      ) mat(
+        1\/3;
+        1\/3;
+        1\/3;
+      ) = mat(
+        1\/3;
+        1\/3;
+        1\/3;
+      ) = bold(pi).
+    $
+
+
 ]
 
+
+
+
+
 #pagebreak()
-#problem(name: [Exam August 2025, Marias Mood])[
+#problem(name: [Exam August 2025])[
   On any given day Maria is either cheerful ($"C"$), so-so ($"S"$), or glum ($"G"$). If she is cheerful today, then she will be $"C"$, $"S"$, or $"G"$ tomorrow with respective probabilities $0.5$, $0.4$, $0.1$. If Maria is feeling so-so today, then she will be $"C"$, $"S"$, or $"G"$ tomorrow with probabilities $0.3$, $0.4$, $0.3$. If she is glum today, then she will be $"C"$, $"S"$, or $"G"$ tomorrow with probabilities $0.2$, $0.3$, $0.5$. Let $X_n$ denote Maria’s mood on day $n$.
   +
     - Explain that Maria’s mood is a three-state Markov chain.
     - Illustrate with a transition probability graph, and determine the transition probability matrix $bf(P)$.
-  +
-    - Assume that Maria’s mood at day $27$ has a uniform probability distribution. What is the probability that Maria is glum at day $28$.
-    - Is the Markov chain irreducible? Are all states communicating with each other?
+  + Assume that Maria’s mood at day $27$ has a uniform probability distribution. What is the probability that Maria is glum at day $28$.
   +
     - Explain that the Markov chain has a unique stationary distribution.
     - How often, on average, is Maria glum?
     - Is it possible that the distribution of $X_1$ equals the distribution of $X_n$ for all $n$?
-  + Assume in the following that Maria is cheerful at day $1$.
-    - What is the probability that Maria is cheerful at day $3$?
-    - Are $X_1$ and $X_2$ independent random variables?
-    - What is the mathematical definition of a stochastic process $X$? Use $X_1, X_2, dots$ to define a stochastic process $X$. What is the probability distribution of $X$ in this particular case?
+  + Assume in the following that Maria is cheerful at day $1$. Are $X_1$ and $X_2$ independent random variables?
 ]<problem-marias-mood>
 #solution()[
   +
@@ -443,21 +356,17 @@ Note that a $f_(i,i) < 1$ there is a non-zero probability of never returning to 
             (0.2, 0.3, 0.5),
           ),
         )]
-  +
-    - As mood at day $27$ is uniformly distributed, we have
-      $
-        P(X_27 = "C") = P(X_27 = "S") = P(X_27 = "G") = 1\/3.
-      $
-      The probability that Maria is glum at day $28$ is therefore
-      $
-        P(X_28 = "G") & = sum_(k in {"C", "S", "G"}) P(X_28 = "G" | X_27 = k) P(X_27 = k) \
-                      & = 0.1 * 1\/3 + 0.3 * 1\/3 + 0.5 * 1\/3 \
-                      & = 0.3.
-      $
-    - All states communicate with each other since every $P_(i,j) > 0$. The Markov chain is therefore irreducible.
-  +
-
-    - The Markov chain is is regular since $P_(i,j) > 0$ and the state space is finite. By @thm-limiting-distribution, it has a unique stationary distribution $bold(pi) = bold(pi)bf(P)$.
+  + As mood at day $27$ is uniformly distributed, we have
+    $
+      P(X_27 = "C") = P(X_27 = "S") = P(X_27 = "G") = 1\/3.
+    $
+    The probability that Maria is glum at day $28$ is therefore
+    $
+      P(X_28 = "G") & = sum_(k in {"C", "S", "G"}) P(X_28 = "G" | X_27 = k) P(X_27 = k) \
+                    & = 0.1 * 1\/3 + 0.3 * 1\/3 + 0.5 * 1\/3 \
+                    & = 0.3.
+    $
+  + The Markov chain is regular since $P_(i,j) > 0$ and the state space is finite. By @thm-limiting-distribution, it has a unique stationary distribution $bold(pi) = bf(P)^top bold(pi)$.
 
     - We have the system of equations
       $
@@ -494,36 +403,33 @@ Note that a $f_(i,i) < 1$ there is a non-zero probability of never returning to 
       $
       Hence, on average, Maria is glum $pi_"G" = 18\/62 approx 29\%$ of the time.
     - Yes, this is possible if the initial distribution is the stationary distribution $bold(pi)$.
-  +
-    - Assuming Maria is cheerful at day $1$, we have
-      $
-        P(X_3 = "C") & = sum_(k in {"C", "S", "G"}) P(X_3 = "C" | X_2 = k) P(X_2 = k | X_1 = "C") \
-                     & = 0.5 * 0.5 + 0.4 * 0.3 + 0.1 * 0.2 \
-                     & = 0.39.
-      $
-      Alternatively, we can see that
-      $
-        bf(P)^2 = mat(
-          0.39, 0.39, 0.22;
-          0.33, 0.37, 0.30;
-          0.29, 0.35, 0.36;
-        )
-        quad "and" quad
-        mat(1, 0, 0;) dot bf(P)^2 = mat(0.39, 0.39, 0.22;),
-      $
-      meaning that $P(X_3 = "C") = 0.39$.
-    - The key thing to note here is the implication of $X_1 = "C"$ being a constant. $X_1$ and $X_2$ are independent if
-      $
-        P(X_1 = x_1, X_2 = x_2) = P(X_1 = x_1) P(X_2 = x_2).
-      $
-      However, we have as $P(X_1 = "C") = 1$  and zero otherwise, it is easy to show that this holds for all choices of $x_1$ and $x_2$. Hence, $X_1$ and $X_2$ are independent.
-
+  + The key thing to note here is the implication of $X_1 = "C"$ being a constant. $X_1$ and $X_2$ are independent if
+    $
+      P(X_1 = x_1, X_2 = x_2) = P(X_1 = x_1) P(X_2 = x_2).
+    $
+    However, we have as $P(X_1 = "C") = 1$  and zero otherwise, it is easy to show that this holds for all choices of $x_1$ and $x_2$. Hence, $X_1$ and $X_2$ are independent.
 ]
 
 
 #pagebreak()
-#pagebreak()
+#problem()[
+  A Markov chain ${X_t : t = 0,1,...}$ has transition probability matrix
+  $
+    bf(P) = mat(
+      1\/2, 1\/2, 0, 0;
+      1\/2, 0, 1\/2, 0;
+      0, 1\/2, 0, 1\/2;
+      0, 0, 1\/2, 1\/2;
+    ).
+  $
+  What is its limiting distribution? What fraction of time, in the long run, does the chain spend in state 0?
+]
+#solution()[
+  Using the fact that the chain is doubly stochastic, we can from @thm-doubly-stochastic immediately conclude that the limiting distribution is uniform $bold(pi) = (1\/4, 1\/4, 1\/4, 1\/4)^top$. Furthermore, by @thm-long-run-fraction-of-time, the long-run fraction of time spent in state 0 is $pi_0 = 1\/4$.
+]
 
+
+#pagebreak()
 #example(name: [PageRank])[
   A search engine should not only check whether a page contains a search term, but also whether the page is _important_. PageRank assigns a score to each page using the link structure of the web. The key idea is to model a random web surfer. At each step, the surfer either follows a hyperlink or jumps to another page. Pages that are visited often in the long run get a high PageRank score. This idea was introduced in the early Google search engine #tc(<brin_anatomy_1998>).
 
