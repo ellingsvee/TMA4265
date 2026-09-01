@@ -66,7 +66,7 @@ For this we have to introduce some additional terminology and definitions.
       ast, ast, ast;
     ),
   $
-  meaning that $bf(P)$ is regular. While a trivial example of a non-regular transition matrix is the identity $bf(P) = bf(I)$.
+  meaning that $bf(P)$ is regular.
 ]<example-regular-markov-chain>
 
 #definition(name: [Limiting distribution])[
@@ -85,7 +85,7 @@ For this we have to introduce some additional terminology and definitions.
   + Is the unique non-negative solution of $pi_j = sum_(k=0)^(N) pi_k P_(k, j)$ for $j = 0, 1, dots, N$ and $sum_(j=0)^(N) pi_j = 1$.
   Notes:
   - Regularity implies existence and uniqueness of the limiting distribution.
-  - $bold(pi)^top = bold(pi)^top bf(P) <==> bold(pi) = bf(P)^top bold(pi) <==> (bf(I) - bf(P)) bold(pi) = bold(0)$ .
+  - $bf(P)^top bold(pi) = bold(pi) <==> (bf(P)^top - bf(I))bold(pi) = bold(0)$.
 ]<thm-limiting-distribution>
 
 #definition(name: [Doubly stochastic])[
@@ -204,6 +204,33 @@ Note that a $f_(i,i) < 1$ there is a non-zero probability of never returning to 
   We interpret this as the expected number of returns is finite for transient states and infinite for recurrent states.
 ]
 
+#theorem()[
+  If $i tilde.op j$, then $i$ is recurrent if and only if $j$ is recurrent. Equivalently, if $i$ is transient, then $j$ is transient.
+]
+
+#theorem()[
+  Consider a recurrent irreducible aperiodic Markov chain. Then
+  - $lim_(t->oo) P_(i, i)^((t)) = 1 \/m_i$ for $i = 0, 1, dots$, where $m_i = sum_(n=0)^(oo) n f_(i,i)^((n))$ is the mean duration between visits to state $i$.
+  - $lim_(t->oo) P_(j, i)^((t)) = lim_(t -> oo) P_(i,i)^((t))$ for all states $i$ and $j$.
+]
+
+
+#definition(name: [Positive and null recurrent])[
+  A state $i$ is positive recurrent if $m_i < oo$ and null recurrent if $m_i = oo$.
+
+  Note that null recurrent means that the expected number of returns is infinite and the expected time between returns is infinite.
+]
+
+#theorem()[
+  In a positive recurrent aperiodic equivalence class with states $j = 0, 1, dots$, then
+  - $lim_(n -> oo) P_(j, j)^((n)) = pi_j = sum_(i=0)^(oo)pi_i P_(i,j)$ for $i, j = 0, 1, dots$, and $sum_(i=0)^(oo)pi_i = 1$.
+  - $bold(pi) = (pi_0, pi_1, dots)$ is uniquely determined by $pi_i >= 0$ for $i = 0, 1, dots$, $sum_(i=0)^(oo)pi_i = 1$, and $pi_j = sum_(i=0)^(oo) pi_i P_(i, j)$ for $j = 0, 1, dots$.
+]
+
+#definition(name: [Stationary distribution])[
+  Any $bold(pi) = (pi_0, pi_1, dots)$ such that $pi_i >= 0$ for $i = 0, 1, dots$, $sum_(i=0)^(oo)pi_i = 1$, and $pi_j = sum_(i=0)^(oo) pi_i P_(i, j)$ for $j = 0, 1, dots$ is called a _stationary distribution_.
+]
+
 
 
 
@@ -246,36 +273,138 @@ Note that a $f_(i,i) < 1$ there is a non-zero probability of never returning to 
 #pagebreak()
 
 #problem()[
-  Consider the Markov chain with transition probability matrix
+  Consider two Markov chain with the transition probability matrices
   $
-    bf(P) = mat(
+    bf(A) = mat(
       1\/3, 1\/3, 1\/3, 0;
       1\/3, 1\/3, 0, 1\/3;
       0, 0, 1\/2, 1\/2;
       0, 0, 1\/2, 1\/2;
-    ).
+    )
+    quad "and" quad
+    bf(B) = mat(
+      0, 1, 0;
+      0, 0, 1;
+      1, 0, 0;
+    )
   $
-  - How many equivalence classes does this Markov chain have?
-  - Is the Markov chain irreducible or reducible?
+  Determine for each Markov chain how many equivalence classes it has and whether it is irreducible or reducible.
 ]<problem-equivalence-classes-and-reducibility>
 #solution()[
+
+
   Drawing the transition diagram, we see
-  #transition-figure()[
-    #transition-diagram(
-      ($"0"$, $"1"$, $"2"$, $"3"$),
-      (
-        ($1\/3$, $1\/3$, $1\/3$, 0),
-        ($1\/3$, $1\/3$, 0, $1\/3$),
-        (0, 0, $1\/3$, $1\/3$),
-        (0, 0, $1\/3$, $1\/3$),
+  // #transition-figure()[
+  //   #transition-diagram(
+  //     ($"0"$, $"1"$, $"2"$, $"3"$),
+  //     (
+  //       ($1\/3$, $1\/3$, $1\/3$, 0),
+  //       ($1\/3$, $1\/3$, 0, $1\/3$),
+  //       (0, 0, $1\/3$, $1\/3$),
+  //       (0, 0, $1\/3$, $1\/3$),
+  //     ),
+  //   )]
+
+  #subpar.grid(
+    figure(
+      transition-diagram(
+        ($"0"$, $"1"$, $"2"$, $"3"$),
+        (
+          ($1\/3$, $1\/3$, $1\/3$, 0),
+          ($1\/3$, $1\/3$, 0, $1\/3$),
+          (0, 0, $1\/3$, $1\/3$),
+          (0, 0, $1\/3$, $1\/3$),
+        ),
       ),
-    )]
-  It is clear that $0 tilde.op 1$ and $2 tilde.op 3$, but $0$ and $1$ do not communicate with $2$ and $3$. Therefore, there are two equivalence classes: ${0, 1}$ and ${2, 3}$. As we have more than one equivalence class, the Markov chain is reducible.
+      caption: [Probability transition diagram for $bf(A)$],
+    ),
+    figure(
+      transition-diagram(
+        ($"0"$, $"1"$, $"2"$),
+        (
+          (0, 1, 0),
+          (0, 0, 1),
+          (1, 0, 0),
+        ),
+      ),
+      caption: [Probability transition diagram for $bf(B)$],
+    ),
+
+    columns: (auto, auto),
+    kind: "transition-diagram",
+    supplement: [Figure],
+  )
+
+  For $bf(A)$, it is clear that $0 tilde.op 1$ and $2 tilde.op 3$, but $0$ and $1$ do not communicate with $2$ and $3$. Therefore, there are two equivalence classes: ${0, 1}$ and ${2, 3}$. As we have more than one equivalence class, the Markov chain is reducible.
+
+  For $bf(B)$, we have $0 tilde.op 1$, $1 tilde.op 2$, and $2 tilde.op 0$. Therefore, all states communicate with each other, and there is only one equivalence class ${0, 1, 2}$ and te Markov chain is irreducible.
 ]
 
 
-#pagebreak()
 
+#pagebreak()
+#problem(name: [Exercise 3, Problem 3])[
+  Consider the transition probability matrix
+  $
+    bf(P) = mat(
+      p, q, 0;
+      0, p, q;
+      q, 0, p;
+    ),
+  $
+  where $p, q >= 0$ and $p + q = 1$. Calculate the limiting probabilities $bold(pi) = mat(delim: "(", pi_1, pi_2, pi_3;)^top$ as a function of $p$ and $q$.
+]
+#solution()[
+  We set up a system of equations so that $(bf(P)^top - bf(I)) bold(pi) = bold(0)$ and $bold(1)^top bold(pi) = 1$. As we have four equations and three unknowns, we can drop one of the equations. This gives
+  $
+    mat(
+      p-1, 0, q;
+      q, p-1, 0;
+      1, 1, 1;
+    ) mat(
+      pi_1;
+      pi_2;
+      pi_3;
+    ) = mat(
+      0;
+      0;
+      1;
+    ).
+  $
+  Since $1 - p = q$, this simplifies to
+  $
+    mat(
+      -q, 0, q;
+      q, -q, 0;
+      1, 1, 1;
+    ) mat(
+      pi_1;
+      pi_2;
+      pi_3;
+    ) = mat(
+      0;
+      0;
+      1;
+    )
+    quad ==> quad
+    mat(
+      -1, 0, 1;
+      1, -1, 0;
+      1, 1, 1;
+    ) mat(
+      pi_1;
+      pi_2;
+      pi_3;
+    ) = mat(
+      0;
+      0;
+      1;
+    ),
+  $
+  meaning the limiting probabilities are independent of $p$ and $q$. Solving the system using Gauss elimination, we find $pi_0 = pi_1 = pi_2 = 1 \/ 3$.
+]
+
+#pagebreak()
 #problem(name: [Exam August 2025, Marias Mood])[
   On any given day Maria is either cheerful ($"C"$), so-so ($"S"$), or glum ($"G"$). If she is cheerful today, then she will be $"C"$, $"S"$, or $"G"$ tomorrow with respective probabilities $0.5$, $0.4$, $0.1$. If Maria is feeling so-so today, then she will be $"C"$, $"S"$, or $"G"$ tomorrow with probabilities $0.3$, $0.4$, $0.3$. If she is glum today, then she will be $"C"$, $"S"$, or $"G"$ tomorrow with probabilities $0.2$, $0.3$, $0.5$. Let $X_n$ denote Maria’s mood on day $n$.
   +
