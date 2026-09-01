@@ -443,21 +443,25 @@ For this we have to introduce some additional terminology and definitions.
     )
   $
 
-  So from page $i$, the surfer chooses uniformly among its outgoing links. If a page has no outgoing links, it is called a _dangling page_. In that case, we replace its row by a uniform distribution
+  From page $i$, the surfer chooses uniformly among its outgoing links. If a page has no outgoing links, it is called a _dangling page_. Its row would contain only zeros, so we replace it by a uniform distribution
   $
     S_(i,j) = cases(
       P_(i,j) & "if" d_i > 0,
       1 \/ n & "if" d_i = 0.
     )
   $
-  To make the chain ergodic, PageRank adds _teleportation_. Let $alpha in (0,1)$ be the probability of following a link, and let $v$ be a probability distribution on the pages. The PageRank transition matrix is
+  This makes $bf(S)$ a transition probability matrix, but does not necessarily make the chain regular. PageRank therefore adds _teleportation_. Let $alpha in (0,1)$ be the probability of following a link, and let $bold(v)$ be a probability distribution with $v_j>0$ for all $j$. The PageRank transition matrix is
   $
     G_(i,j) = alpha S_(i,j) + (1 - alpha) v_j.
   $
-  Usually, $alpha = 0.85$ and $v_j = 1 \/ n$.
+  A common choice is $alpha=0.85$ and $v_j=1\/n$. Since $G_(i,j) >= (1-alpha)v_j>0$, $bf(G)$ is regular. It therefore has a unique stationary and limiting distribution $bold(pi)$, which is the PageRank vector. It satisfies $bold(pi) = bf(G)^top bold(pi)$ and $bold(1)^top bold(pi)=1$, and we may compute it from any initial distribution $bold(pi)^((0)) = (1\/n, dots, 1\/n)^top$ by iterating
+  $
+    bold(pi)^((t+1)) = bf(G)^top bold(pi)^((t)).
+  $
+  It describes the long-run fraction of time spent on each page, meaning we want to rank pages based on this ordering.
+
+  Boom, now you have a gazillion dollar business idea! See the `lecures/week36/code/pagerank.py` for an implementation of this algorithm.
 
 
-
-  The PageRank vector $pi$ is the stationary distribution $bold(pi)$ of this Markov chain. Here, $bold(pi) = bold(pi)bf(G)$ and $sum_(j=1)^n pi_j = 1$. We can compute $bold(pi)$ by starting from an initial distribution $bold(pi)^(0)$ and computing $bold(pi)^(t+1) = bold(pi)^(t)bf(G)$ until convergence.
 
 ]
