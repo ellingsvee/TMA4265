@@ -19,9 +19,10 @@
     ((0, 0),)
   } else if count == 2 {
     ((180deg, radius), (0deg, radius))
+  } else if count == 4 {
+    ((135deg, radius), (45deg, radius), (-135deg, radius), (-45deg, radius))
   } else {
-    let start-angle = if count == 4 { 135deg } else { 90deg }
-    range(count).map(i => (start-angle - i * 360deg / count, radius))
+    range(count).map(i => (90deg - i * 360deg / count, radius))
   }
 }
 
@@ -92,14 +93,15 @@
     positions
   }
 
-  let default-loop-start = if count == 4 { 135deg } else { 90deg }
   let node-loop-angles = if loop-angles == auto {
     if count == 1 {
       (90deg,)
     } else if count == 2 {
       (180deg, 0deg)
+    } else if count == 4 {
+      (135deg, 45deg, -135deg, -45deg)
     } else {
-      range(count).map(i => default-loop-start - i * 360deg / count)
+      range(count).map(i => 90deg - i * 360deg / count)
     }
   } else {
     assert(

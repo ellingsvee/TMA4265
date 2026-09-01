@@ -125,6 +125,38 @@ An important thing to be aware of is that regularity is a sufficient condition f
   - If states $i$ and $j$ are accessible from each other, they are said to _communicate_ and we write $i tilde.op j$.
 ]
 
+#example()[
+  In the first scenario, we have that $"B"$ is accessible from $"A"$, but $"A"$ is not accessible from $"B"$. Therefore $"A" tilde.not "B"$. In the second scenario, $"A"$ and $"B"$ are accessible from each other, so $"A" tilde.op "B"$.
+
+  #subpar.grid(
+    figure(
+      transition-diagram(
+        ($"A"$, $"B"$),
+        (
+          ($1\/2$, $1\/2$),
+          (0, 1),
+        ),
+      ),
+      // caption: [Scenario 1],
+    ),
+    figure(
+      transition-diagram(
+        ($"A"$, $"B"$),
+        (
+          ($1\/2$, $1\/2$),
+          ($1\/2$, $1\/2$),
+        ),
+      ),
+      // caption: [Scenario 2],
+    ),
+
+    columns: (auto, auto),
+    kind: "transition-diagram",
+    supplement: [Figure],
+  )
+
+]
+
 #theorem(name: [Communication is an equivalence relation])[
   We have
   - Reflexivity: $i tilde.op i$ for all states $i$.
@@ -226,6 +258,20 @@ Note that a $f_(i,i) < 1$ there is a non-zero probability of never returning to 
   - How many equivalence classes does this Markov chain have?
   - Is the Markov chain irreducible or reducible?
 ]<problem-equivalence-classes-and-reducibility>
+#solution()[
+  Drawing the transition diagram, we see
+  #transition-figure()[
+    #transition-diagram(
+      ($"0"$, $"1"$, $"2"$, $"3"$),
+      (
+        ($1\/3$, $1\/3$, $1\/3$, 0),
+        ($1\/3$, $1\/3$, 0, $1\/3$),
+        (0, 0, $1\/3$, $1\/3$),
+        (0, 0, $1\/3$, $1\/3$),
+      ),
+    )]
+  It is clear that $0 tilde.op 1$ and $2 tilde.op 3$, but $0$ and $1$ do not communicate with $2$ and $3$. Therefore, there are two equivalence classes: ${0, 1}$ and ${2, 3}$. As we have more than one equivalence class, the Markov chain is reducible.
+]
 
 
 #pagebreak()
