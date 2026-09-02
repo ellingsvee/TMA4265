@@ -30,6 +30,22 @@ $
 $
 For this we need to introduce some additional concepts.
 
+==
+
+*Week 36 (Calculations/Finite state spaces):*
+- Limiting distribution
+- Regular Markov chains
+- Stationary distribution
+- Interpretation as long-run fraction
+- PageRank application
+
+
+*Week 37 (Conceptual/Infinite state spaces):*
+- Irreducibility
+- Recurrence and transience
+- Periodicity
+- More general limit theorems
+- MCMC application?
 
 ==
 
@@ -87,7 +103,7 @@ regular?
   + Is the unique non-negative solution of $bold(pi) = bf(P)^top bold(pi)$ and $bold(1)^top bold(pi) = 1.$
 ]<thm-limiting-distribution>
 
-Importantly, regularity is a *sufficient (but not necessary)* condition for the existence of a limiting distribution.
+Importantly, regularity is a sufficient (but not necessary) condition for the existence of a limiting distribution.
 
 ==
 #definition(name: [Stationary distribution])[
@@ -168,7 +184,19 @@ On any given day Maria is either cheerful ($"C"$), so-so ($"S"$), or glum ($"G"$
 
 
 = PageRank
+#figure(
+  image(
+    "figures/larryandserjey.png",
+    width: 50%,
+  ),
+)
 
+== See video
+#align(center)[
+  #link("https://youtu.be/KZeIEiBrT_w?si=FGw-UJqs6qEPD85D&t=1212")[
+    The Strange Math That Predicts (Almost) Anything
+  ]
+]
 == Hyperlink-transition matrix
 
 For $n$ pages, let $d_i$ denote the number of links on page $i$.
@@ -237,6 +265,6 @@ $
 $
 until convergence. This is called the _power method_.
 
-= Code example: Ranking Wikipedia pages
+= Implementation in Python
 
 

@@ -42,29 +42,7 @@ $
 $
 For this we have to introduce some additional terminology and definitions.
 
-#definition(name: [Regular Markov chain])[
-  Consider a DT-MC ${X_t}$ with finite state space ${0, 1, dots, N}$ and transition probability matrix $bf(P)$. If there exists a positive integer $k>0$ so that all elements of $bf(P)^k$ are strictly positive, we call $bf(P)$ and ${X_t}$ _regular_.
 
-  Written more mathematically, we have $bf(P) "regular" <==> exists k > 0 "s.t." P_(i, j)^((k)) > 0 "for all" i, j in S$.
-]
-
-// #example()[
-//   See that
-//   $
-//     bf(P) = mat(
-//       1\/2, 1\/2, 0;
-//       1\/2, 0, 1\/2;
-//       0, 1\/2, 1\/2;
-//     )
-//     quad "and" quad
-//     bf(P)^(2) = mat(
-//       ast, ast, ast;
-//       ast, ast, ast;
-//       ast, ast, ast;
-//     ),
-//   $
-//   meaning that $bf(P)$ is regular.
-// ]<example-regular-markov-chain>
 
 #definition(name: [Limiting distribution])[
   Consider a DT-MC ${X_t}$. We call $bold(pi) = (pi_0, pi_1, dots)^top$ the _limiting distribution_ if the following two conditions are satisfied:
@@ -77,6 +55,17 @@ For this we have to introduce some additional terminology and definitions.
   - I let $bold(pi)$ be a column vector, but some authors let it be a row vector. The two conventions are equivalent, but resulting matrix equations look different.
 ]
 
+#definition(name: [Regular Markov chain])[
+  Consider a discrete-time Markov chain (DT-MC) ${X_t}$ with finite state space ${0, 1, dots, N}$ and transition probability matrix $bf(P)$. If there exists a positive integer $k>0$ so that all elements of $bf(P)^k$ are strictly positive, we call $bf(P)$ and ${X_t}$ _regular_.
+
+  Written more mathematically, we have $bf(P) "regular" <==> exists k > 0 "s.t." P_(i, j)^((k)) > 0 "for all" i, j in S$.
+]
+
+#theorem()[
+  Let ${X_t}$ be a regular DT-MC with finite state space ${0, 1, dots, N}$ and transition probability matrix $bf(P)$. Then the limiting distribution $bold(pi)$:
+  + Exists and for any initial state $i$ satisfies $pi_j = lim_(t->oo) P_(i, j)^((t)) > 0$ for all $j = 0, 1, dots, N$.
+  + Is the unique non-negative solution of $bold(pi) = bf(P)^top bold(pi)$ and $bold(1)^top bold(pi) = 1$.
+]<thm-limiting-distribution>
 
 
 #definition(name: [Stationary distribution])[
@@ -86,20 +75,13 @@ For this we have to introduce some additional terminology and definitions.
   $
   or, equivalently, $bold(pi) = bf(P)^top bold(pi) <==> (bf(P)^top - bf(I))bold(pi) = bold(0)$.
 
-  An important property of stationary distributions is that if $X_0 tilde.op bold(pi)$, then $X_t tilde.op bold(pi)$ for every $t >= 0$.
+  Notes:
+  - If $X_0 tilde.op bold(pi)$, then $X_t tilde.op bold(pi)$ for every $t >= 0$.
+  - $"Limiting distribution" ==> "Stationary distribution"$ (but not the other way around).
 
 ]<def-stationary-distribution>
 
 
-#theorem()[
-  Let ${X_t}$ be a regular DT-MC with finite state space ${0, 1, dots, N}$ and transition probability matrix $bf(P)$. Then the limiting distribution $bold(pi)$:
-  + Exists and for any initial state $i$ satisfies $pi_j = lim_(t->oo) P_(i, j)^((t)) > 0$ for all $j = 0, 1, dots, N$.
-  // + Is the unique non-negative solution of $pi_j = sum_(k=0)^(N) pi_k P_(k, j)$ for $j = 0, 1, dots, N$ and $sum_(j=0)^(N) pi_j = 1$.
-  + Is the unique non-negative solution of $bold(pi) = bf(P)bold(pi)$ and $bold(1)^top bold(pi) = 1$.
-
-  An important consequence is $"Limiting distribution" ==> "Stationary distribution"$ (but not the other way around).
-
-]<thm-limiting-distribution>
 
 #definition(name: [Doubly stochastic])[
   The transition probability matrix $bf(P)$ is called _doubly stochastic_ if
@@ -117,7 +99,7 @@ For this we have to introduce some additional terminology and definitions.
 #theorem()[
   Let the Markov chain ${X_t : t = 0, 1, dots}$ be regular with finite state space ${0, 1, dots, N}$. If the transition probability matrix $bf(P)$ is doubly stochastic, then the limiting distribution is uniform
   $
-    bf(pi) = (1/(N+1), 1/(N+1), dots, 1/(N+1)).
+    bold(pi) = (1/(N+1), 1/(N+1), dots, 1/(N+1))^top.
   $
 ]<thm-doubly-stochastic>
 
@@ -204,7 +186,7 @@ For this we have to introduce some additional terminology and definitions.
 
 
 #pagebreak()
-#problem(name: [Limiting and stationary distributions])[
+#problem(name: "Fixing the LF from Exercise 3")[
   Consider the transition probability matrix
   $
     bf(P) = mat(
@@ -223,9 +205,9 @@ For this we have to introduce some additional terminology and definitions.
   - For $0 < p < 1$ and $q = 1 - p > 0$, we see
     $
       bf(P)^2 = mat(
-        p^2, p q, q;
-        q, p^2, p q;
-        p q, q, p^2;
+        p^2, 2 p q, q^2;
+        q^2, p^2, 2 p q;
+        2 p q, q^2, p^2;
       ) = mat(
         ast, ast, ast;
         ast, ast, ast;
@@ -233,52 +215,52 @@ For this we have to introduce some additional terminology and definitions.
       ),
     $
     meaning the chain is regular and the limiting and stationary distributions exist. We set up a system of equations so that $(bf(P)^top - bf(I)) bold(pi) = bold(0)$ and $bold(1)^top bold(pi) = 1$. As we have four equations and three unknowns, we can drop one of the equations. This gives
-    $
-      mat(
-        p-1, 0, q;
-        q, p-1, 0;
-        1, 1, 1;
-      ) mat(
-        pi_1;
-        pi_2;
-        pi_3;
-      ) = mat(
-        0;
-        0;
-        1;
-      ).
-    $
-    Since $1 - p = q$, this simplifies to
-    $
-      mat(
-        -q, 0, q;
-        q, -q, 0;
-        1, 1, 1;
-      ) mat(
-        pi_1;
-        pi_2;
-        pi_3;
-      ) = mat(
-        0;
-        0;
-        1;
-      )
-      quad ==> quad
-      mat(
-        -1, 0, 1;
-        1, -1, 0;
-        1, 1, 1;
-      ) mat(
-        pi_1;
-        pi_2;
-        pi_3;
-      ) = mat(
-        0;
-        0;
-        1;
-      ),
-    $
-    meaning the limiting probabilities are independent of $p$ and $q$. Solving the system using Gauss elimination, we find $pi_0 = pi_1 = pi_2 = 1 \/ 3$.
+  $
+    mat(
+      p-1, 0, q;
+      q, p-1, 0;
+      1, 1, 1;
+    ) mat(
+      pi_0;
+      pi_1;
+      pi_2;
+    ) = mat(
+      0;
+      0;
+      1;
+    ).
+  $
+  Since $1 - p = q$, this simplifies to
+  $
+    mat(
+      -q, 0, q;
+      q, -q, 0;
+      1, 1, 1;
+    ) mat(
+      pi_0;
+      pi_1;
+      pi_2;
+    ) = mat(
+      0;
+      0;
+      1;
+    )
+    quad ==> quad
+    mat(
+      -1, 0, 1;
+      1, -1, 0;
+      1, 1, 1;
+    ) mat(
+      pi_0;
+      pi_1;
+      pi_2;
+    ) = mat(
+      0;
+      0;
+      1;
+    ),
+  $
+  meaning the limiting probabilities are independent of $p$ and $q$. Solving the system using Gauss elimination, we find $pi_0 = pi_1 = pi_2 = 1 \/ 3$.
 
   - Here we have $bf(P) = bf(I)$. Clearly, $bold(pi) = bf(I)bold(pi)$ for any probability distribution $bold(pi)$, so every probability distribution is stationary. However, the limiting distribution does not exist because the distribution never changes and therefore depends on the initial state.
   - Here we have
@@ -302,7 +284,7 @@ For this we have to introduce some additional terminology and definitions.
     $
       bf(P)^top bold(pi) = mat(
         0, 0, 1;
-        1, 0, 1;
+        1, 0, 0;
         0, 1, 0;
       ) mat(
         1\/3;
@@ -320,6 +302,22 @@ For this we have to introduce some additional terminology and definitions.
 
 
 
+#pagebreak()
+#problem()[
+  A Markov chain ${X_t : t = 0,1,...}$ has transition probability matrix
+  $
+    bf(P) = mat(
+      1\/2, 1\/2, 0, 0;
+      1\/2, 0, 1\/2, 0;
+      0, 1\/2, 0, 1\/2;
+      0, 0, 1\/2, 1\/2;
+    ).
+  $
+  What is its limiting distribution? What fraction of time, in the long run, does the chain spend in state 0?
+]
+#solution()[
+  Using the fact that the chain is doubly stochastic, we can from @thm-doubly-stochastic immediately conclude that the limiting distribution is uniform $bold(pi) = (1\/4, 1\/4, 1\/4, 1\/4)^top$. Furthermore, by @thm-long-run-fraction-of-time, the long-run fraction of time spent in state 0 is $pi_0 = 1\/4$.
+]
 
 
 #pagebreak()
@@ -333,7 +331,6 @@ For this we have to introduce some additional terminology and definitions.
     - Explain that the Markov chain has a unique stationary distribution.
     - How often, on average, is Maria glum?
     - Is it possible that the distribution of $X_1$ equals the distribution of $X_n$ for all $n$?
-  + Assume in the following that Maria is cheerful at day $1$. Are $X_1$ and $X_2$ independent random variables?
 ]<problem-marias-mood>
 #solution()[
   +
@@ -370,25 +367,25 @@ For this we have to introduce some additional terminology and definitions.
 
     - We have the system of equations
       $
-                    pi_"C" + pi_"S" + pi_"G" & = 1, \
         0.5 pi_"C" + 0.3 pi_"S" + 0.2 pi_"G" & = pi_"C", \
         0.4 pi_"C" + 0.4 pi_"S" + 0.3 pi_"G" & = pi_"S", \
-        0.1 pi_"C" + 0.3 pi_"S" + 0.5 pi_"G" & = pi_"G",
+        0.1 pi_"C" + 0.3 pi_"S" + 0.5 pi_"G" & = pi_"G", \
+                    pi_"C" + pi_"S" + pi_"G" & = 1,
       $
       where we have four equations and three unknowns. Dropping the last equation, we can solve the system
       $
         mat(
-          1, 1, 1;
           -0.5, 0.3, 0.2;
           0.4, -0.6, 0.3;
+          1, 1, 1;
         ) mat(
           pi_"C";
           pi_"S";
           pi_"G";
         ) = mat(
+          0;
+          0;
           1;
-          0;
-          0;
         )
         quad ==> quad
         mat(
@@ -403,39 +400,16 @@ For this we have to introduce some additional terminology and definitions.
       $
       Hence, on average, Maria is glum $pi_"G" = 18\/62 approx 29\%$ of the time.
     - Yes, this is possible if the initial distribution is the stationary distribution $bold(pi)$.
-  + The key thing to note here is the implication of $X_1 = "C"$ being a constant. $X_1$ and $X_2$ are independent if
-    $
-      P(X_1 = x_1, X_2 = x_2) = P(X_1 = x_1) P(X_2 = x_2).
-    $
-    However, we have as $P(X_1 = "C") = 1$  and zero otherwise, it is easy to show that this holds for all choices of $x_1$ and $x_2$. Hence, $X_1$ and $X_2$ are independent.
 ]
 
 
-#pagebreak()
-#problem()[
-  A Markov chain ${X_t : t = 0,1,...}$ has transition probability matrix
-  $
-    bf(P) = mat(
-      1\/2, 1\/2, 0, 0;
-      1\/2, 0, 1\/2, 0;
-      0, 1\/2, 0, 1\/2;
-      0, 0, 1\/2, 1\/2;
-    ).
-  $
-  What is its limiting distribution? What fraction of time, in the long run, does the chain spend in state 0?
-]
-#solution()[
-  Using the fact that the chain is doubly stochastic, we can from @thm-doubly-stochastic immediately conclude that the limiting distribution is uniform $bold(pi) = (1\/4, 1\/4, 1\/4, 1\/4)^top$. Furthermore, by @thm-long-run-fraction-of-time, the long-run fraction of time spent in state 0 is $pi_0 = 1\/4$.
-]
 
 
 #pagebreak()
 #example(name: [PageRank])[
   A search engine should not only check whether a page contains a search term, but also whether the page is _important_. PageRank assigns a score to each page using the link structure of the web. The key idea is to model a random web surfer. At each step, the surfer either follows a hyperlink or jumps to another page. Pages that are visited often in the long run get a high PageRank score. This idea was introduced in the early Google search engine #tc(<brin_anatomy_1998>).
 
-
   Suppose there are $n$ pages. Each page is a state in a Markov chain. If page $i$ has $d_i$ outgoing links, then the hyperlink transition matrix is
-
   $
     P_(i,j) = cases(
       1 \/ d_i & "if page" i "links to page" j,
@@ -461,7 +435,4 @@ For this we have to introduce some additional terminology and definitions.
   It describes the long-run fraction of time spent on each page, meaning we want to rank pages based on this ordering.
 
   Boom, now you have a gazillion dollar business idea! See the `lecures/week36/code/pagerank.py` for an implementation of this algorithm.
-
-
-
 ]
