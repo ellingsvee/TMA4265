@@ -62,18 +62,27 @@ For this we have to introduce some additional terminology and definitions.
 ]
 
 #theorem()[
-  Let ${X_t}$ be a regular DT-MC with finite state space ${0, 1, dots, N}$ and transition probability matrix $bf(P)$. Then the limiting distribution $bold(pi)$:
-  + Exists and for any initial state $i$ satisfies $pi_j = lim_(t->oo) P_(i, j)^((t)) > 0$ for all $j = 0, 1, dots, N$.
-  + Is the unique non-negative solution of $bold(pi) = bf(P)^top bold(pi)$ and $bold(1)^top bold(pi) = 1$.
+  Let ${X_t}$ be a regular DT-MC with finite state space ${0, 1, dots, N}$ and transition probability matrix $bf(P)$. Then there exists a unique limiting distribution $bold(pi)$, which is the non-negative solution of
+  $
+    cases(
+      bold(pi) = bf(P)^top bold(pi),
+      bold(1)^top bold(pi) = 1
+    )
+  $
 ]<thm-limiting-distribution>
+
+Note:
+- Regularity is a sufficient condition for the existence of a unique limiting distribution.
 
 
 #definition(name: [Stationary distribution])[
   A probability distribution $bold(pi) = (pi_0, pi_1, dots)^top$ is called a _stationary distribution_ if
   $
-    pi_j = sum_(i=0)^oo pi_i P_(i,j), quad j = 0, 1, dots,
+    pi_j = sum_(i=0)^oo pi_i P_(i,j) quad "for" j = 0, 1, dots
+    quad "and" quad
+    sum_(j=0)^oo pi_j = 1
   $
-  or, equivalently, $bold(pi) = bf(P)^top bold(pi) <==> (bf(P)^top - bf(I))bold(pi) = bold(0)$.
+  or, equivalently, $bold(pi) = bf(P)^top bold(pi)$ and $bold(1)^top bold(pi) = 1$ for finite state spaces.
 
   Notes:
   - If $X_0 tilde.op bold(pi)$, then $X_t tilde.op bold(pi)$ for every $t >= 0$.
@@ -143,7 +152,7 @@ For this we have to introduce some additional terminology and definitions.
     quad bf(B) = mat(
       0, 1;
       1, 0
-    )
+    ),
     quad "and/or" quad
     bf(C) = mat(
       1\/2, 1\/2, 0;
@@ -199,9 +208,11 @@ For this we have to introduce some additional terminology and definitions.
   - $0 < p < 1$ and $q = 1 - p > 0$
   - $p = 1$ and $q = 0$.
   - $p = 0$ and $q = 1$
-  For each case, determine whether the limiting distribution exists and/or whether the stationary distribution exists. Compute the $bold(pi) = (pi_0, pi_1, pi_2)^top$ as a function of $p$ and $q$.
+  For each case, determine whether the Markov chain is regular, whether a limiting distribution exists, and whether a stationary distribution exists. Find the $bold(pi) = (pi_0, pi_1, pi_2)^top$ as a function of $p$ and $q$.
 ]<problem-limiting-and-stationary-distributions>
 #solution()[
+  Regularity is sufficient, but not necessary, for the existence of a limiting distribution. Thus, if the chain is not regular, we investigate limiting and stationary distributions directly.
+
   - For $0 < p < 1$ and $q = 1 - p > 0$, we see
     $
       bf(P)^2 = mat(
@@ -214,56 +225,60 @@ For this we have to introduce some additional terminology and definitions.
         ast, ast, ast;
       ),
     $
-    meaning the chain is regular and the limiting and stationary distributions exist. We set up a system of equations so that $(bf(P)^top - bf(I)) bold(pi) = bold(0)$ and $bold(1)^top bold(pi) = 1$. As we have four equations and three unknowns, we can drop one of the equations. This gives
-  $
-    mat(
-      p-1, 0, q;
-      q, p-1, 0;
-      1, 1, 1;
-    ) mat(
-      pi_0;
-      pi_1;
-      pi_2;
-    ) = mat(
-      0;
-      0;
-      1;
-    ).
-  $
-  Since $1 - p = q$, this simplifies to
-  $
-    mat(
-      -q, 0, q;
-      q, -q, 0;
-      1, 1, 1;
-    ) mat(
-      pi_0;
-      pi_1;
-      pi_2;
-    ) = mat(
-      0;
-      0;
-      1;
-    )
-    quad ==> quad
-    mat(
-      -1, 0, 1;
-      1, -1, 0;
-      1, 1, 1;
-    ) mat(
-      pi_0;
-      pi_1;
-      pi_2;
-    ) = mat(
-      0;
-      0;
-      1;
-    ),
-  $
-  meaning the limiting probabilities are independent of $p$ and $q$. Solving the system using Gauss elimination, we find $pi_0 = pi_1 = pi_2 = 1 \/ 3$.
+    meaning the chain is regular. By @thm-limiting-distribution, a unique limiting distribution exists, and it is also the unique stationary distribution. We find it by solving $(bf(P)^top - bf(I)) bold(pi) = bold(0)$ together with $bold(1)^top bold(pi) = 1$. One of the three stationarity equations is redundant, so we drop the third one. This gives
+    $
+      mat(
+        p-1, 0, q;
+        q, p-1, 0;
+        1, 1, 1;
+      ) mat(
+        pi_0;
+        pi_1;
+        pi_2;
+      ) = mat(
+        0;
+        0;
+        1;
+      ).
+    $
+    Since $1 - p = q$, this simplifies to
+    $
+      mat(
+        -q, 0, q;
+        q, -q, 0;
+        1, 1, 1;
+      ) mat(
+        pi_0;
+        pi_1;
+        pi_2;
+      ) = mat(
+        0;
+        0;
+        1;
+      )
+      quad ==> quad
+      mat(
+        -1, 0, 1;
+        1, -1, 0;
+        1, 1, 1;
+      ) mat(
+        pi_0;
+        pi_1;
+        pi_2;
+      ) = mat(
+        0;
+        0;
+        1;
+      ),
+    $
+    Within the present case, the limiting probabilities are therefore independent of $p$ and $q$. Solving the system using Gauss elimination, we find
+    $
+      bold(pi) = (1\/3, 1\/3, 1\/3)^top.
+    $
 
-  - Here we have $bf(P) = bf(I)$. Clearly, $bold(pi) = bf(I)bold(pi)$ for any probability distribution $bold(pi)$, so every probability distribution is stationary. However, the limiting distribution does not exist because the distribution never changes and therefore depends on the initial state.
-  - Here we have
+  - For $p = 1$ and $q = 0$, we have $bf(P) = bf(I)$ and hence $bf(P)^k = bf(I)$ for every $k >= 1$. The matrix contains zero entries for every $k$, so the chain is not regular. Every probability distribution is stationary because $bold(pi) = bf(I) bold(pi)$. However, there is no common limiting distribution as the rows of $bf(P)^t = bf(I)$ depend on the initial state.
+
+  - For $p = 0$ and $q = 1$, we have
     $
       bf(P) = mat(
         0, 1, 0;
@@ -280,24 +295,14 @@ For this we have to introduce some additional terminology and definitions.
       bf(P)^3 = bf(I), quad
       bf(P)^4 = bf(P),
     $
-    meaning that the chain moves deterministically through the three states. The entries of $bf(P)^n$ oscillate, so no limiting distribution exists. However, we can check that the uniform distribution $bold(pi) = (1\/3, 1\/3, 1\/3)^top$ is stationary
+    and these three matrices repeat. Each power has zero entries, so the chain is not regular. The chain moves deterministically through the three states, and the entries of $bf(P)^n$ oscillate. Hence, no limiting distribution exists. The stationarity equation $bf(P)^top bold(pi) = bold(pi)$ gives
     $
-      bf(P)^top bold(pi) = mat(
-        0, 0, 1;
-        1, 0, 0;
-        0, 1, 0;
-      ) mat(
-        1\/3;
-        1\/3;
-        1\/3;
-      ) = mat(
-        1\/3;
-        1\/3;
-        1\/3;
-      ) = bold(pi).
+      pi_0 = pi_2, quad pi_1 = pi_0, quad pi_2 = pi_1.
     $
-
-
+    Together with $pi_0 + pi_1 + pi_2 = 1$, this shows that the unique stationary distribution is
+    $
+      bold(pi) = (1\/3, 1\/3, 1\/3)^top.
+    $
 ]
 
 

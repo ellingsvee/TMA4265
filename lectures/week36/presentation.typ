@@ -47,6 +47,8 @@ For this we need to introduce some additional concepts.
 - More general limit theorems
 - MCMC application?
 
+= Week 36
+
 ==
 
 #definition(name: [Limiting distribution])[
@@ -59,6 +61,23 @@ For this we need to introduce some additional concepts.
   - $pi_j$ can be interpreted as the probability of being in state $j$ after many transitions.
   // - I let $bold(pi)$ be a column vector, but some authors let it be a row vector. The two conventions are equivalent, but resulting matrix equations look different.
 ]
+
+// ==
+Example:
+$
+  bf(P) = mat(
+    0.8, 0.2;
+    0.3, 0.7
+  ), quad
+  bf(P)^(10) approx mat(
+    0.600391, 0.3996090;
+    0.599414, 0.400586
+  ), quad
+  bf(P)^(100) approx mat(
+    0.6, 0.4;
+    0.6, 0.4
+  )
+$
 
 ==
 
@@ -92,26 +111,27 @@ regular?
 
 ==
 #theorem()[
-  Let ${X_t}$ be a regular DT-MC with finite state space ${0, 1, dots, N}$ and transition probability matrix $bf(P)$. Then the limiting distribution $bold(pi)$:
-  // + Exists and for any initial state $i$ satisfies $pi_j = lim_(t->oo) P_(i, j)^((t)) > 0$ for all $j = 0, 1, dots, N$.
-  + Exists and for any initial state $i$ satisfies
-    $
-      pi_j = lim_(t->oo) P_(i, j)^((t)) > 0
-      quad "for all" j = 0, 1, dots, N.
-    $
-  // + Is the unique non-negative solution of $pi_j = sum_(k=0)^(N) pi_k P_(k, j)$ for $j = 0, 1, dots, N$ and $sum_(j=0)^(N) pi_j = 1$.
-  + Is the unique non-negative solution of $bold(pi) = bf(P)^top bold(pi)$ and $bold(1)^top bold(pi) = 1.$
+  Let ${X_t}$ be a regular DT-MC with finite state space ${0, 1, dots, N}$ and transition probability matrix $bf(P)$. Then there exists a unique limiting distribution $bold(pi)$, which is the non-negative solution of
+  $
+    cases(
+      bold(pi) = bf(P)^top bold(pi),
+      bold(1)^top bold(pi) = 1
+    )
+  $
 ]<thm-limiting-distribution>
 
-Importantly, regularity is a sufficient (but not necessary) condition for the existence of a limiting distribution.
+Note:
+- Regularity is a sufficient condition for the existence of a unique limiting distribution.
 
 ==
 #definition(name: [Stationary distribution])[
   A probability distribution $bold(pi) = (pi_0, pi_1, dots)^top$ is called a _stationary distribution_ if
   $
-    pi_j = sum_(i=0)^oo pi_i P_(i,j), quad j = 0, 1, dots,
+    pi_j = sum_(i=0)^oo pi_i P_(i,j) quad "for" j = 0, 1, dots
+    quad "and" quad
+    sum_(j=0)^oo pi_j = 1
   $
-  or, equivalently, $bold(pi) = bf(P)^top bold(pi) <==> (bf(P)^top - bf(I))bold(pi) = bold(0)$.
+  or, equivalently, $bold(pi) = bf(P)^top bold(pi)$ and $bold(1)^top bold(pi) = 1$ for finite state spaces.
 
   Notes:
   - If $X_0 tilde.op bold(pi)$, then $X_t tilde.op bold(pi)$ for every $t >= 0$.
@@ -133,7 +153,9 @@ where $p, q >= 0$ and $p + q = 1$. Consider the cases
 - $0 < p < 1$ and $q = 1 - p > 0$
 - $p = 1$ and $q = 0$.
 - $p = 0$ and $q = 1$
-For each case, determine whether the limiting distribution exists and/or whether the stationary distribution exists. Compute the $bold(pi) = (pi_0, pi_1, pi_2)^top$ as a function of $p$ and $q$.
+For each case, determine whether the Markov chain is regular, does a limiting distribution exist, and/or whether a stationary distribution exists.
+
+Find the $bold(pi) = (pi_0, pi_1, pi_2)^top$ as a function of $p$ and $q$.
 
 
 ==
