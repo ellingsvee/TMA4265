@@ -167,6 +167,15 @@ Find the $bold(pi) = (pi_0, pi_1, pi_2)^top$ as a function of $p$ and $q$.
   for all states $i$ and $j$.
 ]
 
+
+==
+#theorem()[
+  Let the Markov chain ${X_t : t = 0, 1, dots}$ be regular with finite state space ${0, 1, dots, N}$. If the transition probability matrix $bf(P)$ is doubly stochastic, then the limiting distribution is uniform
+  $
+    bold(pi) = (1/(N+1), 1/(N+1), dots, 1/(N+1))^top.
+  $
+]<thm-doubly-stochastic>
+
 ==
 #theorem(name: [Long-run fraction of time])[
   In a regular Markov chain ${X_t: t = 0, 1, dots}$, the limiting distribution $bold(pi) = (pi_0, pi_1, dots, pi_N)^top$ gives the long-run fraction of time spent in each state. I.e.,
