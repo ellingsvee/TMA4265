@@ -138,14 +138,6 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
   If $i tilde.op j$, then $d(i)=d(j)$. Thus, periodicity is a property of a communication class. In particular, for an irreducible chain it makes sense to call the entire chain periodic or aperiodic.
 ]<thm-periodicity-is-class-property>
 
-#theorem(name: [Regularity for finite chains])[
-  A finite-state Markov chain is regular if and only if it is irreducible and aperiodic.
-
-  We will sketch a proof of this theorem in @problem-aperiodic-irreducible-implies-regular-recurrent.
-]<thm-regularity-for-finite-chains>
-
-
-
 #definition(name: [First-return probabilities])[
   The first-return probabilities are defined as
   $
@@ -201,22 +193,22 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
 ]
 
 #theorem(name: [Existence and uniqueness of stationary distributions])[
-  An irreducible Markov chain has a stationary distribution if and only if it is positive recurrent. When it exists, the stationary distribution is unique and satisfies $pi_i = 1 \/ m_i$.
+  An irreducible Markov chain has a stationary distribution if and only if it is positive recurrent.
+
+  In that case, the stationary distribution is unique and $pi_i = 1 \/ m_i$.
 ]<thm-stationary-distribution-and-recurrence>
 
-==
+#theorem(name: [When the stationary distribution is limiting])[
+  An irreducible, positive recurrent, and aperiodic Markov chain has a (unique) limiting distribution.
 
-#theorem(name: [When stationary distribution is limiting])[
-  If an irreducible positive recurrent Markov chain is also aperiodic, then the unique stationary distribution is also the limiting distribution
-
-
-  $
-    lim_(n -> oo) P_(j,i)^((n)) = pi_i = 1 \/ m_i quad "for all states" i,j.
-  $
+  It is equal to the unique stationary distribution $ lim_(n -> oo) P_(j,i)^((n)) = pi_i = 1 / m_i $
+  for all states $i,j$.
 ]
 
 #corollary(name: [Finite irreducible chains])[
-  Every finite irreducible Markov chain is positive recurrent. Hence it has a unique stationary distribution. If it is also aperiodic, then this stationary distribution is also the limiting distribution $lim_(n -> oo) P_(j,i)^((n)) = pi_i$.
+  Every finite irreducible Markov chain is positive recurrent, and therefore has a unique stationary distribution.
+
+  If it is also aperiodic, this stationary distribution is also the limiting distribution.
 ]
 
 #pagebreak()
@@ -242,16 +234,6 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
 
 
   Drawing the transition diagram, we see
-  // #transition-figure()[
-  //   #transition-diagram(
-  //     ($"0"$, $"1"$, $"2"$, $"3"$),
-  //     (
-  //       ($1\/3$, $1\/3$, $1\/3$, 0),
-  //       ($1\/3$, $1\/3$, 0, $1\/3$),
-  //       (0, 0, $1\/3$, $1\/3$),
-  //       (0, 0, $1\/3$, $1\/3$),
-  //     ),
-  //   )]
 
   #subpar.grid(
     figure(
@@ -327,49 +309,6 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
 
 #pagebreak()
 #problem()[
-  Let ${X_n : n = 0, 1, dots}$ be a Markov chain with finite state space ${0, 1, dots, N}$. Show that if the Markov chain is aperiodic and irreducible, then it is regular and recurrent.
-]<problem-aperiodic-irreducible-implies-regular-recurrent>
-#solution()[
-  As all states communicate, there is only one equivalence class. Furthermore, as we have a finite state space, all states are expected to be visited infinitely many times, so they are recurrent.
-
-  Proving that Irreducibility and aperiodicity implies regularity means that we prove @thm-regularity-for-finite-chains. A regular Markov chain is one where there exists a positive integer $n$ such that $P^n$ has strictly positive entries. Observe that:
-  - Since the chain is irreducible, all states communicate and for each pair of states $i$ and $j$ there exists a positive integer $n_(i,j)$ such that $P_(i,j)^((n_(i,j))) > 0$.
-  - Since the chain is aperiodic, there for each state $i$ exists a positive integer $m_i$ such that $P_(i,i)^((m)) > 0$ for all $m >= m_i$.
-  Therefore we have that $P_(i, j)^((n_(i,j) + m)) >= P_(i,j)^((n_(i,j))) P_(j,j)^((m)) > 0$ for all $m >= m_j$. Choosing $n = max_(i,j){n_(i,j) + m_j}$, we have that $P^n$ has strictly positive entries, and the chain is regular.
-]
-
-// #pagebreak()
-// #problem()[
-//   Consider the Markov chain ${X_n : n = 0, 1, dots}$ with transition probability matrix
-//   $
-//     bf(P) = mat(
-//       0.50, 0.50, 0, 0, 0, 0;
-//       0.25, 0.75, 0, 0, 0, 0;
-//       0.25, 0.25, 0.25, 0.25, 0, 0;
-//       0.25, 0, 0.25, 0.25, 0, 0.25;
-//       0, 0, 0, 0, 0.50, 0.50;
-//       0, 0, 0, 0, 0.50, 0.50;
-//     ).
-//   $
-//   Do the following:
-//   - Is the Markov chain reducible or irreducible? If it is reducible, specify its equivalence classes.
-//   - Calculate the period of each state.
-//   - Which states are transient and which states are recurrent? Are there any absorbing states?
-// ]
-// #solution()[
-//   - See that $0 tilde.op 1$, $2 tilde.op 3$ and $4 tilde.op 5$, but $0 tilde.not 2$, $0 tilde.not 4$ and $2 tilde.not 4$. We therefore have equivalence classes ${0, 1}$ ${2, 3}$ and ${4, 5}$. The chain is reducible.
-//   - Only strictly positive values on the diagonal, meaning $d(i) = 1$ for every state $i$. Therefore, all states are aperiodic.
-//   - See that
-//     - ${0, 1}$: Finite size and not possible to leave the equivalence class. We are expected to visit each state infinitely many times, so they are *recurrent*.
-//     - ${2, 3}$: Finite size, and a strictly positive probability of leaving and never returning. Therefore, they are *transient*.
-//     - ${4, 5}$: Same as for ${0, 1}$, so they are *recurrent*.
-//     A state is absorbing if it is impossible to leave it. There are no such states in this Markov chain.
-//
-// ]
-
-
-#pagebreak()
-#problem()[
   A two-state Markov chain has the transition probability matrix
   $
     bf(P) = mat(
@@ -396,6 +335,60 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
     f_(0,0)^((n)) = P(X_n=0 | X_(n-1)=1) dot product_(nu=1)^(n-1) P(X_nu=1 | X_(nu-1)=1) dot P(X_1=1 | X_0=0) = b (1-b)^(n-2) a.
   $
 ]
+
+
+
+#pagebreak()
+#problem()[
+  Let ${X_n : n = 0, 1, dots}$ be a Markov chain with finite state space ${0, 1, dots, N}$. Show that if the Markov chain is aperiodic and irreducible, then it is regular and recurrent.
+]<problem-aperiodic-irreducible-implies-regular-recurrent>
+#solution()[
+  As all states communicate, there is only one equivalence class. Furthermore, as we have a finite state space, all states are expected to be visited infinitely many times, so they are recurrent.
+
+  Next we show that irreducibility and aperiodicity implies regularity. A regular Markov chain is one where there exists a positive integer $n$ such that $P^n$ has strictly positive entries. Observe that:
+  - Since the chain is irreducible, all states communicate and for each pair of states $i$ and $j$ there exists a positive integer $n_(i,j)$ such that $P_(i,j)^((n_(i,j))) > 0$.
+  - Since the chain is aperiodic, there for each state $i$ exists a positive integer $m_i$ such that $P_(i,i)^((m)) > 0$ for all $m >= m_i$.
+  Therefore we have that $P_(i, j)^((n_(i,j) + m)) >= P_(i,j)^((n_(i,j))) P_(j,j)^((m)) > 0$ for all $m >= m_j$. Choosing $n = max_(i,j){n_(i,j) + m_j}$, we have that $P^n$ has strictly positive entries, and the chain is regular.
+]
+
+
+
+
+
+#pagebreak()
+#problem(name: [Exam 2023])[
+  Consider the Markov chain ${X_n: n=0, 1, dots}$ with state space ${0, 1, 2}$, and transition probability matrix
+  $
+    bf(P) = mat(
+      alpha, 1-alpha, 0;
+      0, beta, 1-beta;
+      1-gamma, 0, gamma;
+    )
+  $
+  for some known $alpha, beta, gamma in [0, 1]$.
+  - What conditions are necessary for the Markov chain to be irreducible?
+  - Assume the irreducibility conditions holds:
+    - What are the equivalence classes? What are the periodicities of each state, and under what conditions?
+    - Is the Markov chain positive recurrent? Does the chain have a stationary distribution? If so, is it a limiting distribution?
+]
+#solution()[
+  - For irreducibility, we need $alpha, beta, gamma < 1$.
+  - If the chain is irreducible, all states communicate with each other, and there is only one equivalence class ${0, 1, 2}$.
+
+    When $alpha, beta, gamma = 0$, we have
+    $
+      bf(P) = mat(
+        0, 1, 0;
+        0, 0, 1;
+        1, 0, 0;
+      ),
+    $
+    and it is clear that $d(0) = d(1) = d(2) = 3$. Otherwise, we can have self-loops in one or more states, and the chain is aperiodic with $d(0) = d(1) = d(2) = 1$.
+  - As the chain is finite and irreducible, it is positive recurrent. It therefore also has a unique stationary distribution. If the chain is also aperiodic, this stationary distribution is also the limiting distribution.
+]
+
+
+
 
 #pagebreak()
 #problem()[
@@ -449,20 +442,4 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
       sum_(k = 3)^(oo) pi_k = 1 - pi_0 - pi_1 - pi_2 = 1\/8.
     $
 ]
-
-// = Markov Chain Monte Carlo (MCMC)
-//
-// A surprisingly hard problem is to estimate the expected value of a function $g(X)$ of a random variable $X$ with probability distribution function $p$
-// $
-//   EE[g(X)] = integral_RR g(x) p(x) dif x.
-// $
-// If we can generate samples $X_1, dots, X_N$ from $X tilde.op p$, Monte Carlo methods allow us to estimate
-// $
-//   EE[g(X)] approx 1/N sum_(i=1)^N g(X_i).
-// $
-// However, sampling from $p$ can be difficult, as we do not always have a closed form expression.
-//
-
-
-
 
