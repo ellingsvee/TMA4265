@@ -150,6 +150,10 @@ For each chain do the following:
   Recurrence and transience are class properties. If $i tilde.op j$ and $i$ is recurrent, then $j$ is recurrent.
 ]<thm-recurrence-is-class-property>
 
+#theorem()[
+  Can show that a state $i$ is recurrent if and only if $sum_(n=1)^oo P_(i,i)^((n)) = oo$.
+]
+
 == Problem
 A two-state Markov chain has the transition probability matrix
 $

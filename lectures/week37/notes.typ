@@ -139,16 +139,10 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
 ]<thm-periodicity-is-class-property>
 
 #definition(name: [First-return probabilities])[
-  The first-return probabilities are defined as
   $
     f_(i,i)^((n)) = P(X_n=i, X_nu != i " for " nu=1,2,dots,n-1 | X_0=i), quad n>=1,
   $
-  and we set $f_(i,i)^((0))=0$.
-
-  Notes:
-  - This is the probability of stating from state $i$, and the first return to state $i$ occurs at the $n$-th step.
-  - The probability of ever returning to state $i$ is $f_(i,i) = sum_(n=1)^oo f_(i,i)^((n))$.
-  - Clearly, $f_(i,i)^((0)) = P_(i,i)$, and $f_(i,i)^((n))$ may be calculated recursively as $P_(i,i)^((n)) = sum_(k=0)^(oo)f_(i,i)^((k)) P_(i,i)^((n-k))$.
+  and we set $f_(i,i)^((0))=0$. The probability of ever returning to state $i$ is $f_(i,i) = sum_(n=1)^oo f_(i,i)^((n))$.
 ]
 
 #definition(name: [Recurrent and transient states])[
@@ -160,26 +154,25 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
 ]
 
 #theorem()[
-  A state $i$ is recurrent if and only if
-  $
-    sum_(n=0)^oo P_(i,i)^((n)) = oo.
-  $
-  Equivalently, it is transient if and only $sum_(n=0)^oo P_(i,i)^((n)) < oo$.
-
-  Intuition:
-  - If a state is recurrent, it is expected to be visited infinitely many times. If it is transient, it is expected to be visited only finitely many times.
-]
-
-#theorem()[
   Recurrence and transience are class properties. If $i tilde.op j$ and $i$ is recurrent, then $j$ is recurrent.
 ]<thm-recurrence-is-class-property>
 
-#definition(name: [Mean recurrence time])[
-  The _mean recurrence time_ of state $i$ is $m_i = sum_(n=1)^oo n f_(i,i)^((n))$, and can be interpreted as the mean duration of time between visits to state $i$.
+#theorem()[
+  Can show that a state $i$ is recurrent if and only if $sum_(n=1)^oo P_(i,i)^((n)) = oo$.
 ]
 
-#definition(name: [Positive and null recurrent])[
-  A recurrent state $i$ is _positive recurrent_ if $m_i<oo$ and _null recurrent_ if $m_i=oo$.
+#definition(name: [Mean recurrence time])[
+  The mean recurrence time of state $i$ is
+  $
+    m_i = sum_(n=1)^oo n f_(i,i)^((n)),
+  $
+  the expected time between successive visits to state $i$.
+]
+
+#definition(name: [Positive and null recurrence])[
+  A recurrent state $i$ is positive recurrent if $m_i < oo$, null recurrent if $m_i = oo$.
+
+  We can also show that positive recurrence and null recurrence are class properties.
 ]
 
 #definition(name: [Stationary distribution])[
@@ -189,7 +182,7 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
     sum_i pi_i = 1 quad "and" quad pi_j = sum_(i=1)^(oo) pi_i P_(i,j), quad j = 0, 1, dots.
   $
 
-  Equivalently, for finite state spaces, $bold(pi) = bf(P)^top bold(pi)$ and $bold(1)^top bold(pi) = 1$.
+  For finite state spaces, $bold(pi) = bf(P)^top bold(pi)$ and $bold(1)^top bold(pi) = 1$.
 ]
 
 #theorem(name: [Existence and uniqueness of stationary distributions])[
@@ -206,9 +199,7 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
 ]
 
 #corollary(name: [Finite irreducible chains])[
-  Every finite irreducible Markov chain is positive recurrent, and therefore has a unique stationary distribution.
-
-  If it is also aperiodic, this stationary distribution is also the limiting distribution.
+  Every finite irreducible Markov chain is positive recurrent, and therefore has a unique stationary distribution. If it is also aperiodic, this stationary distribution is also the limiting distribution.
 ]
 
 #pagebreak()
