@@ -19,21 +19,21 @@
 )
 
 #title-slide[
-  = Week 37: Long Run Behavior of Markov Chains (Part 2)
+  = Week 37: Long-Run Behavior of Markov Chains (Part 2)
 ]
 
 == Recap from last week
 
 
 #definition(name: [Limiting distribution])[
-  Consider chain ${X_t}$. $bold(pi) = (pi_0, pi_1, dots)^top$ is the _limiting distribution_ if:
-  + The limits $pi_j = lim_(t->oo) P_(i, j)^((t))$ exist for all $i$ and $j$.
+  Consider a chain ${X_n}$. $bold(pi) = (pi_0, pi_1, dots)^top$ is the _limiting distribution_ if:
+  + The limits $pi_j = lim_(n->oo) P_(i, j)^((n))$ exist for all $i$ and $j$.
   + $sum_(j=0)^oo pi_j = 1$.
 ]
 
 
 #definition(name: [Regular Markov chain])[
-  Consider chain ${X_t}$ with finite state space ${0, 1, dots, N}$ and transition probability matrix $bf(P)$. If there exists a positive integer $k>0$ so that all elements of $bf(P)^k$ are strictly positive, we call $bf(P)$ and ${X_t}$ _regular_.
+  Consider a chain ${X_n}$ with finite state space ${0, 1, dots, N}$ and transition probability matrix $bf(P)$. If there exists a positive integer $k$ such that all elements of $bf(P)^k$ are strictly positive, we call $bf(P)$ and ${X_n}$ _regular_.
 ]
 
 _I maybe confused you a bit with stationary vs. limiting distributions. We'll return to this with more "rigour"!_
@@ -43,7 +43,7 @@ _I maybe confused you a bit with stationary vs. limiting distributions. We'll re
 ==
 
 #definition(name: [Communication])[
-  Let ${X_t: t = 0, 1, dots}$ be a Markov chain with transition probability matrix $bf(P)$.
+  Let ${X_n: n = 0, 1, dots}$ be a Markov chain with transition probability matrix $bf(P)$.
   - State $j$ is _accessible_ from state $i$ if there exists an integer $n >= 0$ such that $P_(i,j)^((n)) > 0$.
   - If states $i$ and $j$ are accessible from each other, they _communicate_. Write as $i tilde.op j$.
 ]
@@ -65,7 +65,7 @@ Relation partitions the state space into _equivalence classes_ of communicating 
 
 
 == Problem
-Consider two Markov chain with the transition probability matrices
+Consider two Markov chains with transition probability matrices
 $
   bf(A) = mat(
     1\/3, 1\/3, 1\/3, 0;
@@ -99,8 +99,8 @@ For each chain, determine how many equivalence classes it has and whether it is 
 
 Notes:
 - A state with $d(i)=1$ is called _aperiodic_.
-- For an irreducible chain, it is either fully _periodic_ or _aperiodic_.
-- We can show that for an aperiodic chain, there exists a positive integer $k>0$ such that $P_(i,j)^((n)) > 0$ for all $n >= k$ (used in proof later).
+- All states in an irreducible chain have the same period, so we call the chain _periodic_ or _aperiodic_ accordingly.
+- If state $i$ is aperiodic, there exists an integer $m_i$ such that $P_(i,i)^((n)) > 0$ for every $n >= m_i$ (used in a proof later).
 
 == Problem
 
@@ -151,7 +151,7 @@ For each chain do the following:
 ]<thm-recurrence-is-class-property>
 
 #theorem()[
-  Can show that a state $i$ is recurrent if and only if $sum_(n=1)^oo P_(i,i)^((n)) = oo$.
+  A state $i$ is recurrent if and only if $sum_(n=1)^oo P_(i,i)^((n)) = oo$.
 ]
 
 == Problem
@@ -171,7 +171,7 @@ $
 
 Let ${X_n : n = 0, 1, dots}$ be a Markov chain with finite state space ${0, 1, dots, N}$. Show that if the Markov chain is aperiodic and irreducible, then it is regular and recurrent.
 
-_(Recall that Markov chain is regular when there exists a positive integer $k>0$ so that all elements of $bf(P)^k$ are strictly positive.)_
+_(Recall that a Markov chain is regular when there exists a positive integer $k$ such that all elements of $bf(P)^k$ are strictly positive.)_
 
 
 ==
@@ -181,13 +181,13 @@ _(Recall that Markov chain is regular when there exists a positive integer $k>0$
   $
     m_i = sum_(n=1)^oo n f_(i,i)^((n)),
   $
-  the expected time between successive visits to state $i$.
+  and represents the expected time between successive visits to state $i$.
 ]
 
 #definition(name: [Positive and null recurrence])[
   A recurrent state $i$ is positive recurrent if $m_i < oo$, null recurrent if $m_i = oo$.
 
-  We can also show that positive recurrence and null recurrence are class properties.
+  Positive recurrence and null recurrence are also class properties.
 ]
 
 ==
@@ -195,7 +195,7 @@ _(Recall that Markov chain is regular when there exists a positive integer $k>0$
   A probability vector $bold(pi) = (pi_0, pi_1, dots)^top$ is a
   stationary distribution if
   $
-    sum_i pi_i = 1 quad "and" quad pi_j = sum_(i=1)^(oo) pi_i P_(i,j), quad j = 0, 1, dots.
+    sum_(i=0)^oo pi_i = 1 quad "and" quad pi_j = sum_(i=0)^(oo) pi_i P_(i,j), quad j = 0, 1, dots.
   $
 
   For finite state spaces, $bold(pi) = bf(P)^top bold(pi)$ and $bold(1)^top bold(pi) = 1$.
@@ -211,7 +211,7 @@ _(Recall that Markov chain is regular when there exists a positive integer $k>0$
 #theorem(name: [When the stationary distribution is limiting])[
   An irreducible, positive recurrent, and aperiodic Markov chain has a (unique) limiting distribution.
 
-  It is equal to the unique stationary distribution $ lim_(n -> oo) P_(j,i)^((n)) = pi_i = 1 / m_i $
+  It is equal to the (unique) stationary distribution $ lim_(n -> oo) P_(j,i)^((n)) = pi_i = 1 / m_i $
   for all states $i,j$.
 ]
 
@@ -256,5 +256,4 @@ Do the following:
 - Is this Markov chain irreducible?
 - For each state, calculate its period.
 - Show that the states are recurrent.
-- Calculate the long run proportion of time that the sequence of throws ends in three or more heads.
-
+- Calculate the long-run proportion of time that the sequence of throws ends in three or more heads.

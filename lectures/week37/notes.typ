@@ -13,7 +13,7 @@
 
 #show: icml.with(
   title: [
-    Week 37: More on long Run Behavior of Markov Chains
+    Week 37: Long-Run Behavior of Markov Chains (Part 2)
   ],
 
   authors: (
@@ -23,7 +23,7 @@
   ),
   n_columns: 1,
   paper-size: "a4",
-  bibliography: bibliography("../refs.bib"),
+  // bibliography: bibliography("../refs.bib"),
 )
 
 #show figure.where(kind: "solution-group"): set block(breakable: true)
@@ -36,12 +36,12 @@ _These notes are written by myself, and errors may and will occur. When in doubt
 
 = Theory
 
-Last week we focused a lot on _regularity_ of Markov chains, and saw that this property is useful for proving convergence. However, regularity can fail due to things like periodicity, reducibility and transient states. We also want to extent regularity to infinite state spaces.
+Last week we focused on _regularity_ of Markov chains and saw that this property is useful for proving convergence. However, regularity can fail because of periodicity, reducibility, or transient states. We also want to extend our analysis to infinite state spaces.
 
 
 
 #definition(name: [Communication])[
-  Let ${X_t: t = 0, 1, dots}$ be a Markov chain with transition probability matrix $bf(P)$.
+  Let ${X_n: n = 0, 1, dots}$ be a Markov chain with transition probability matrix $bf(P)$.
   - State $j$ is _accessible_ from state $i$ if there exists an integer $n >= 0$ such that $P_(i,j)^((n)) > 0$.
   - If states $i$ and $j$ are accessible from each other, they _communicate_. We write this as $i tilde.op j$.
 ]
@@ -78,7 +78,7 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
 #theorem(name: [Communication is an equivalence relation])[
   Communication is an equivalence relation:
   - Reflexivity: $i tilde.op i$ for every state $i$.
-    - This is since $P_(i,j)^((0)) = delta_(i,j)$.
+    - This follows since $P_(i,i)^((0)) = 1$.
   - Symmetry: if $i tilde.op j$, then $j tilde.op i$.
   - Transitivity: if $i tilde.op j$ and $j tilde.op k$, then $i tilde.op k$.
     - This is since if $P_(i,j)^((n)) > 0$ and $P_(j,k)^((m)) > 0$, then $P_(i,k)^((n+m)) = sum_(l=0)^(oo) P_(i,l)^((n)) P_(l,k)^((m)) >= P_(i,j)^((n)) P_(j,k)^((m)) > 0$.
@@ -125,8 +125,8 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
   $
     P_(i,i)^((n)) =
     cases(
-      1 & "if" n "is even" \
-      0 & "if" n "is odd"
+      1 & "if" n "is even",
+      0 & "if" n "is odd",
     ).
   $
   Hence, $d(i) = gcd {2, 4, 6, dots} = 2$ .
@@ -149,7 +149,7 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
   State $i$ is _recurrent_ if $f_(i,i)=1$. It is _transient_ if $f_(i,i)<1$.
 
   Intuition:
-  - If a state is recurrent, it is expected to be visited infinitely many times. If it is transient, it is expected to be visited only finitely many times.
+  - Starting from a recurrent state, that state is visited infinitely often with probability $1$. A transient state is visited only finitely often with probability $1$.
   - If a state is recurrent, the probability of returning to it after some finite length of time is $1$. If it is transient, the probability of returning to it after some finite length of time is less than $1$.
 ]
 
@@ -158,7 +158,7 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
 ]<thm-recurrence-is-class-property>
 
 #theorem()[
-  Can show that a state $i$ is recurrent if and only if $sum_(n=1)^oo P_(i,i)^((n)) = oo$.
+  A state $i$ is recurrent if and only if $sum_(n=1)^oo P_(i,i)^((n)) = oo$.
 ]
 
 #definition(name: [Mean recurrence time])[
@@ -172,14 +172,14 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
 #definition(name: [Positive and null recurrence])[
   A recurrent state $i$ is positive recurrent if $m_i < oo$, null recurrent if $m_i = oo$.
 
-  We can also show that positive recurrence and null recurrence are class properties.
+  Positive recurrence and null recurrence are class properties.
 ]
 
 #definition(name: [Stationary distribution])[
   A probability vector $bold(pi) = (pi_0, pi_1, dots)^top$ is a
   stationary distribution if
   $
-    sum_i pi_i = 1 quad "and" quad pi_j = sum_(i=1)^(oo) pi_i P_(i,j), quad j = 0, 1, dots.
+    sum_(i=0)^oo pi_i = 1 quad "and" quad pi_j = sum_(i=0)^(oo) pi_i P_(i,j), quad j = 0, 1, dots.
   $
 
   For finite state spaces, $bold(pi) = bf(P)^top bold(pi)$ and $bold(1)^top bold(pi) = 1$.
@@ -204,7 +204,7 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
 
 #pagebreak()
 #problem()[
-  Consider two Markov chain with the transition probability matrices
+  Consider two Markov chains with transition probability matrices
   $
     bf(A) = mat(
       1\/3, 1\/3, 1\/3, 0;
@@ -321,9 +321,9 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
   $
     0 -> 1 -> 1 -> dots -> 1 -> 0.
   $
-  We can write this using the Markov property and Bayes theorem as
+  By the chain rule and the Markov property,
   $
-    f_(0,0)^((n)) = P(X_n=0 | X_(n-1)=1) dot product_(nu=1)^(n-1) P(X_nu=1 | X_(nu-1)=1) dot P(X_1=1 | X_0=0) = b (1-b)^(n-2) a.
+    f_(0,0)^((n)) = a (1-b)^(n-2) b, quad n >= 2.
   $
 ]
 
@@ -334,12 +334,16 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
   Let ${X_n : n = 0, 1, dots}$ be a Markov chain with finite state space ${0, 1, dots, N}$. Show that if the Markov chain is aperiodic and irreducible, then it is regular and recurrent.
 ]<problem-aperiodic-irreducible-implies-regular-recurrent>
 #solution()[
-  As all states communicate, there is only one equivalence class. Furthermore, as we have a finite state space, all states are expected to be visited infinitely many times, so they are recurrent.
+  Fix a state $i$. Since the finite chain is irreducible, from every state $j$ there is a path to $i$ with positive probability. Because the state space is finite, there are an integer $M$ and a number $epsilon>0$ such that, from any state, the probability of hitting $i$ within the next $M$ steps is at least $epsilon$. By the Markov property, the probability of avoiding $i$ for $k M$ steps is at most $(1-epsilon)^k$, which tends to $0$. Starting from $i$, the chain therefore returns to $i$ with probability $1$, so every state is recurrent.
 
-  Next we show that irreducibility and aperiodicity implies regularity. A regular Markov chain is one where there exists a positive integer $n$ such that $P^n$ has strictly positive entries. Observe that:
+  Next we show that irreducibility and aperiodicity imply regularity. A regular Markov chain is one for which there exists a positive integer $n$ such that $bf(P)^n$ has strictly positive entries. Observe that:
   - Since the chain is irreducible, all states communicate and for each pair of states $i$ and $j$ there exists a positive integer $n_(i,j)$ such that $P_(i,j)^((n_(i,j))) > 0$.
-  - Since the chain is aperiodic, there for each state $i$ exists a positive integer $m_i$ such that $P_(i,i)^((m)) > 0$ for all $m >= m_i$.
-  Therefore we have that $P_(i, j)^((n_(i,j) + m)) >= P_(i,j)^((n_(i,j))) P_(j,j)^((m)) > 0$ for all $m >= m_j$. Choosing $n = max_(i,j){n_(i,j) + m_j}$, we have that $P^n$ has strictly positive entries, and the chain is regular.
+  - Since the chain is aperiodic, for each state $j$ there exists a positive integer $m_j$ such that $P_(j,j)^((m)) > 0$ for all $m >= m_j$.
+  Let $K = max_(i,j){n_(i,j) + m_j}$. Then $K - n_(i,j) >= m_j$ for every pair $i,j$, and
+  $
+    P_(i,j)^((K)) >= P_(i,j)^((n_(i,j))) P_(j,j)^((K-n_(i,j))) > 0.
+  $
+  Thus every entry of $bf(P)^K$ is strictly positive, so the chain is regular.
 ]
 
 
@@ -358,12 +362,12 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
   $
   for some known $alpha, beta, gamma in [0, 1]$.
   - What conditions are necessary for the Markov chain to be irreducible?
-  - Assume the irreducibility conditions holds:
+  - Assume the irreducibility condition holds:
     - What are the equivalence classes? What are the periodicities of each state, and under what conditions?
     - Is the Markov chain positive recurrent? Does the chain have a stationary distribution? If so, is it a limiting distribution?
 ]
 #solution()[
-  - For irreducibility, we need $alpha, beta, gamma < 1$.
+  - The chain is irreducible if and only if $alpha, beta, gamma < 1$.
   - If the chain is irreducible, all states communicate with each other, and there is only one equivalence class ${0, 1, 2}$.
 
     When $alpha, beta, gamma = 0$, we have
@@ -392,7 +396,7 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
   - Is this Markov chain irreducible?
   - For each state, calculate its period.
   - Show that the states are recurrent.
-  - Calculate the long run proportion of time that the sequence of throws ends in three or more heads.
+  - Calculate the long-run proportion of time that the sequence of throws ends in three or more heads.
 ]
 #solution()[
   - Each throw is independent of the previous throws. Only the previous state affects the probability of transitioning to a new state. The transition probabilities are
@@ -417,20 +421,19 @@ Last week we focused a lot on _regularity_ of Markov chains, and saw that this p
     by the geometric series. Since $0$ is recurrent, all states are recurrent.
   - Can also show positive recurrence. The mean recurrence time of state $0$ is
     $
-      m_0 = sum_(n=1)^oo n f_(0,0)^((n)) = sum_(n=1)^oo n 1/2^n = sum_(n=1)^oo 1/2^(n-1) = 1/(1-1\/2)= 2 < oo.
+      m_0 = sum_(n=1)^oo n f_(0,0)^((n)) = sum_(n=1)^oo n (1\/2)^n = 2 < oo.
     $
     As positive recurrence is a class property, all states are positive recurrent. As we previously showed that the chain is irreducible, we can use @thm-stationary-distribution-and-recurrence to find the stationary distribution. Let $pi_0$ denote the stationary distribution of state $0$, then
     $
-      p_0 = 1\/m_0 = 1\/2.
+      pi_0 = 1\/m_0 = 1\/2.
     $
     To find the stationary distribution for the other states, we see
     $
       pi_1 & = sum_(k = 0)^(oo) pi_k P_(k,1) = pi_0 P_(0,1) = 1\/4, \
       pi_2 & = sum_(k = 0)^(oo) pi_k P_(k,2) = pi_1 P_(1,2) = 1\/8, \
     $
-    and so on. The long run proportion of time that the sequence of throws ends in three or more heads is therefore
+    and so on. By the ergodic theorem for irreducible positive recurrent Markov chains, the long-run proportion of time that the sequence of throws ends in three or more heads is therefore
     $
       sum_(k = 3)^(oo) pi_k = 1 - pi_0 - pi_1 - pi_2 = 1\/8.
     $
 ]
-
