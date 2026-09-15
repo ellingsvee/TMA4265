@@ -36,10 +36,10 @@ _These notes are written by myself, and errors may and will occur. When in doubt
 = Theory
 
 #definition(name: [Homogeneous Poisson process])[
-  A Poisson process with rage $lambda > 0$ is an integer-valued stochastic process ${X(t): t >= 0}$ for which we have
+  A Poisson process with range $lambda > 0$ is an integer-valued stochastic process ${X(t): t >= 0}$ for which:
   + For any time points $0 = t_0 < t_1 < dots < t_n$, the increments
     $
-      X(t_1) - X(t_0), X(t_2) - X(t_1), dots, X(t_n) - X(t_{n-1})
+      X(t_1) - X(t_0), X(t_2) - X(t_1), dots, X(t_n) - X(t_(n-1))
     $
     are independent.
 
@@ -59,7 +59,7 @@ _These notes are written by myself, and errors may and will occur. When in doubt
   + $X(0) = 0$.
 
   Remarks:
-  - $lambda(t) = lambda_0 ==>$ (homogeneous) Poisson process.
+  - $lambda(t) = lambda_0 ==>$ Homogeneous Poisson process.
   - Intuition is area under the curve (x-axis is time, y-axis is rate).
 ]
 
@@ -68,7 +68,7 @@ _These notes are written by myself, and errors may and will occur. When in doubt
 ]
 
 #definition(name: [Sojourn time])[
-  The differences $S_n = W_(n+1) - W_n$ are called sojourn times (interarrival times).
+  The differences $S_n = W_(n+1) - W_n$ are called sojourn times (or interarrival times).
 
   The intuition is that $S_n$ is the time spent in state $n$.
 ]
@@ -105,19 +105,19 @@ _These notes are written by myself, and errors may and will occur. When in doubt
   For a Poisson process with rate $lambda$, we have $W_n tilde.op "Gamma"(n, lambda)$ for all $n >= 1$.
 ]
 
-#theorem()[
-  Let $W_1, dots, W_n$ be the occurrence times in a Poisson process $X(t)$ with rate $lambda$. Then
-  $
-    f(w_1, dots, w_n | X(t) = n) = n! / t^n, quad 0 < w_1 < dots < w_n <= t.
-  $
-
-  Interpretation:
-  - Let $V_1, dots, V_n$ be the (unsorted) locations of the $n$ jumps, then $V_1, dots, V_n | X(t) = n tilde.op^("iid") U(0,t)$, meaning
-    $
-      f(v_1, dots, v_n | X(t) = n) = 1 / t^n, quad 0 < v_1, dots, v_n <= t.
-    $
-    The $n!$ terms comes from the $n!$ orderings of $v_1,dots,v_n$.
-]
+// #theorem()[
+//   Let $W_1, dots, W_n$ be the occurrence times in a Poisson process $X(t)$ with rate $lambda$. Then
+//   $
+//     f(w_1, dots, w_n | X(t) = n) = n! / t^n, quad 0 < w_1 < dots < w_n <= t.
+//   $
+//
+//   Interpretation:
+//   - Let $V_1, dots, V_n$ be the (unsorted) locations of the $n$ jumps, then $V_1, dots, V_n | X(t) = n tilde.op^("iid") U(0,t)$, meaning
+//     $
+//       f(v_1, dots, v_n | X(t) = n) = 1 / t^n, quad 0 < v_1, dots, v_n <= t.
+//     $
+//     The $n!$ terms comes from the $n!$ orderings of $v_1,dots,v_n$.
+// ]
 
 
 // #definition(name: [Little $o$-notation])[
@@ -153,6 +153,7 @@ _These notes are written by myself, and errors may and will occur. When in doubt
 
 
 #pagebreak()
+= Problems
 #problem()[
   Arrival of customers follow a homogeneous Poisson process with rate $lambda = 4$ customers per hour. The store opens at 09:00. Calculate the probability that exactly one customer has arrived by 09:30 and exactly five customers have arrived by 11:30.
 ]
@@ -265,4 +266,84 @@ _These notes are written by myself, and errors may and will occur. When in doubt
       $
         P(W_196 > 90) = 1 - P(W_196 <= 90) = 1 - F_W (90).
       $
+]
+
+
+
+
+#pagebreak()
+= Norsk Regnesentrals prognoser for VM 2026
+
+This summary is based on the #link("https://vm.nr.no/method/")[summary by NR]. Interesting to see how they use simple and interpretable models to make predictions, rather than feeding a ML model with a ton of data.
+
+#figure(
+  scope: "parent",
+  placement: top,
+)[
+  #image(
+    "figures/vm.png",
+    width: 80%,
+  )
+]
+
+
+Model football match by treating the goals scored by each team as independent Poisson random variables. Suppose team $A$ plays team $B$. Let $s_A$ and $s_B$ denote their strength parameters, and let $n$ denote the expected number of goals scored by one team when two equally strong teams meet. Then
+$
+  X_A tilde.op "Poisson"(lambda_A), quad X_B tilde.op "Poisson"(lambda_B),
+$
+with
+$
+  lambda_A = n s_A / s_B, quad lambda_B = n s_B / s_A.
+$
+Thus, if $A$ is twice as strong as $B$, its expected number of goals increases, while $B$'s expected number decreases. The two goal counts are assumed independent.
+
+From the Poisson distribution, we can calculate the probability of every possible score. For example,
+$
+  P(X_A = i, X_B = j) = P(X_A = i) P(X_B = j) = (lambda_A^i)/i! e^(-lambda_A) (lambda_B^j)/j! e^(-lambda_B), quad i,j = 0, 1, dots.
+$
+The probability that $A$ wins is therefore
+$
+  P(A "wins") = sum_(i > j) P(X_A = i, X_B = j),
+$
+and similarly one obtains probabilities for a draw or a $B$ victory. This converts the underlying strength parameters into probabilities for the match outcomes.
+
+The strengths $s_A, s_B, dots$ and the baseline $n$ have to be estimated. According to NR, they initially used expert assessments expressed as hypothetical match results,. As real tournament matches were played, those observations were incorporated into the estimates. This was done using maximum likelihood estimation, which you learned in the introductory statistics course. The likelihood was modified do that very large victories were down-weighted, and they used a penalty term pulling different strengths towards each other to avoid overfitting.
+
+Think about what are the limitations or potential inaccuracies of this model. For example, I think assuming that scoring goals is independent between the two teams is a bit of a stretch. Assuming a constant rate of scoring goals throughout the match could also be unrealistic. Other extensions could be separate attacking and defensive strengths, home advantage, dependence between the score counts of the two teams, and so on.
+
+
+#pagebreak()
+#problem(name: [Exercise 5, Problem 2])[
+  The number of goals scored by Vålerenga IF during a football match is Poisson distributed with an average of $lambda_"V" = 1.2$ goals per match while the number of goals scored by Rosenborg BK is Poisson distributed with an average of $lambda_"R" = 2$ goals per match. The number of goals scored by Vålerenga is independent of the number of goals scored by Rosenborg. Assume that a football match lasts for exactly $90$ minutes ($2 times 45$ minutes) and that Vålerenga plays a match against Rosenborg:
+  - What is the distribution for the total number of goals scored in this match?
+  - What is the probability that there are no goals during the first half of the match?
+  - What is the probability that the final result is 2–2?
+  - What is the expected time until the first goal in this match?
+  - Assume that no goals are scored the first 15 minutes of the match. What is the probability that Vålerenga score at least one goal before the break at 45 minutes?
+]
+
+#solution()[
+
+  Let $R(t)$ be the number of goals scored by Rosenborg, let $V(t)$ be the number of goals scored by Vålerenga and let $N(t)$ be the total number of goals scored during a match where $0 <= t <= 1$ is the proportion of a match that has been played.
+  - The sum of independent Poisson distributions is also Poisson distributed. The total number of goals scored is the sum of two independent Poisson RVs, so $N(t)$ is Poisson distributed with parameter $lambda_"total" = lambda_"V" + lambda_"R"$.
+  - Simply plug in $t = 1/2$ and $lambda_"total" = 1.2 + 2 = 3.2$ into the Poisson distribution formula:
+    $
+      P(N(1\/2) = 0) = e^(-0.5 lambda_"total") = e^(-0.5 dot 3.2) approx 0.2019.
+    $
+  - Use independence of the two RVs
+    $
+      P(R(1) = 2, V(1) = 2) = P(R(1) = 2) P(V(1) = 2) = lambda_"R"^2 / 2! e^(-lambda_"R") lambda_"V"^2 / 2! e^(-lambda_"V") approx 0.0587.
+    $
+  - This questions is asking about the waiting time $W_1$, which we know is exponentially distributed with rate $lambda_"total"$. Thus
+    $
+      EE[W_1] = 1 \/ lambda_"total" = 1 \/ 3.2,
+    $
+    and we expect to wait $90 \/ 3.2"min" approx 28.125"min"$.
+  - Here we utilize the memoryless property. The number of goals scored from $t = 15"min"$ to $t = 45"min"$ is independent of the number of goals scored from $t = 0"min"$ to $t = 15"min"$. $45$ minutes is half of the match, while $15$ minutes is one sixth. Therefore
+  $
+    P(V(1\/2) > 0 | V(1\/6) = 0) & = P(V(1\/2 - 1\/6) > 0) \
+                                 & = 1 - P(V(1\/3) = 0) \
+                                 & = 1 - e^(-lambda_"V"\/3) \
+                                 & approx 0.3297.
+  $
 ]
