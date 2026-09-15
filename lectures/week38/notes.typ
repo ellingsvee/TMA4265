@@ -186,27 +186,84 @@ _These notes are written by myself, and errors may and will occur. When in doubt
   - $W_10 tilde.op "Gamma"(10, 2) ==> EE[W_10] = 10\/2 = 5$.
 ]
 
+// #pagebreak()
+// #problem()[
+//   Let ${X(t): t>=0}$ be a Poisson process with rate $lambda > 0$. Show that $W_1 | X(t) = 1 tilde.op U(0, T)$
+// ]
+// #solution()[
+//   For $0 < w < T$, we have
+//   $
+//     P(W_1 <= w | X(t) = 1) & = P(W_1 <= w, X(t) = 1) / P(X(t) = 1) \
+//                            & = P(X(w) - X(0) = 1, X(t) - X(w) = 0) / P(X(t) - X(0) = 1) \
+//                            & = (
+//                              (lambda w)^(1)/1! e^(-lambda w) dot (lambda (t - w))^(0)/0! e^(-lambda (t - w))
+//                              ) / (
+//                              (lambda t)^(1)/1! e^(-lambda t)
+//                              ) \
+//                            & = w\/t.
+//   $
+//   Therefore,
+//   $
+//     f(w | X(t) = 1) = dif/(dif w) P(W_1 <= w | X(t) = 1) = dif/(dif w) (w\/t) = 1\/t, quad 0 < w < t,
+//   $
+//   which means $W_1 | X(t) = 1 tilde.op U(0, t)$.
+// ]
+
 #pagebreak()
 #problem()[
-  Let ${X(t): t>=0}$ be a Poisson process with rate $lambda > 0$. Show that $W_1 | X(t) = 1 tilde.op U(0, T)$
+  Let ${X(t): t >= 0}$ be a Poisson process with rate $lambda > 0$. Show that
+  $
+    W_1 | X(t) = 1 tilde.op U(0, t).
+  $
 ]
+
 #solution()[
-  For $0 < w < T$, we have
+  For $0 < w < t$,
   $
-    P(W_1 <= w | X(t) = 1) & = P(W_1 <= w, X(t) = 1) / P(X(t) = 1) \
-                           & = P(X(w) - X(0) = 1, X(t) - X(w) = 0) / P(X(t) - X(0) = 1) \
-                           & = (
-                             (lambda w)^(1)/1! e^(-lambda w) dot (lambda (t - w))^(0)/0! e^(-lambda (t - w))
+    P(W_1 <= w | X(t) = 1) & = P(W_1 <= w, X(t) = 1) / P(X(t) = 1) & = P(X(w) = 1, X(t) - X(w) = 0) / P(X(t) = 1).
+  $
+
+  By the independent increments property of the Poisson process,
+  $
+    P(X(w) = 1, X(t) - X(w) = 0)
+    = P(X(w) = 1) P(X(t) - X(w) = 0).
+  $
+
+  Since
+  $
+    X(w) tilde.op "Poisson"(lambda w)
+    quad "and" quad
+    X(t) - X(w) tilde.op "Poisson"(lambda(t-w)),
+  $
+  we obtain
+  $
+    P(W_1 <= w | X(t) = 1) & = (
+                             (lambda w)e^(-lambda w)
+                             dot
+                             e^(-lambda(t-w))
                              ) / (
-                             (lambda t)^(1)/1! e^(-lambda t)
-                             ) \
-                           & = w\/t.
+                             (lambda t)e^(-lambda t)
+                             ) & = w/t.
   $
+
+  Thus the conditional cumulative distribution function is
+  $
+    F_(W_1 | X(t)=1)(w) = w\/t,
+    quad 0 < w < t.
+  $
+
+  Differentiating,
+  $
+    f_(W_1 | X(t)=1)(w)
+    = dif/(dif w) (w\/t)
+    = 1\/t,
+    quad 0 < w < t.
+  $
+
   Therefore,
   $
-    f(w | X(t) = 1) = dif/(dif w) P(W_1 <= w | X(t) = 1) = dif/(dif w) (w\/t) = 1\/t, quad 0 < w < t,
+    W_1 | X(t) = 1 tilde.op U(0,t).
   $
-  which means $W_1 | X(t) = 1 tilde.op U(0, t)$.
 ]
 
 #pagebreak()
@@ -221,8 +278,47 @@ _These notes are written by myself, and errors may and will occur. When in doubt
 ]
 
 
+
+
 #pagebreak()
-#problem()[
+#problem(name: [Exercise 5, Problem 2])[
+  The number of goals scored by Vålerenga IF during a football match is Poisson distributed with an average of $lambda_"V" = 1.2$ goals per match while the number of goals scored by Rosenborg BK is Poisson distributed with an average of $lambda_"R" = 2$ goals per match. The number of goals scored by Vålerenga is independent of the number of goals scored by Rosenborg. Assume that a football match lasts for exactly $90$ minutes ($2 times 45$ minutes) and that Vålerenga plays a match against Rosenborg:
+  - What is the distribution for the total number of goals scored in this match?
+  - What is the probability that there are no goals during the first half of the match?
+  - What is the probability that the final result is 2–2?
+  - What is the expected time until the first goal in this match?
+  - Assume that no goals are scored the first 15 minutes of the match. What is the probability that Vålerenga score at least one goal before the break at 45 minutes?
+]
+
+#solution()[
+
+  Let $R(t)$ be the number of goals scored by Rosenborg, let $V(t)$ be the number of goals scored by Vålerenga and let $N(t)$ be the total number of goals scored during a match where $0 <= t <= 1$ is the proportion of a match that has been played.
+  - The sum of independent Poisson distributions is also Poisson distributed. The total number of goals scored is the sum of two independent Poisson RVs, so $N(t)$ is Poisson distributed with parameter $lambda_"total" = lambda_"V" + lambda_"R"$.
+  - Simply plug in $t = 1\/2$ and $lambda_"total" = 1.2 + 2 = 3.2$ into the Poisson distribution formula:
+    $
+      P(N(1\/2) = 0) = e^(-0.5 lambda_"total") = e^(-0.5 dot 3.2) approx 0.2019.
+    $
+  - Use independence of the two RVs
+    $
+      P(R(1) = 2, V(1) = 2) = P(R(1) = 2) P(V(1) = 2) = lambda_"R"^2 / 2! e^(-lambda_"R") lambda_"V"^2 / 2! e^(-lambda_"V") approx 0.0587.
+    $
+  - This questions is asking about the waiting time $W_1$, which we know is exponentially distributed with rate $lambda_"total"$. Thus
+    $
+      EE[W_1] = 1 \/ lambda_"total" = 1 \/ 3.2,
+    $
+    and we expect to wait $90 \/ 3.2"min" approx 28.125"min"$.
+  - Here we utilize the memoryless property. The number of goals scored from $t = 15"min"$ to $t = 45"min"$ is independent of the number of goals scored from $t = 0"min"$ to $t = 15"min"$. $45$ minutes is half of the match, while $15$ minutes is one sixth. Therefore
+  $
+    P(V(1\/2) > 0 | V(1\/6) = 0) & = P(V(1\/2 - 1\/6) > 0) \
+                                 & = 1 - P(V(1\/3) = 0) \
+                                 & = 1 - e^(-lambda_"V"\/3) \
+                                 & approx 0.3297.
+  $
+]
+
+
+#pagebreak()
+#problem(name: [Exam question])[
   A certain scientific theory supposes that mistakes in cell division occur according to a Poisson process with rate $2.5$ per year, and that an individual dies when $196$ such mistakes have occurred. Assuming this theory, find
   +
     - The expected time until occurrence of the first mistake in cell division.
@@ -244,7 +340,7 @@ _These notes are written by myself, and errors may and will occur. When in doubt
     - $W_196 tilde.op "Gamma"(196, 2.5) ==> EE[W_196] = 196\/2.5 = 78.4$ years.
     - $"SD"[W_196] = sqrt("Var"[W_196]) = sqrt(196)\/2.5 = 5.6$ years.
   +
-    - The sojourn times $S_0, S_1, dots, S_195$ are iid. $"Exp"(2.5)$, so we can use the central limit theorem to approximate the distribution of $W_196 = S_0 + S_1 + dots + S_195$. We have
+    - The sojourn times $S_0, S_1, dots, S_195 tilde.op^("iid") "Exp"(2.5)$, so we can use the central limit theorem to approximate the distribution of $W_196 = S_0 + S_1 + dots + S_195$. We have
       $
         EE[W_196] = 78.4, quad "Var"[W_196] = 31.36 ==> "SD"[W_196] = 5.6.
       $
@@ -253,10 +349,12 @@ _These notes are written by myself, and errors may and will occur. When in doubt
         P(W_196 > 90) approx P(Z > (90 - 78.4) / 5.6) = P(Z > 2.0714) approx 0.0192.
       $
     - Algorithm for Monte Carlo simulation:
-      1. Sample $196$ sojourn times $S_0, S_1, dots, S_195 tilde.op^("iid") "Exp"(2.5)$.
-      2. Calculate the lifetime $W_196 = S_0 + S_1 + dots + S_195$.
-      3. Repeat steps 1 and 2 for a large number of iterations.
-      4. Count the number of lifetimes that exceed $90$ years and divide by the total number of iterations to estimate the probability.
+      + Sample $196$ sojourn times $S_0, S_1, dots, S_195 tilde.op^("iid") "Exp"(2.5)$.
+      + Calculate the lifetime $W_196 = S_0 + S_1 + dots + S_195$.
+      + Repeat steps 1 and 2 for a large number of iterations.
+      + Count the number of lifetimes that exceed $90$ years and divide by the total number of iterations to estimate the probability.
+      This computation approximates $EE[1(W_196 > 0)]$.
+
   +
     - Let $M(t) tilde.op "Possion"(lambda t)$ be the number of mistakes in cell division by time $t$. Then
       $
@@ -311,39 +409,3 @@ The strengths $s_A, s_B, dots$ and the baseline $n$ have to be estimated. Accord
 
 Think about what are the limitations or potential inaccuracies of this model. For example, I think assuming that scoring goals is independent between the two teams is a bit of a stretch. Assuming a constant rate of scoring goals throughout the match could also be unrealistic. Other extensions could be separate attacking and defensive strengths, home advantage, dependence between the score counts of the two teams, and so on.
 
-
-#pagebreak()
-#problem(name: [Exercise 5, Problem 2])[
-  The number of goals scored by Vålerenga IF during a football match is Poisson distributed with an average of $lambda_"V" = 1.2$ goals per match while the number of goals scored by Rosenborg BK is Poisson distributed with an average of $lambda_"R" = 2$ goals per match. The number of goals scored by Vålerenga is independent of the number of goals scored by Rosenborg. Assume that a football match lasts for exactly $90$ minutes ($2 times 45$ minutes) and that Vålerenga plays a match against Rosenborg:
-  - What is the distribution for the total number of goals scored in this match?
-  - What is the probability that there are no goals during the first half of the match?
-  - What is the probability that the final result is 2–2?
-  - What is the expected time until the first goal in this match?
-  - Assume that no goals are scored the first 15 minutes of the match. What is the probability that Vålerenga score at least one goal before the break at 45 minutes?
-]
-
-#solution()[
-
-  Let $R(t)$ be the number of goals scored by Rosenborg, let $V(t)$ be the number of goals scored by Vålerenga and let $N(t)$ be the total number of goals scored during a match where $0 <= t <= 1$ is the proportion of a match that has been played.
-  - The sum of independent Poisson distributions is also Poisson distributed. The total number of goals scored is the sum of two independent Poisson RVs, so $N(t)$ is Poisson distributed with parameter $lambda_"total" = lambda_"V" + lambda_"R"$.
-  - Simply plug in $t = 1/2$ and $lambda_"total" = 1.2 + 2 = 3.2$ into the Poisson distribution formula:
-    $
-      P(N(1\/2) = 0) = e^(-0.5 lambda_"total") = e^(-0.5 dot 3.2) approx 0.2019.
-    $
-  - Use independence of the two RVs
-    $
-      P(R(1) = 2, V(1) = 2) = P(R(1) = 2) P(V(1) = 2) = lambda_"R"^2 / 2! e^(-lambda_"R") lambda_"V"^2 / 2! e^(-lambda_"V") approx 0.0587.
-    $
-  - This questions is asking about the waiting time $W_1$, which we know is exponentially distributed with rate $lambda_"total"$. Thus
-    $
-      EE[W_1] = 1 \/ lambda_"total" = 1 \/ 3.2,
-    $
-    and we expect to wait $90 \/ 3.2"min" approx 28.125"min"$.
-  - Here we utilize the memoryless property. The number of goals scored from $t = 15"min"$ to $t = 45"min"$ is independent of the number of goals scored from $t = 0"min"$ to $t = 15"min"$. $45$ minutes is half of the match, while $15$ minutes is one sixth. Therefore
-  $
-    P(V(1\/2) > 0 | V(1\/6) = 0) & = P(V(1\/2 - 1\/6) > 0) \
-                                 & = 1 - P(V(1\/3) = 0) \
-                                 & = 1 - e^(-lambda_"V"\/3) \
-                                 & approx 0.3297.
-  $
-]
