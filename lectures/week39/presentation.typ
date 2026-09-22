@@ -46,7 +46,7 @@
 
 ==
 #definition(name: [Continuous-time Markov Chain])[
-  In this course, a continuous-time Markov chain (CTMC) is a stochastic process ${X(t): t >= 0}$ with discrete state space $cal(S)$ that satisfies the Markov property and has stationary transition probabilities.
+  A continuous-time Markov chain (CTMC) is a stochastic process ${X(t): t >= 0}$ with discrete state space $cal(S)$ that satisfies the Markov property and has stationary transition probabilities.
 
 
   For all $s >= 0$, $t > 0$, and $i,j in cal(S)$, we have
@@ -96,7 +96,7 @@ $
 ==
 
 #definition(name: [Birth-and-death process])[
-  Let ${X(t): t>=0}$ be a CTMC with state space $cal(S) = {0, 1, 2, dots}$ or $cal(S) = {0, 1, dots, N}$. Then ${X(t): t>=0}$ is called a birth-and-death process with nonnegative birth rates $lambda_i$ and death rates $mu_i$ if $P_(i,j)(t)$ satisfies
+  Let ${X(t): t>=0}$ be a CTMC with state space $cal(S) = {0, 1, 2, dots}$ (or $cal(S) = {0, 1, dots, N}$). Then ${X(t): t>=0}$ is called a birth-and-death process with nonnegative birth rates $lambda_i$ and death rates $mu_i$ if $P_(i,j)(t)$ satisfies
   + $P_(i, i+1)(h) = lambda_i h + "o"(h)$ as $h -> 0^+$ whenever $i+1 in cal(S)$.
   + $P_(i, i-1)(h) = mu_i h + "o"(h)$ as $h -> 0^+$ whenever $i-1 in cal(S)$.
   + $P_(i, i)(h) = 1 - (lambda_i + mu_i)h + "o"(h)$ as $h -> 0^+$ for $i in cal(S)$.
@@ -123,36 +123,31 @@ $
 
 ==
 #theorem()[
-  In a birth-and-death process, each visit to a nonabsorbing state $i$ has a sojourn time
+  In a birth-and-death process with birth rates $lambda_i$ and death rates $mu_i$, the following holds:
+  - Independent sojourn times.
+  - $S_i tilde.op "Exp"(lambda_i + mu_i)$ for $i>=0$.
+  - Jump probabilities in state $i$ are
   $
-    S tilde.op "Exp"(lambda_i + mu_i).
+    P(i -> i-1) = mu_i / (lambda_i + mu_i) quad "and" quad P(i -> i+1) = lambda_i / (lambda_i + mu_i).
   $
-  Conditional on the sequence of visited states, successive sojourn times are independent. The sojourn time at a given visit is independent of the next destination. The jump probabilities are
-    $
-      P(i -> i-1) = mu_i / (lambda_i + mu_i) quad "and" quad P(i -> i+1) = lambda_i / (lambda_i + mu_i).
-    $
 ]
 
-== Alternative "definition" of birth-and-death processes
-
-The birth-and-death process with birth rates $lambda_i$ and death rates $mu_i$ can be constructed as
-
-In each state $i$, there are two independent competing processes
-- $T_1 = "Time until birth" tilde.op "Exp"(lambda_i)$
-- $T_2 = "Time until death" tilde.op "Exp"(mu_i)$
-
-If one of the rates is zero, its clock is taken to be $oo$; that transition cannot occur.
-
-
-
-If $T_1 < T_2$, then $i -> i+1$ (birth); if $T_2 < T_1$, then $i -> i-1$ (death). Hence
-- If $lambda_i + mu_i > 0$, the sojourn time is $S = min{T_1, T_2} tilde.op "Exp"(lambda_i + mu_i)$.
-- Jump probabilities
-$
-  P(i -> i-1) = mu_i / (lambda_i + mu_i) quad "and" quad P(i -> i+1) = lambda_i / (lambda_i + mu_i).
-$
-
-If both rates are zero, state $i$ is absorbing and no jump occurs.
+// == Alternative "definition" of birth-and-death processes
+//
+// The birth-and-death process with birth rates $lambda_i$ and death rates $mu_i$ can be constructed as
+//
+// In each state $i$, there are two independent competing processes
+// - $T_1 = "Time until birth" tilde.op "Exp"(lambda_i)$
+// - $T_2 = "Time until death" tilde.op "Exp"(mu_i)$
+//
+// If $T_1 < T_2$, then $i -> i+1$ (birth). If $T_2 < T_1$, then $i -> i-1$ (death):
+// - If $lambda_i + mu_i > 0$, the sojourn time is $S = min{T_1, T_2} tilde.op "Exp"(lambda_i + mu_i)$.
+// - Jump probabilities
+// $
+//   P(i -> i-1) = mu_i / (lambda_i + mu_i) quad "and" quad P(i -> i+1) = lambda_i / (lambda_i + mu_i).
+// $
+//
+// If both rates are zero, state $i$ is absorbing and no jump occurs.
 
 == Problem
 Consider the birth-and-death process with $cal(S) = {0, 1, 2}$, birth rates $lambda_0 = 5$, $lambda_1 = 4$ and $lambda_2 = 0$, and death rates $mu_1 = 3$ and $mu_2 = 7$.
@@ -202,11 +197,6 @@ Consider the birth-and-death process with $cal(S) = {0, 1, 2}$, birth rates $lam
   +
     - Determine the birth and death rates of the process.
     - Draw a transition diagram for the process.
-]
-
-== Problem (part 3)
-#text(size: 18pt)[
-  - Two cars are in the parking garage at 16:00, and no new cars may enter. The two cars will leave according to the rates described above. Let $T$ be the time until the parking garage is empty, and determine the probability density $f_T(t)$.
   + Ignore the opening hours and assume that the parking garage is always open. There are currently 16 cars in the parking garage.
     - Determine the distribution of the time until the number of cars in the garage changes.
     - Calculate the probability that the next time the number of cars in the garage changes, it will be a car that leaves.

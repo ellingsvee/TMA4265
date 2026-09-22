@@ -38,7 +38,7 @@ _These notes are written by myself, and errors may and will occur. When in doubt
 Recall that we previously have worked with discrete-time Markov chains, where the stochastic process is indexed by discrete time steps $t = 0, 1, dots$. We can generalize this to continuous time, meaning the time $t$ can take any value in $[0, oo)$. Note that we still have a discrete state space $cal(S)$.
 
 #definition(name: [Continuous-time Markov Chain])[
-  In this course, a continuous-time Markov chain (CTMC) is a stochastic process ${X(t): t >= 0}$ with discrete state space $cal(S)$ that satisfies the Markov property and has stationary transition probabilities.
+  A continuous-time Markov chain (CTMC) is a stochastic process ${X(t): t >= 0}$ with discrete state space $cal(S)$ that satisfies the Markov property and has stationary transition probabilities.
 
   Remarks: For all $s >= 0$, $t > 0$, and $i,j in cal(S)$, we have
   - Markov property:
@@ -142,18 +142,17 @@ Recall that we previously have worked with discrete-time Markov chains, where th
 
 
 #theorem()[
-  In a birth-and-death process, each visit to a nonabsorbing state $i$ has a sojourn time
+  In a birth-and-death process with birth rates $lambda_i$ and death rates $mu_i$, the following holds:
+  - Independent sojourn times.
+  - $S_i tilde.op "Exp"(lambda_i + mu_i)$ for $i>=0$.
+  - Jump probabilities in state $i$ are
   $
-    S tilde.op "Exp"(lambda_i + mu_i).
+    P(i -> i-1) = mu_i / (lambda_i + mu_i) quad "and" quad P(i -> i+1) = lambda_i / (lambda_i + mu_i).
   $
-  Conditional on the sequence of visited states, the successive sojourn times are independent. The sojourn time at a given visit is also independent of the destination of the next jump. The jump probabilities from a nonabsorbing state $i$ are
-    $
-      P(i -> i-1) = mu_i / (lambda_i + mu_i) quad "and" quad P(i -> i+1) = lambda_i / (lambda_i + mu_i).
-    $
 
   // Remark:
   // - This is also valid for a finite state space $cal(S) = {0, 1, dots, N}$ and $lambda_N = 0$.
-  Here we use the term jump probability from state $i$ to state $j$ to denote the probability that the next transition from state $i$ will be to state $j$.
+  - Here we use the term jump probability from state $i$ to state $j$ to denote the probability that the next transition in state $i$ will be to state $j$.
 ]
 
 
@@ -364,13 +363,8 @@ Recall that we previously have worked with discrete-time Markov chains, where th
       $
         min(U_1, dots, U_k) tilde.op "Exp"(sum_(i=1)^(k) mu) = "Exp"(k mu).
       $
-      The death rates are $mu_k = k mu$ for $k = 1, dots, N_max$. The transition diagram is the linear chain $0, 1, dots, N_max$, with a transition $k -> k+1$ at rate $lambda$ for $k<N_max$ and a transition $k -> k-1$ at rate $k mu$ for $k>0$.
-    - After closing, let $T_2 tilde.op "Exp"(2mu)$ be the time until the first of the two cars leaves and let $T_1 tilde.op "Exp"(mu)$ be the additional time until the remaining car leaves. By the memoryless property, $T_1$ and $T_2$ are independent, and $T=T_2+T_1$. Thus, for $t>=0$,
-      $
-        f_T(t) & = integral_0^t f_(T_1)(x) f_(T_2)(t-x) dif x \
-               & = integral_0^t mu e^(-mu x) 2mu e^(-2mu(t-x)) dif x \
-               & = 2mu (e^(-mu t) - e^(-2mu t)).
-      $
+      The death rates are $mu_k = k mu$ for $k = 1, dots, N_max$.
+    - The transition diagram is the linear chain $0, 1, dots, N_max$, with a transition $k -> k+1$ at rate $lambda$ for $k<N_max$ and a transition $k -> k-1$ at rate $k mu$ for $k>0$.
   +
     - For a birth-and-death process, the sojourn time in state $i$ is $"Exp"(lambda_i + mu_i)$. Given that there are $16$ cars in the garage, the time until the number of cars changes is therefore
     $
@@ -464,7 +458,6 @@ Recall that we previously have worked with discrete-time Markov chains, where th
       "Var"[W_3] = sum_(i=0)^(2) "Var"[S_i] = 1/lambda_0^2 + 1/lambda_1^2 + 1/lambda_2^2 = 1 + 1/9 + 1/4 = 49/36.
     $
 ]
-
 
 #pagebreak()
 #problem(name: [Exam 2025, Problem 3])[
