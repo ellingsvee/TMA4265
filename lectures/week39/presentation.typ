@@ -20,7 +20,7 @@
 )
 
 #title-slide[
-  = Week 38: Continuous-time Markov Chains
+  = Week 39: Continuous-time Markov Chains
 ]
 
 == Recall from discrete-time Markov chains
@@ -46,7 +46,7 @@
 
 ==
 #definition(name: [Continuous-time Markov Chain])[
-  A continuous-time Markov Chain (CTMC) is a stochastic process ${X(t): t >= 0}$ with discrete state space $cal(S)$ that satisfies the Markov property.
+  In this course, a continuous-time Markov chain (CTMC) is a stochastic process ${X(t): t >= 0}$ with discrete state space $cal(S)$ that satisfies the Markov property and has stationary transition probabilities.
 
 
   For all $s >= 0$, $t > 0$, and $i,j in cal(S)$, we have
@@ -54,7 +54,7 @@
     $
       P(X(s+t) = j | X(s) = i, X(u) = x(u), 0 <= u < s) = P(X(t+s) = j | X(s) = i).
     $
-  - Stationary transition probabilities: $ P(X(s+t) = j | X(s) = i) = P(X(t) = j | X(0) = i). $
+  - Stationary transition probabilities (time homogeneity): $ P(X(s+t) = j | X(s) = i) = P(X(t) = j | X(0) = i). $
 ]
 == Problem (warm-up)
 Show that the Poisson process ${X(t): t>=0}$ with rate $lambda$ satisfies the Markov property
@@ -75,9 +75,9 @@ $
 #theorem(name: [Chapman-Kolmogorov])[
   For a CTMC,
   $
-    P_(i,j)(s+t) = sum_(k=0)^(oo) P_(i,k)(s) P_(k,j)(t)
+    P_(i,j)(s+t) = sum_(k in cal(S)) P_(i,k)(s) P_(k,j)(t)
   $
-  for all $t,s>=0$ and $i,j = 0, 1, dots$.
+  for all $t,s>=0$ and $i,j in cal(S)$.
 ]
 
 == Motivating birth-and-death processes
@@ -96,12 +96,13 @@ $
 ==
 
 #definition(name: [Birth-and-death process])[
-  Let ${X(t): t>=0}$ be a CTMC with state space $cal(S) = {0, 1, 2, dots}$. Then ${X(t): t>=0}$ is called a birth-and-death with birth rates $lambda_i$ and death rates $mu_i$ if $P_(i,j)(t)$ satisfies
-  + $P_(i, i+1)(h) = lambda_i h + "o"(h)$ as $h -> 0^+$ for $i>=0$.
-  + $P_(i, i-1)(h) = mu_i h + "o"(h)$ as $h -> 0^+$ for $i>=1$.
-  + $P_(i, i)(h) = 1 - (lambda_i + mu_i)h + "o"(h)$ as $h -> 0^+$ for $i>=0$.
+  Let ${X(t): t>=0}$ be a CTMC with state space $cal(S) = {0, 1, 2, dots}$ or $cal(S) = {0, 1, dots, N}$. Then ${X(t): t>=0}$ is called a birth-and-death process with nonnegative birth rates $lambda_i$ and death rates $mu_i$ if $P_(i,j)(t)$ satisfies
+  + $P_(i, i+1)(h) = lambda_i h + "o"(h)$ as $h -> 0^+$ whenever $i+1 in cal(S)$.
+  + $P_(i, i-1)(h) = mu_i h + "o"(h)$ as $h -> 0^+$ whenever $i-1 in cal(S)$.
+  + $P_(i, i)(h) = 1 - (lambda_i + mu_i)h + "o"(h)$ as $h -> 0^+$ for $i in cal(S)$.
+  + $P_(i, j)(h) = "o"(h)$ as $h -> 0^+$ whenever $abs(i-j) > 1$.
   + $P_(i, j)(0) = delta_(i, j)$.
-  + $mu_0 = 0$, $lambda_0 > 0$, and $lambda_i, mu_i > 0$ for $i>=1$.
+  + $mu_0 = 0$ and, for a finite state space, $lambda_N = 0$.
 
   // Remarks:
   // - At most two possible jumps: $i -> i+1$ and $i -> i-1$.
@@ -110,7 +111,7 @@ $
 ]
 #definition(name: [Pure birth and pure death processes])[
   - Pure birth process: $mu_i = 0$ for all $i>=0$.
-  - Pure death process: $lambda_i = 0$ for all $i>=1$.
+  - Pure death process: $lambda_i = 0$ for all $i>=0$.
 ]
 //
 // ==
@@ -122,14 +123,36 @@ $
 
 ==
 #theorem()[
-  In a birth-and-death process with birth rates $lambda_i$ and death rates $mu_i$, the following holds:
-  - Independent sojourn times.
-  - $S_i tilde.op "Exp"(lambda_i + mu_i)$ for $i>=0$.
-  - Jump probabilities in state $i$ are
+  In a birth-and-death process, each visit to a nonabsorbing state $i$ has a sojourn time
+  $
+    S tilde.op "Exp"(lambda_i + mu_i).
+  $
+  Conditional on the sequence of visited states, successive sojourn times are independent. The sojourn time at a given visit is independent of the next destination. The jump probabilities are
     $
       P(i -> i-1) = mu_i / (lambda_i + mu_i) quad "and" quad P(i -> i+1) = lambda_i / (lambda_i + mu_i).
     $
 ]
+
+== Alternative "definition" of birth-and-death processes
+
+The birth-and-death process with birth rates $lambda_i$ and death rates $mu_i$ can be constructed as
+
+In each state $i$, there are two independent competing processes
+- $T_1 = "Time until birth" tilde.op "Exp"(lambda_i)$
+- $T_2 = "Time until death" tilde.op "Exp"(mu_i)$
+
+If one of the rates is zero, its clock is taken to be $oo$; that transition cannot occur.
+
+
+
+If $T_1 < T_2$, then $i -> i+1$ (birth); if $T_2 < T_1$, then $i -> i-1$ (death). Hence
+- If $lambda_i + mu_i > 0$, the sojourn time is $S = min{T_1, T_2} tilde.op "Exp"(lambda_i + mu_i)$.
+- Jump probabilities
+$
+  P(i -> i-1) = mu_i / (lambda_i + mu_i) quad "and" quad P(i -> i+1) = lambda_i / (lambda_i + mu_i).
+$
+
+If both rates are zero, state $i$ is absorbing and no jump occurs.
 
 == Problem
 Consider the birth-and-death process with $cal(S) = {0, 1, 2}$, birth rates $lambda_0 = 5$, $lambda_1 = 4$ and $lambda_2 = 0$, and death rates $mu_1 = 3$ and $mu_2 = 7$.
@@ -175,11 +198,15 @@ Consider the birth-and-death process with $cal(S) = {0, 1, 2}$, birth rates $lam
 
 == Problem (part 2)
 #text(size: 18pt)[
-  Assume additionally that cars, independently of each other and their arrival times, spend a stochastic time in the parking garage, which follows an exponential distribution with expectation $1\/mu = 30 "minutes"$. After the time has passed, the car immediately exists the parking garage. Further, the parking garage has a maximum capacity of $N_max = 20 "cars"$, and cars that arrive when the garage is full will drive past the garage without forming a queue. Under these assumptions, the number of cars $X(t)$ in the garage at time $t$ is a birth-and-death process.
+  Assume additionally that cars, independently of each other and their arrival times, spend a stochastic time in the parking garage, which follows an exponential distribution with expectation $1\/mu = 30 "minutes"$. After the time has passed, the car immediately exits the parking garage. Further, the parking garage has a maximum capacity of $N_max = 20 "cars"$, and cars that arrive when the garage is full will drive past the garage without forming a queue. Under these assumptions, the number of cars $X(t)$ in the garage at time $t$ is a birth-and-death process.
   +
     - Determine the birth and death rates of the process.
     - Draw a transition diagram for the process.
-  // - Two cars are in the parking garage at 16:00, and no new cars may enter. The two cars will leave according to the rates described above. Let T be the time until the parking garage is empty, and determine the probability density, $f_T (t)$.
+]
+
+== Problem (part 3)
+#text(size: 18pt)[
+  - Two cars are in the parking garage at 16:00, and no new cars may enter. The two cars will leave according to the rates described above. Let $T$ be the time until the parking garage is empty, and determine the probability density $f_T(t)$.
   + Ignore the opening hours and assume that the parking garage is always open. There are currently 16 cars in the parking garage.
     - Determine the distribution of the time until the number of cars in the garage changes.
     - Calculate the probability that the next time the number of cars in the garage changes, it will be a car that leaves.
@@ -187,7 +214,7 @@ Consider the birth-and-death process with $cal(S) = {0, 1, 2}$, birth rates $lam
 
 == Towards the Kolmogorov forward equations
 
-Consider a pure birth process with $lambda_0 != lambda_i$. Derive $P_(0, 1)(t)$.
+Consider a pure birth process with $lambda_0 != lambda_1$. Derive $P_(0, 1)(t)$.
 
 #pause
 
@@ -201,9 +228,11 @@ we multiply each side by $mu(x) = exp(integral P(x) dif x)$ and use the product 
 
 ==
 #theorem(name: [Forward Kolmogorov differential equations])[
-  For a birth-and-death process with birth rates $lambda_i$ and death rates $mu_i$, the $P_(i,j)(t)$ satisfy  $ P_(i,0)^' (t) &= -lambda_0 P_(i,0)(t) + mu_1 P_(i,1)(t), quad t >= 0 \
+  For a birth-and-death process on $cal(S) = {0, 1, 2, dots}$, the $P_(i,j)(t)$ satisfy  $ P_(i,0)^' (t) &= -lambda_0 P_(i,0)(t) + mu_1 P_(i,1)(t), quad t >= 0 \
   P_(i,j)^' (t) &= lambda_(j-1) P_(i,j-1)(t) - (lambda_j + mu_j) P_(i,j)(t) + mu_(j+1) P_(i,j+1)(t), quad t >= 0, quad j >= 1, $
   with initial conditions $P_(i,j)(0) = delta_(i,j)$.
+
+  For $cal(S)={0,1,dots,N}$, the upper-boundary equation is $P_(i,N)^'(t) = lambda_(N-1)P_(i,N-1)(t)-mu_N P_(i,N)(t)$.
 ]
 
 == Problem
