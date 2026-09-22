@@ -155,7 +155,11 @@ Consider the birth-and-death process with $cal(S) = {0, 1, 2}$, birth rates $lam
 ==
 
 #theorem()[
-  $T tilde.op "Exp"(lambda)$ is memoryless, meaning $P(T > s+t | T > s) = P(T > t)$ for all $s,t >= 0$.
+  $T tilde.op "Exp"(lambda)$ is memoryless, meaning
+  $
+    P(T > s+t | T > s) = P(T > t)
+  $
+  for all $s,t >= 0$.
 
   Remark: It is the only memoryless continuous distribution on $(0,oo)$.
 ]
@@ -205,3 +209,21 @@ we multiply each side by $mu(x) = exp(integral P(x) dif x)$ and use the product 
 == Problem
 A machine works ($1$) or is broken ($0$). Time to breakdown is $"Exp"(mu)$, and time to repair is $"Exp"(lambda)$. All sojourn times are independent. The machine works at time $t=0$. Calculate the probability that the machine works at time $t=10$.
 
+== Problem
+A pure birth process starting from $X(0) = 0$ has birth parameters $lambda_0 = 1$, $lambda_1 = 3$, $lambda_2 = 2$ and $lambda_3 = 5$. Let $W_1$, $W_2$ and $W_3$ be the stochastic times it takes the process to reach states $1$, $2$ and $3$, respectively.
++ Determine the transition probability functions $P_n (t) = P(X(t) = n|X(0) = 0)$ for $n = 0, 1, 2, 3$.
++ Write $W_3$ as a sum of sojourn times and thereby deduce that the mean time is $EE[W_3] = 11\/6$.
++ Determine the mean of $W_1 + W_2 + W_3$.
++ Determine the variance of $W_3$.
+
+== Problem (Exam 2025)
+A student at a lecture is at any time either focusing on the lecture or not. Assume that the expected length of the focused periods is $5$ minutes and that the expected length of the unfocused periods is $1$ minute.
+-
+  + Explain that a (simplified) model of the student is as a two-state continuous time Markov chain X with state space ${0, 1}$.
+  + Determine the infinitesimal matrix $A$ of $X$.
+  + Assume the student is focused at the start of the lecture. What is the probability of the student being focused $10$ minutes later?
+Assume that a group of $n = 40$ students is modeled identically as above by $X_1, dots, X_n$ independent two-state continuous Markov chains.
+-
+  + Prove that $Z = X_1 + dots + X_n$ is a Markov chain.
+  + Determine a differential equation for the probability distribution of $Z$.
+  + Assume all students are focused at the beginning of the lecture. What is the expected number of focused students $10$ minutes later?

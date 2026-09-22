@@ -137,18 +137,6 @@ Recall that we previously have worked with discrete-time Markov chains, where th
 //   - In a pure death process with starting state $N$ and where $mu_i > 0$ for $i = 1, dots, N$, the sojourn times are independent and $S_i tilde.op "Exp"(mu_i)$ for $i = 1, dots, N$.
 // ]
 
-#theorem()[
-  If $T_i tilde.op "Exp"(alpha_i)$ for $i = 1, dots, n$, and $T_1, dots, T_n$ are independent, then
-  $
-    min(T_1, dots, T_n) tilde.op "Exp"(sum_(i=1)^n alpha_i).
-  $
-]<thm:min_of_exponentials>
-
-#theorem()[
-  $T tilde.op "Exp"(lambda)$ is memoryless, meaning $P(T > s+t | T > s) = P(T > t)$ for all $s,t >= 0$.
-
-  // Remark: $"Exp"(lambda)$ is the only memoryless continuous distribution on $(0,o)$.
-]
 
 
 
@@ -180,6 +168,17 @@ Recall that we previously have worked with discrete-time Markov chains, where th
   - Sojourn time $S_i = min{T_1, T_2} tilde.op "Exp"(lambda_i + mu_i)$
 
   // Remark: $P(T_1 < T_2) = lambda_i\/(lambda_i + mu_i)$ and $S_i = min{T_1, T_2} tilde.op "Exp"(lambda_i + mu_i)$.
+]
+
+#theorem()[
+  If $T_i tilde.op "Exp"(alpha_i)$ for $i = 1, dots, n$, and $T_1, dots, T_n$ are independent, then
+  $
+    min(T_1, dots, T_n) tilde.op "Exp"(sum_(i=1)^n alpha_i).
+  $
+]<thm:min_of_exponentials>
+
+#theorem()[
+  $T tilde.op "Exp"(lambda)$ is memoryless, meaning $P(T > s+t | T > s) = P(T > t)$ for all $s,t >= 0$.
 ]
 
 
@@ -454,54 +453,54 @@ Recall:
 ]
 
 
-// #pagebreak()
-// #problem(name: [Exam 2025, Problem 3])[
-//   A student at a lecture is at any time either focusing on the lecture or not. Assume that the expected length of the focused periods is $5$ minutes and that the expected length of the unfocused periods is $1$ minute.
-//   -
-//     + Explain that a (simplified) model of the student is as a two-state continuous time Markov chain X with state space ${0, 1}$.
-//     + Determine the infinitesimal matrix $A$ of $X$.
-//     + Assume the student is focused at the start of the lecture. What is the probability of the student being focused $10$ minutes later?
-//   Assume that a group of $n = 40$ students is modeled identically as above by $X_1, dots, X_n$ independent two-state continuous Markov chains.
-//   -
-//     + Prove that $Z = X_1 + dots + X_n$ is a Markov chain.
-//     + Determine a differential equation for the probability distribution of $Z$.
-//     + Assume all students are focused at the beginning of the lecture. What is the expected number of focused students $10$ minutes later?
-// ]
-// #solution()[
-//   -
-//     + The student is either focused $1$ or unfocused $0$. To stay in a state or to jump depends on the current state, and sojourn times are exponentially distributed with means $5$ and $1$ minutes, respectively.
-//     + As $EE[S_1] = 5 = 1\/mu_0$ and $EE[S_0] = 1 = 1\/lambda_0$, we have $mu_0 = 1\/5$ and $lambda_0 = 1$. Using the definition of $bf(A)$ gives
-//       $
-//         A = mat(
-//           -lambda_0, lambda_0;
-//           mu_1, - mu_1
-//         ) = mat(
-//           -1, 1;
-//           1\/5, -1\/5
-//         )
-//       $
-//     + We are interested in $P_(1, 1)(10)$. Dentote $p(t) = P_(1, 1)(t)$. By the forward Kolmogorov differential equations and using $P_(1,0)(t) = 1-p(t)$, we have
-//       $
-//         p^' (t) = lambda_0 (1 - p(t)) - mu_1 p(t) = 1 - p(t) - 1/5 p(t) = 1 - 6/5 p(t)
-//       $
-//       with initial condition $p(0) = 1$. Solving this differential equation gives
-//       $
-//         p(t) = C e^(-6/5 t) + 5/6
-//       $
-//       and using $p(0) = 1$ gives $C = 1/6$. Inserting $t = 10$ gives the desired probability
-//       $
-//         P_(1, 1)(10) = 1/6 e^(-12) + 5/6 approx 0.8333.
-//       $
-//   -
-//     + With $40$ independent copies, the next jump time is the minimum of independent exponentials, which we know from @thm:min_of_exponentials is also exponentially distributed. When $Z = k$, we have the jumps $k -> k-1$ (a student loses focus) and $k -> k+1$ (a student gains focus). $Z$ is a birth-and-death CTMC on ${0, dots, n}$, with birth rates $lambda_k = (n-k)$ and death rates $mu_k = k/5$.
-//     + Assuming $k$ students are focused, we have
-//       $
-//         P_(k,k)^' (t) & = lambda_(k-1) P_(k,k-1)(t) - (lambda_k + mu_k) P_(k,k)(t) + mu_(k+1) P_(k,k+1)(t) \
-//                       & = (41 - k) P_(k,k-1)(t) - (40-k + k/5) P_(k,k)(t) + ((k+1)/5) P_(k,k+1)(t).
-//       $
-//     + We are interested in $EE[Z(t)] = sum_(i=1)^40 EE[X_i]$ by the linearity of the expectation. As $X_i(t) in {0, 1}$, we have that
-//       $
-//         EE[X_i (10)] = P(X_i (10) = 1) = P_(1, 1)(10) = 1/6 e^(-12) + 5/6 approx 33.3.
-//       $
-//
-// ]
+#pagebreak()
+#problem(name: [Exam 2025, Problem 3])[
+  A student at a lecture is at any time either focusing on the lecture or not. Assume that the expected length of the focused periods is $5$ minutes and that the expected length of the unfocused periods is $1$ minute.
+  -
+    + Explain that a (simplified) model of the student is as a two-state continuous time Markov chain X with state space ${0, 1}$.
+    + Determine the infinitesimal matrix $A$ of $X$.
+    + Assume the student is focused at the start of the lecture. What is the probability of the student being focused $10$ minutes later?
+  Assume that a group of $n = 40$ students is modeled identically as above by $X_1, dots, X_n$ independent two-state continuous Markov chains.
+  -
+    + Prove that $Z = X_1 + dots + X_n$ is a Markov chain.
+    + Determine a differential equation for the probability distribution of $Z$.
+    + Assume all students are focused at the beginning of the lecture. What is the expected number of focused students $10$ minutes later?
+]
+#solution()[
+  -
+    + The student is either focused $1$ or unfocused $0$. To stay in a state or to jump depends on the current state, and sojourn times are exponentially distributed with means $5$ and $1$ minutes, respectively.
+    // + As $EE[S_1] = 5 = 1\/mu_0$ and $EE[S_0] = 1 = 1\/lambda_0$, we have $mu_0 = 1\/5$ and $lambda_0 = 1$. Using the definition of $bf(A)$ gives
+    //   $
+    //     A = mat(
+    //       -lambda_0, lambda_0;
+    //       mu_1, - mu_1
+    //     ) = mat(
+    //       -1, 1;
+    //       1\/5, -1\/5
+    //     )
+    //   $
+    + We are interested in $P_(1, 1)(10)$. Dentote $p(t) = P_(1, 1)(t)$. By the forward Kolmogorov differential equations and using $P_(1,0)(t) = 1-p(t)$, we have
+      $
+        p^' (t) = lambda_0 (1 - p(t)) - mu_1 p(t) = 1 - p(t) - 1/5 p(t) = 1 - 6/5 p(t)
+      $
+      with initial condition $p(0) = 1$. Solving this differential equation and inserting $t=10$ gives
+      $
+        P_(1, 1)(10) = 1/6 e^(-12) + 5/6 approx 0.8333.
+      $
+  -
+    + With $40$ independent copies, the next jump time is the minimum of independent exponentials, which we know from @thm:min_of_exponentials is also exponentially distributed. When $Z = k$, we have the jumps $k -> k-1$ (a student loses focus) and $k -> k+1$ (a student gains focus). $Z$ is a birth-and-death CTMC on ${0, dots, n}$, with birth rates $lambda_k = (n-k)$ and death rates $mu_k = k\/5$.
+    + Assuming $k$ students are focused, we have
+      $
+        P_(k,k)^' (t) & = lambda_(k-1) P_(k,k-1)(t) - (lambda_k + mu_k) P_(k,k)(t) + mu_(k+1) P_(k,k+1)(t) \
+                      & = (41 - k) P_(k,k-1)(t) - (40-k + k/5) P_(k,k)(t) + ((k+1)/5) P_(k,k+1)(t).
+      $
+    + We are interested in $EE[Z((10)) | X_i (0) = 1, i=1,dots,40] = sum_(i=1)^40 EE[X_i (10)| X_i (0) = 1]$ by the linearity of the expectation and independence. As $X_i (t) in {0, 1}$, we have that
+      $
+        EE[X_i (10) | X_i (0) = 1] = P(X_i (10) = 1 | X_i (0) = 1) = P_(1, 1)(10) = 1/6 e^(-12) + 5/6.
+      $
+      Therefore
+      $
+        EE[Z((10)) | X_i (0) = 1, i=1,dots,40] = 40 (1/6 e^(-12) + 5/6) approx 33.33.
+      $
+
+]
