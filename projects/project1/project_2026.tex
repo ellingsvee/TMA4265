@@ -1,0 +1,298 @@
+%  LaTeX-mal for labrapporter i fysikk, v.01.11.2011 
+% F{\o}rst m{\aa} vi definere noen ting for dokumentet:
+\documentclass[1p]{article}		% 5p gir 2 kolonner pr side. 1p gir 1 kolonne pr side. % fikk til aa fjerne preprint, gjorde om \documentclass[1p]{elsarticle} til \documentclass[1p]{article} og kommenterte ut journal		
+%\journal{-}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{listings}
+\usepackage{placeins}
+\usepackage{booktabs}
+\usepackage{float}
+\lstset{ %
+  backgroundcolor=\color{yellow2}
+  \lstset{escapechar=\@}
+  }
+\usepackage{color}
+\definecolor{yellow2}{RGB}{255,255,255} %{255,253,208}
+\usepackage{ dsfont }
+\usepackage{dcolumn}
+\usepackage{enumitem} %abc
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc} 						% Vise norske tegn.
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[T1]{fontenc} 
+\usepackage{fancyvrb} 
+\usepackage{listings} 
+\usepackage{bm} 
+\usepackage{xcolor} 
+\usepackage[english]{babel}								% Tilpasning til norsk.
+\usepackage{graphicx}       						% For {\aa} inkludere figurer.
+\usepackage{amsmath,amssymb} 						% Ekstra matematikkfunksjoner.
+\usepackage{siunitx}							      % M{\aa} inkluderes for blant annet {\aa} f{\aa} tilgang til kommandoen \SI (korrekte m{\aa}ltall med enheter)
+\usepackage{hyperref}
+	\sisetup{exponent-product = \cdot}      % Prikk som multiplikasjonstegn (i steden for kryss).
+ 	\sisetup{output-decimal-marker  =  {,}} % Komma som desimalskilletegn (i steden for punktum).
+\usepackage{booktabs}                     % For {\aa} f{\aa} tilgang til finere linjer (til bruk i tabeller og slikt).
+\lstloadlanguages{R}
+\newcommand{\lil}[1]{\lstinline|#1|}
+%\lstset{ backgroundcolor=\color{yellow2}
+%\lstset{escapechar=\@}}  
+\xdefinecolor{gray}{rgb}{0.4,0.4,0.4} 
+\xdefinecolor{blue}{RGB}{58,95,205}% R's royalblue3; #3A5FCD 
+\usepackage[a4paper]{geometry}
+\title{}
+\author{}
+\begin{document}\begin{center}\textbf{
+{\huge{TMA4265 Stochastic Modelling -- Fall 2026}}\\ \vspace{3mm}
+{\LARGE{	Project 1}}}\end{center}
+\vspace{5mm}
+{\LARGE \textbf{Background information}}\\
+\begin{itemize}
+  \item
+    The deadline for the project is Sunday the 11th of October at 23:59.
+  \item
+    This project must be passed to be admitted to the final exam. 
+    \item Problem 1 and 2 are compulsory and \textbf{a reasonable attempt must be made on each of the subproblems in order to pass}. Attempting Problem 3 is optional.
+    \item In addition, you need a total of \textbf{50 points} to pass. Problem 1 is worth up to 70 points, Problem 2 is worth up to 30 points, and Problem 3 is worth up to 20 points.
+  \item
+    The project should be done in groups of 3 people. Exceptions to this fixed group size can be made. You must sign up as a group on Canvas before submitting your report and code.
+  \item
+    The project report should preferably be prepared using Latex or Typst, and \textbf{must}:
+    \begin{itemize} 
+      \item
+        Be a PDF-file.
+      \item
+        Include the equations and explanations necessary to justify the answers in each problem.
+      \item 
+        Include the required plots in the PDF and reference them in the text.
+    \end{itemize}
+    The project report should be a complete text, meaning it should be readable to someone with no knowledge of the questions. 
+  \item
+    The computer code must be written in \texttt{R}, \texttt{Python} or \texttt{Julia}, and must be submitted as a separate file \textbf{not} as an appendix in the report. Make sure your code runs. We may test it. Also make your computer code readable and add comments that describe what your code is doing.
+  \item
+    There is a \textbf{8 page limit} for the project report, \textbf{or 10 pages} if you attempt the third optional problem.. If you submit a longer report, we may not read all of it. The computer code is submitted as a separate file and may be as long as necessary.
+  \item
+    See the wiki for information about digital sessions where you can ask questions about the project. You can also ask questions on the forum (\url{https://mattelab2026h.math.ntnu.no/c/tma4265/34}), or email the teaching assistant.
+  \item
+    The PDF-file with the report and the files with computer code must be submitted through Canvas. You need to sign up as a "Project 1" group before you can submit your answer. Note that we are all new to this system, so note that there may be given additional instructions on how to deliver closer to the deadline. 
+  \item
+    Write a small paragraph at the end of your report describing how you divided the workload between the group members.
+\end{itemize}
+\newpage
+\vspace{1cm}\noindent
+{\LARGE{\textbf{Problem 1: Modelling an outbreak of measles}}}\\\\
+\textbf{Each subproblem is worth up to 10 points.} \\\\
+\noindent
+Throughout this problem you may assume that one year has exactly 365 days and
+that we are considering a population consisting of a fixed number $N > 0$ individuals.
+We use a simplified model where each individual only has
+three possible states: susceptible (S),
+infected (I), and recovered and immune (R). We model on a daily scale and let $n = 0, 1, \ldots$ denote time measured in days. 
+We treat measles as an infectious disease,
+and we assume that each day
+\begin{itemize}
+  \item[1)] a susceptible individual can become infected or remain susceptible,
+  \item[2)] an infected individual can become recovered or remain infected, 
+  \item[3)] a recovered individual can lose immunity and become susceptible, or remain recovered. 
+\end{itemize}
+
+
+In the first stage of modelling, we assume that the individuals in the population
+are independent, and assume that each day, any susceptible individual has a 
+probability $0 < \beta < 1$ of becoming infected tomorrow, any
+infected individual has a probability $0 < \gamma < 1$ of becoming recovered tomorrow, and
+any recovered individual has a probability $0 < \alpha < 1$ of losing immunity tomorrow.\\\\
+\textbf{a)}
+Consider one specific individual, and let $X_n$ denote the state of that individual 
+at time $n$. Let the states 0, 1 and 2
+correspond to S, I and R, respectively, and assume that $X_0 = 0$.
+Justify that $\{X_n: n = 0,1, \ldots\}$ is a Markov chain and explain why the transition
+probability matrix is given by
+\[
+  \mathbf{P} = \begin{bmatrix}
+    1-\beta & \beta    & 0 \\
+    0       & 1-\gamma & \gamma \\
+    \alpha       &   0      & 1-\alpha
+  \end{bmatrix}.
+\]
+State what each parameter represents in your explanation.\\\\
+\textbf{b)}
+Assume that $\beta = 0.01$, $\gamma = 0.10$ and $\alpha = 0.005$. Explain why you can be
+certain that this Markov chain has a limiting distribution, and
+calculate (by hand) the long-run mean number of days per year spent in each state.\\\\
+\textbf{c)}
+Assume that the individual is susceptible at time 0, and complete the following tasks:
+\begin{itemize}
+  \item
+    (Code) Simulate the Markov chain for 20 years (7300 time steps). 
+  \item (Computer code) For each run of this code, use the last 10 years (of the 20 years) to get an estimate of
+  each of the quantities in \textbf{b)}.
+  \item
+  (Code) Run the code 30 times and compute an approximate 95\% confidence interval (CI)
+for each of the quantities in \textbf{b)} (using the 30 independent estimates).
+  \item (Report) Explain briefly how you computed the CIs, provide the computed CIs,
+  and discuss whether the computed CIs are compatible with your exact 
+calculations in \textbf{b)}?
+\end{itemize}
+\vspace{0.1cm}
+
+\noindent Due to the highly infectious nature of measles, the proportions of susceptible, infected 
+and recovered individuals in the population will
+change with time.
+This in turn means that it is highly unrealistic to assume that $\beta$ does not change 
+with time. Assume that the population size $N = 1000$ is constant through time and 
+at each time step consists of 
+$S_n$ susceptible individuals, $I_n$ infected individuals, and $R_n$ recovered individuals.
+
+Assume that for each time step $n$, the probability that a susceptible individual becomes infected is
+$\beta_n = 0.5I_n/N$, the probability that
+an infected individual recovers is $\gamma = 0.10$, and the probability that
+a recovered individual becomes susceptible is $\alpha = 0.005$. Assume that the $N = 1000$
+individuals change states independently of each other at each time step
+given the values of $\beta_n$, $\gamma$ and $\alpha$. Define the discrete-time stochastic process $\{Y_n: n = 0, 1, \ldots\}$, where 
+$Y_n = (S_n, I_n, R_n)$. 
+\\\\
+\textbf{d)} Let $Z_n = (S_n, I_n)$ for $n = 0, 1, \ldots$. Are $\{I_n: n = 0, 1, \ldots\}$,
+$\{Z_n: n = 0, 1, \ldots\}$, and $\{Y_n: n = 0, 1, \ldots\}$ Markov chains? Give definite arguments for all three.\\\\
+Introduce 50 infected individuals in the population at time $n = 0$
+by
+$Y_0 = (950, 50, 0)$. \\\\
+\textbf{e)} Complete the following tasks:
+\begin{itemize}
+  \item (Code) Simulate $\{Y_n: n = 0, 1, 2,\ldots\}$ until time step
+$n = 300$.\\
+\textit{Hint: At each time step, the number of new susceptible individuals and new infected individuals are all binomial distributions. After you determine the number of trials and the success probability for each of them, you can simulate them, for example, using
+ \texttt{rbinom} in \texttt{R}.}
+  \item (Report) Choose one realization and show the temporal evolutions of $S_n$, $I_n$ and $R_n$ together in 
+one figure. Give a short discussion of why the behaviour of the Markov chain is very different
+in time intervals 0--50 and 50--300.
+\end{itemize} 
+\vspace{0.1cm}
+
+\noindent
+\textbf{f)} A major interest in the modelling of infectious diseases lies in the explosive behaviour 
+during the initial outbreak of the disease. 
+Based on 1000 simulations of the outbreak for time steps $n = 0, 1,\ldots, 300$:
+\begin{itemize}
+  \item (Code) Estimate the expected maximum number of infected individuals during
+  the simulated time steps, $\mathrm{E}[\text{max}\{I_0, I_1, \ldots, I_{300}\}]$, and the expected time at which the number of infected individuals
+first takes its highest value, $\mathrm{E}[\text{min} \{\text{arg}\,\max\limits_{n \leq 300}\,\{I_n\}\}]$.
+  \item
+    (Code) Compute approximate 95\% CIs for the two expected values.
+  \item
+    (Report) Provide the computed CIs, and discuss how would you use them assess the potential severity of the outbreak?
+\end{itemize}
+\vspace{0.1cm}
+
+\noindent
+\textbf{g)} This question is open to different solutions, but you need to justify and describe the approach you choose in your report.
+
+ A strategy to avoid large outbreaks is immunisation programmes. Assume vaccination
+provides life-long immunity, and consider three cases: 100 individuals are vaccinated, 600
+individuals are vaccinated, and 800 individuals are vaccinated. 
+
+We want to introduce 50 infected individuals among the unvaccinated individuals, and study the behaviour of the number of infected individuals through time. Modify the above model to accommodate the vaccinated individuals, and use your modified
+model to generate four realizations of the temporal evolution of the number
+of infected individuals in the same figure: the three cases described above,
+and the original case of no vaccinated individuals. Discuss what changes as more
+and more individuals are vaccinated.
+
+Compute and discuss changes in the estimated expected values 
+from \textbf{1f)} in the three new cases
+compared to the original case of no vaccinated individuals.
+
+
+
+\newpage
+\noindent
+{\LARGE \textbf{Problem 2: Insurance claims}}\\\\
+\textbf{Each subproblem is worth up to 10 points.} \\\\
+\noindent
+Let $X(t)$ denote the number of claims received by an insurance company
+in the time interval $[0, t]$. We will assume that $\{X(t): t \geq 0\}$ can be modelled
+as a Poisson process, where $t$ is measured in days since January 1st at 00:00.00.
+Assume that the rate of the Poisson process is given by $\lambda(t) = 1.5$, $t\geq 0$.\\\\
+\textbf{a)} Complete the following tasks:
+\begin{itemize}
+  \item
+    (Report) Compute the 
+    probability that there are more than 100 claims at March 1 at 00:00.00 (59 days).
+  \item
+    (Code) Write code to verify the calculation by simulating 1000 realizations
+    of the Poisson process.
+  \item
+    (Report) Compare the estimated probability with the exact calculation and comment. Further,
+    make a figure that shows 10 realizations of $X(t)$, $ 0\leq t \leq 59$, plotted
+in the same figure.
+\end{itemize}
+\vspace{0.1cm}
+
+\noindent
+Assume that the monetary claims are independent, and are independent of the claim
+arrival times. Each claim amount (in mill. kr.) has an exponential distribution
+with rate parameter $\gamma = 10$. This means that claim $C_i \sim \text{Exp}(\gamma)$,
+$i = 1, 2, \ldots$. The total claim amount at time $t$ is defined
+by $Z(t) = \sum_{i = 1}^{X(t)} C_i$. \\\\
+\emph{\textbf{NB:} Since $\gamma$ is a \textbf{rate} parameter,
+the exponential distribution is parametrized as $f(c) = \gamma \mathrm{e}^{-\gamma c}$, $c > 0$. This may
+differ from what you have seen in other courses, but we will exclusively use this parametrization of
+the exponential distribution in this course.} \\\\
+\textbf{b)} Complete the following tasks:
+\begin{itemize}
+  \item
+    (Code) Write code that uses 1000 simulations to estimate the 
+    probability that the total claim amount exceeds 8 mill. kr. at March 1 at 00:00.00 (59 days).
+  \item
+    (Report) Provide the estimated probability, and
+    make a figure that shows 10 realizations of $Z(t)$, $ 0\leq t \leq 59$, plotted
+in the same figure.
+\end{itemize}
+\vspace{0.1cm}
+
+\noindent
+\textbf{c)} The policy of the insurance company is to investigate a claim if and only
+if it exceeds 250000 kr.. For $t\geq 0$, let $Y_t$ denote the number of claims, which need
+to be investigated, received in the time
+interval $[0,t]$. Prove that 
+$\{Y(t): t\geq 0\}$ is a Poisson process and compute its rate.
+
+\newpage
+\noindent{\LARGE \textbf{Problem 3: Metropolis algorithm (OPTIONAL)}}\\\\
+It is optional to attempt this problem, but \textbf{each subproblem is worth up to 5 points}. It is intended as a brief application of the Metropolis algorithm (a type of Markov chain Monte Carlo) for any interested.\\\\
+\noindent
+Define constants $\ldots, c_{-1}, c_0, c_1, \ldots$, with $0 < c_i < \infty$ for each $i \in \mathbb{Z}$. Let $X_0=0$, and define $\{X_n\}$ for $n=0, 1, \ldots$ algorithmically in the following way:
+\begin{enumerate}
+\item[1.] Generate proposal $X_{n+1}^*$, with $X_{n+1}^*$ equal to $X_n - 1$ with probability $0.5$ and equal to $X_n + 1$ otherwise
+\item[2.] Generate $U\sim \mbox{Unif}(0, 1)$
+\item[3.] Set 
+$$ X_{n+1} = \begin{cases}
+X_{n+1}^*, & \ \text{if } U < \min \left\{\frac{c_{X_{n+1}^*}}{c_{X_n}}, 1\right\} \\
+X_n, & \text{ otherwise.}
+\end{cases} $$
+\end{enumerate}
+If we repeat the above process for $n=0, 1, \ldots$, we can generate a realization of $\{X_n\}$ up to a certain number of time steps.\\\\
+\noindent
+\textbf{a)} Is $\{X_n\}$ a Markov chain? Is it reducible/irreducible and what is its periodicity? What if, for some $i$, $c_i=0$?\\\\
+\noindent
+\textbf{b)} Show that the transition probabilities take the form:
+$$ P_{ij} = \begin{cases}
+0.5 \cdot \min \left\{ 1, \frac{c_j}{c_i} \right\}, & j = i \pm 1 \\
+1 - 0.5 \left( \min \left\{ 1, \frac{c_{i+1}}{c_i} \right\} + \min \left\{ 1, \frac{c_{i-1}}{c_i} \right\} \right), & j = i \\
+0, & \text{otherwise.}
+\end{cases} $$
+\\\\
+\noindent
+\textbf{c)} Show that, if $\{X_n\}$ is positive recurrent, then the long run proportion of time spent by $\{X_n\}$ in state $i$ is $\frac{c_i}{\sum_i c_i}$.\\\\
+\noindent
+\textbf{d)} Is the stationary distribution in c) a limiting distribution? Why or why not?\\\\
+\noindent
+\emph{\textbf{NB:} by a theorem outside of the scope of this class, $\{X_n\}$ is positive recurrent if and only if $\sum_{i=-\infty}^\infty c_i < \infty$.}\\\\
+\noindent
+\emph{\textbf{NB 2:} We have found a method for sampling distributions on $\mathbb{Z}$ with probability proportional to $c_i$. Importantly, the algorithm outlined in the recursive definition of $\{X_n\}$ does not depend on $\sum_i c_i$. In other words, it does not depend on the \emph{normalizing constant} of the distribution, only the relative values of subsequent $c_i$. This algorithm is a special case of the Metropolis algorithm, which in turn is a special case of Metropolis-Hastings. More information on these algorithms and Markov chain Monte Carlo (MCMC) is given in TMA4300.}
+\end{document}
+
+
+
+
+
