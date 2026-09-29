@@ -72,7 +72,10 @@ $
   lambda_0 = 1, quad lambda_1 = 3, quad lambda_2 = 2, quad lambda_3 = 5.
 $
 Let $W_1$, $W_2$ and $W_3$ be the stochastic times it takes the process to reach states $1$, $2$ and $3$.
-+ Determine the transition probability functions $P_(0,n) (t) = P(X(t) = n|X(0) = 0)$ for $n = 0, 1, 2, 3$.
++ Determine the transition probability functions
+  $
+    P_n (t) = P(X(t) = n|X(0) = 0), quad n = 0, 1, 2, 3.
+  $
 + Write $W_3$ as a sum of sojourn times and thereby deduce that the mean time is $EE[W_3] = 11\/6$.
 + Determine the mean of $W_1 + W_2 + W_3$.
 + Determine the variance of $W_3$.
@@ -86,9 +89,12 @@ Let $W_1$, $W_2$ and $W_3$ be the stochastic times it takes the process to reach
   $
   exists and are not dependent on $i$.
 
-  Remark:
-  - If $sum_(j = 0)^(oo) pi_j = 1$, the $bold(pi) = (pi_0, pi_1, dots)^top$is called the limiting distribution.
-  - If the limiting distribution exists, it is also a stationary distribution.
+  *Remarks:*
+  - If $sum_(j = 0)^(oo) pi_j = 1$, the $bold(pi) = (pi_0, pi_1, dots)^top$is called a limiting distribution.
+  - If the limiting distribution exists, it is also a stationary distribution
+    $
+      pi_j = sum_(i = 0)^(oo) pi_i P_(i, j)(t), quad j = 0, 1, dots, quad t >= 0.
+    $
 ]
 
 == Towards some practical formulas
@@ -118,7 +124,7 @@ Let $W_1$, $W_2$ and $W_3$ be the stochastic times it takes the process to reach
      sum_(j = 0)^(oo) pi_j & = 1.
   $
 
-  Remark: This is quite intuitive, as "Rate in = Rate out" with "Rate" being the number of events per unit time.
+  *Remark:* This is quite intuitive, as "Rate in = Rate out" with "Rate" being the number of events per unit time.
   // - "Rate in" $= pi_(i-1) lambda_(i-1) + pi_(i+1)mu_(i+1)$. Here $pi_(i-1)$ is the proportion of time in state $i-1$, and $lambda(i-1)$ is the rate of leaving state $i-1$ to state $i$.
 ]<thm:limiting-distribution-unique-solution>
 
@@ -234,7 +240,7 @@ Calculate $pi_0$, $pi_1$ and $pi_2$.
 
 == Connection between CTMCs and DTMCs
 #theorem()[
-  For a birth-and-death process, absorption probabilities are computed using the discrete-time Markov chain with one-step transition probabilities given by
+  For a birth-and-death process with absorbing states, the absorption probabilities are computed using the discrete-time Markov chain with one-step transition probabilities given by
   $
     P_(i, j) = P(i -> j), quad i != j,
   $

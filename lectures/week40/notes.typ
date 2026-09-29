@@ -178,21 +178,35 @@ Here we get zeroes on the left-hand side because the limiting distribution is co
       P_0^' (t) & = - lambda_0 P_0 (t), \
       P_n^' (t) & = lambda_(n-1) P_(n-1)(t) - lambda_n P_n (t), quad n = 1, 2, 3
     $
-    where the initial conditions are $P_0 (0) = 1$ and $P_n (0) = 0$ for $n = 1, 2, 3$. For state $0$, we have the general solution $P_0 (t) = C e^(-lambda_0 t)$, and using the initial condition gives $P_0 (t) = e^(-t)$. For state $1$, we have
+    where the initial conditions are $P_0 (0) = 1$ and $P_n (0) = 0$ for $n = 1, 2, 3$. 
+
+    We have to solve the system of differential equations recursively. Starting with $P_0 (t)$, we have the integrating factor $e^(integral_0^t lambda_0 dif tau) = e^(lambda_0 t)$, so
     $
-      P_1^' (t) + lambda_1 P_1 (t) = lambda_0 P_0 (t) = e^(-t).
+      &e^(lambda_0 t) (dif/(dif t) P_0 (t) + lambda_0 P_0 (t)) = dif/(dif t) (e^(lambda_0 t) P_0 (t)) = 0 \
+      &==> e^(lambda_0 t) P_0 (t) = C \
+      &==> P_0 (t) = C e^(-lambda_0 t).
     $
-    We can solve this using an integrating factor. In this case, the integrating factor is $e^(integral_0^t lambda_1 dif tau) = e^(lambda_1 t)$, and we have
-    $
-      e^(lambda_1 t) (dif/(dif t) P_1 (t) + lambda_1 P_1 (t)) &= dif/(dif t) (e^(lambda_1 t) P_1 (t)) = e^(lambda_1 t) e^(-t) = e^((lambda_1 - 1) t) \
-      ==> e^(lambda_1 t) P_1 (t) &= integral_0^t e^((lambda_1 - 1) tau) dif tau = 1/(lambda_1 - 1) (e^((lambda_1 - 1) t) - 1) \
-      ==> P_1 (t) &= 1/(lambda_1 - 1) (e^(-t) - e^(-lambda_1 t)) = 1/2 (e^(-t) - e^(-3 t)).
-    $
-    Applying the same method to the remaining equations gives
-    $
-      P_2(t) & = 3/2 (e^(-t) - 2e^(-2t) + e^(-3t)), \
-      P_3(t) & = 3/4 e^(-t) - 2e^(-2t) + 3/2 e^(-3t) - 1/4 e^(-5t).
-    $
+    With the initial condition $P_0 (0) = 1$, we find $C = 1$, giving $P_0 (t) = e^(-lambda_0 t) = e^(-t)$.
+
+    For state $1$, we have
+      $
+        P_1^' (t) + lambda_1 P_1 (t) = lambda_0 P_0 (t) = e^(-t).
+      $
+      Using the integrating factor $e^(integral_0^t lambda_1 dif tau) = e^(lambda_1 t)$, we have
+      $
+        &e^(lambda_1 t) (dif/(dif t) P_1 (t) + lambda_1 P_1 (t)) = dif/(dif t) (e^(lambda_1 t) P_1 (t)) = e^(lambda_1 t) e^(-t) = e^((lambda_1 - 1) t) \
+        &==> e^(lambda_1 t) P_1 (t) = integral_0^t e^((lambda_1 - 1) tau) dif tau + C = 1/(lambda_1 - 1) (e^((lambda_1 - 1) t) - 1) + C \
+        &==> P_1 (t) = 1/(lambda_1 - 1) (e^(-t) - e^(-lambda_1 t)) + C e^(-lambda_1 t).
+      $
+      and using the initial condition $P_1 (0) = 0$, we find $C = 0$, giving
+      $
+        P_1 (t) = 1/(lambda_1 - 1) (e^(-t) - e^(-lambda_1 t)) = 1/2 (e^(-t) - e^(-3 t)).   
+      $
+    The same method can be applied to the remaining equations, giving
+      $
+        P_2(t) & = 3/2 (e^(-t) - 2e^(-2t) + e^(-3t)), \
+        P_3(t) & = 3/4 e^(-t) - 2e^(-2t) + 3/2 e^(-3t) - 1/4 e^(-5t).
+      $
   + Letting $S_0$, $S_1$ and $S_2$ be the sojourn times, we want to estimate $W_3 = S_0 + S_1 + S_2$. As $S_i tilde.op "Exp"(lambda_i)$ and using the linearity of the expectation
     $
       EE[W_3] = sum_(i = 0)^(2) EE[S_i] = 1/lambda_0 + 1/lambda_1 + 1/lambda_2 = 1 + 1/3 + 1/2 = 11/6.
@@ -313,9 +327,7 @@ Here we get zeroes on the left-hand side because the limiting distribution is co
   $
   Giving
   $
-    pi_0 & = theta_0 / (sum_(k = 0)^(2) theta_k) = 4 / 9, \
-    pi_1 & = theta_1 pi_0 = 1/4 dot 4/9 = 1/9, \
-    pi_2 & = theta_2 pi_0 = 1 dot 4/9 = 4/9.
+    pi_0 & = 1 / (sum_(k = 0)^(2) theta_k) = 4 / 9, quad pi_1 & = theta_1 pi_0 = 1/4 dot 4/9 = 1/9, quad pi_2 & = theta_2 pi_0 = 1 dot 4/9 = 4/9.
   $
 ]
 
@@ -511,7 +523,7 @@ Here we get zeroes on the left-hand side because the limiting distribution is co
     $
       P(3 -> 2 -> 1 -> 2) &= P(3 -> 2) P(2 -> 1) P(1 -> 2) \ 
   &= (mu_3/(lambda_3 + mu_3)) (mu_2/(lambda_2 + mu_2)) (lambda_1/(lambda_1 + mu_1)) \
-  &= (10/(6 + 10)) (10/(6 + 10)) (60/(60 + 10)) approx 0.0765.
+  &= (10/(6 + 10)) (10/(60 + 10)) (60/(60 + 10)) approx 0.0765.
     $
   - Let
     $
