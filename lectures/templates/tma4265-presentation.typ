@@ -9,6 +9,7 @@
  *
  *   #show: icml-presentation.with(
  *     font-size: 20pt,
+ *     fixed-slide-titles: true,
  *   )
  *
  *   #title-slide[
@@ -17,7 +18,7 @@
  */
 
 // Presentation machinery retained from the previous local template.
-#import "@preview/touying:0.6.1": *
+#import "@preview/touying:0.7.4": *
 #import "@preview/subpar:0.2.2"
 #import "@preview/muchpdf:0.1.2": muchpdf
 #import "@preview/showybox:2.0.4": showybox
@@ -138,12 +139,31 @@
   ),
 )
 
+// Keep delayed material in the layout and recolor all of its text. Unlike a
+// translucent rectangle (or `hide`), this also behaves predictably for list
+// markers, nested text styles, and math while preserving the exact geometry.
+#let _greyed-cover(self: none, color: rgb("#a0a0a0"), body) = {
+  set text(fill: color)
+  show text: set text(fill: color)
+  body
+}
+
 /**
  * Initialize an ICML-inspired presentation.
  *
  * This function applies the common styling and environments. Title slides are
  * intentionally written explicitly with `#title-slide[...]`, just as in the
  * previous presentation template.
+ *
+ * - fixed-slide-titles (boolean): Top-align ordinary slide titles and bodies so
+ *   every `==` title has the same vertical position. The default `false` keeps
+ *   the previous vertically centered, content-dependent layout.
+ * - footer-right-inset (length): Distance between the right footer and the
+ *   physical page edge. The default is `0.65em`.
+ * - pause-color (color): Color of content waiting behind a pause. The default
+ *   is a medium-light gray; its space is always reserved.
+ * - cover-alpha (none, ratio): Compatibility option for the former translucent
+ *   overlay. Set this to a ratio to restore that behavior.
  */
 #let icml-presentation(
   bibliography: none,
@@ -153,21 +173,35 @@
   header-right: none,
   footer: none,
   footer-right: auto,
+  footer-right-inset: 0.65em,
   font: font-family.first(),
   font-size: 20pt,
   language: "en",
   raw-lang: "bash",
   link-color: rgb(0%, 8%, 45%),
-  cover-alpha: 75%,
+  pause-color: rgb("#a0a0a0"),
+  cover-alpha: none,
+  fixed-slide-titles: false,
   aspect-ratio: "16-9",
   body,
 ) = {
-  // `auto` keeps Touying's slide-number footer. Any explicit value replaces
-  // it, matching how the rest of the theme arguments behave.
-  let footer-right-arg = if footer-right == auto {
-    (:)
+  // Expand the footer to the page edge independently of the main content
+  // margins, then add back only a small, explicit safe inset.
+  let footer-right-content = if footer-right == auto {
+    context utils.slide-counter.display() + " / " + utils.last-slide-number
   } else {
-    (footer-right: footer-right)
+    footer-right
+  }
+  let edge-footer-right(self) = pad(
+    right: footer-right-inset,
+    utils.call-or-display(self, footer-right-content),
+  )
+  // `cover-alpha` was the old customization knob. Keep explicit uses working,
+  // while making the more stable gray-text cover the new default.
+  let pause-cover = if cover-alpha == none {
+    _greyed-cover.with(color: pause-color)
+  } else {
+    utils.semi-transparent-cover.with(alpha: cover-alpha)
   }
 
   show: simple-theme.with(
@@ -175,18 +209,19 @@
     header: header,
     header-right: header-right,
     footer: footer,
+    footer-right: edge-footer-right,
     primary: primary,
     subslide-preamble: _unnumbered-subslide-preamble,
-    ..footer-right-arg,
     config-page(
-      margin: (x: 3em, y: 1.0em),
+      margin: (x: 2em, y: 1.5em),
     ),
     config-common(
       breakable: false,
       clip: true,
       new-section-slide-fn: _unnumbered-section-slide,
+      zero-margin-footer: true,
     ),
-    config-methods(cover: utils.semi-transparent-cover.with(alpha: cover-alpha)),
+    config-methods(cover: pause-cover),
   )
 
   // Typography and small conventions shared with the notes.
@@ -197,7 +232,7 @@
   show heading: it => text(fill: black, weight: "bold", it.body)
   set raw(lang: raw-lang)
   show link: set text(fill: link-color)
-  set align(horizon)
+  set align(if fixed-slide-titles { top } else { horizon })
 
   // Number only equations that have labels, as in the notes template.
   set math.equation(numbering: "(1)")
@@ -240,5 +275,5 @@
   }
 }
 
-// Familiar short name for users of the previous presentation template.
+// Familiar short name for users of `@local/presentation`.
 #let presentation = icml-presentation

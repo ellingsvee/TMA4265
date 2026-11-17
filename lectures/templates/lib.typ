@@ -3,7 +3,7 @@
  *
  * This keeps the existing local `presentation` template's Touying/simple
  * layout and helpers, while sharing the font, theorem environments, and
- * author conventions of `@local/icml:1.0.0`.
+ * author conventions of the accompanying TMA4265 notes template.
  *
  * A presentation is initialized in one place:
  *
@@ -213,7 +213,7 @@
     primary: primary,
     subslide-preamble: _unnumbered-subslide-preamble,
     config-page(
-      margin: (x: 3em, y: 1.5em),
+      margin: (x: 2em, y: 1.5em),
     ),
     config-common(
       breakable: false,
