@@ -8,4 +8,7 @@ animation
 
 # MacOS
 .DS_Store
-/lectures/week47/atlanta
+
+# Specific 
+lectures/week47/atlanta
+projects/students.xlsx
