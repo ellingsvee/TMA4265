@@ -51,7 +51,7 @@ You should be able to:
 + Write down the generator $bf(A)$ and the Kolmogorov forward equations, and solve them for two states.
 + Find the stationary distribution, and use first-step analysis for expected times and absorption probabilities.
 + Describe how to simulate a CTMC from $bf(A)$.
-+ Explain Kendall's notation, and use Little's law and the M/M/1, M/M/$s$ and M/M/$oo$ queues.
++ Explain the A/B/$s$ notation, and use Little's law and the M/M/1, M/M/$s$ and M/M/$oo$ queues.
 + Find the effective arrival rate and the fraction of lost customers.
 + Condition a multivariate normal on some of its components.
 + Compute with the covariance $min(s, t)$ of Brownian motion, check if a process is a Brownian motion, and use the reflection principle.
@@ -59,11 +59,30 @@ You should be able to:
 #pagebreak()
 = Theory
 == Continuous-time Markov chains
+A DTMC can only jump at the times $1, 2, 3, dots$. A CTMC can jump at _any_ time $t >= 0$: it stays in a state for a random time, and then jumps to a new state.
+
 #definition(name: [Continuous-time Markov chain])[
   A process ${X(t) : t >= 0}$ with countable state space $cal(S)$ is a (time-homogeneous) continuous-time Markov chain (CTMC) if
   $
     P(X(s + t) = j | X(s) = i, X(u) = x(u), 0 <= u < s) = P(X(t) = j | X(0) = i) = P_(i,j)(t).
   $
+  Given the present, the past is irrelevant.
+]
+
+In state $i$, each possible jump $i -> j$ happens after an independent $"Exp"(q_(i,j))$ time, and the chain makes the jump that happens first.
+
+#theorem(name: [Structure of a CTMC])[
+  - The sojourn time in $i$ is $"Exp"(q_i)$ with $q_i = sum_(j != i) q_(i,j)$, independent of everything else.
+  - The next state is $j$ with probability $q_(i,j) \/ q_i$. These jump probabilities form the _embedded_ DTMC.
+  Both follow from competing exponentials: the minimum of independent $"Exp"(q_(i,j))$ is $"Exp"(q_i)$, and the time for $j$ is the smallest with probability $q_(i,j)\/q_i$.
+]
+
+#remark()[
+  To "explain that this is a CTMC/birth-and-death process":
+  + Give the state space (f.ex. number of customers) and index set $t >= 0$.
+  + Argue that all the waiting times (arrivals, services, repairs) are independent and exponential. By the memoryless property, the future then only depends on the current state.
+  + Find the rates using competing exponentials. With $k$ busy servers, the time until the next service completion is $min(T_1, dots, T_k) tilde.op "Exp"(k mu)$.
+  A _birth-and-death process_ is a CTMC on ${0, 1, 2, dots}$ that only moves one step at a time: up with rate $lambda_k$ (birth) and down with rate $mu_k$ (death).
 ]
 
 #definition(name: [Generator])[
@@ -75,19 +94,14 @@ You should be able to:
     )
   $
   so the rows of $bf(A)$ sum to zero. For a birth-and-death process, $q_(i,i+1) = lambda_i$, $q_(i,i-1) = mu_i$ and $q_i = lambda_i + mu_i$.
+
+  The rate $q_(i,j)$ means that in a short time $h$, the chain jumps from $i$ to $j$ with probability $approx q_(i,j) h$. For the two-state chain $0 ->^lambda 1$ and $1 ->^mu 0$,
+  $
+    bf(A) = mat(-lambda, lambda; mu, -mu).
+  $
 ]
 
-#theorem(name: [Structure of a CTMC])[
-  - The sojourn time in $i$ is $"Exp"(q_i)$, independent of everything else.
-  - The next state is $j$ with probability $q_(i,j) \/ q_i$. These jump probabilities form the _embedded_ DTMC.
-]
-
-#remark()[
-  To "explain that this is a CTMC/birth-and-death process":
-  + Give the state space (f.ex. number of customers) and index set $t >= 0$.
-  + Argue that all the waiting times (arrivals, services, repairs) are independent and exponential. By the memoryless property, the future then only depends on the current state.
-  + Find the rates using competing exponentials. With $k$ busy servers, the time until the next service completion is $min(T_1, dots, T_k) tilde.op "Exp"(k mu)$.
-]
+The generator gives the rates. The Kolmogorov equations turn these into the probabilities $P_(i,j)(t)$.
 
 #theorem(name: [Kolmogorov equations])[
   The matrix $bf(P)(t) = [P_(i,j)(t)]$ satisfies the forward and backward equations
@@ -98,39 +112,47 @@ You should be able to:
 ]
 
 #remark(name: [Two-state chain])[
-  For $0 ->^lambda 1$ and $1 ->^mu 0$, solving the forward equation with $P_(1,0)(t) = 1 - P_(1,1)(t)$ gives
+  For $0 ->^lambda 1$ and $1 ->^mu 0$, the forward equation for $P_(1,1)$ is, using $P_(1,0)(t) = 1 - P_(1,1)(t)$,
+  $
+    P'_(1,1)(t) = lambda P_(1,0)(t) - mu P_(1,1)(t) = lambda - (lambda + mu) P_(1,1)(t).
+  $
+  This is a linear ODE. With $P_(1,1)(0) = 1$, the integrating factor $e^((lambda + mu) t)$ gives
   $
     P_(1,1)(t) = lambda / (lambda + mu) + mu / (lambda + mu) e^(-(lambda + mu) t).
   $
-  This was asked in 2025 (see Week 39). Learn the integrating factor method!
+  As $t -> oo$, $P_(1,1)(t) -> lambda\/(lambda + mu)$, which is the stationary probability of state $1$. This was asked in 2025 (see Week 39). Learn the integrating factor method!
 ]
+
+In the long run, the rate out of each state equals the rate into it.
 
 #theorem(name: [Stationary distribution])[
   For an irreducible CTMC, the limiting distribution $pi_j = lim_(t -> oo) P_(i,j)(t)$ (if it exists) is the solution of
   $
     bold(pi) bf(A) = bold(0), quad sum_j pi_j = 1, quad "i.e." quad underbrace(pi_j q_j, "rate out of" j) = underbrace(sum_(k != j) pi_k q_(k,j), "rate into" j).
   $
-  For a birth-and-death process this reduces to $lambda_(k-1) pi_(k-1) = mu_k pi_k$ (rate across each cut), which gives $pi_k = theta_k pi_0$ (formula sheet). The value $pi_j$ is the long-run fraction of time spent in $j$.
+  For a birth-and-death process this reduces to $lambda_(k-1) pi_(k-1) = mu_k pi_k$ (the rate from $k - 1$ to $k$ equals the rate from $k$ to $k - 1$), which gives $pi_k = theta_k pi_0$ (formula sheet). The value $pi_j$ is the long-run fraction of time spent in $j$.
 ]
+
+Starting in $i$, we first spend on average $1\/q_i$ time in $i$. Then we jump to $j$ with probability $q_(i,j)\/q_i$, and by the Markov property the process continues from $j$. This gives the following.
 
 #theorem(name: [First-step analysis])[
   Let $v_i$ be the expected time until hitting $A$ when starting in $i$. Then $v_i = 0$ for $i in A$ and
   $
     v_i = 1 / q_i + sum_(j != i) q_(i,j) / q_i v_j, quad i in.not A.
   $
-  Absorption probabilities only depend on the jump probabilities, so they are computed in the embedded DTMC (Week 40).
+  Absorption probabilities only depend on _where_ the chain jumps, not _when_, so they are computed in the embedded DTMC (Week 40).
 ]
 
 #remark(name: [Simulation])[
-  Given $X(0) = i$ and a time horizon $T$:
+  The structure theorem translates directly into an algorithm. Given $X(0) = i$ and a time horizon $T$:
   + Draw a sojourn time $S tilde.op "Exp"(q_i)$ and set $t <- t + S$. Stop if $t > T$.
   + Draw the next state $j$ with probabilities $q_(i,j)\/q_i$, i.e. $-a_(i,j)\/a_(i,i)$. Set $i <- j$ and go to 1.
-  Estimate f.ex. $P_(i,j)(T)$ by the fraction $hat(p)$ of $M$ runs ending in $j$, with standard error $sqrt(hat(p)(1 - hat(p))\/M)$.
+  Everything we need is in the generator: $q_i = -a_(i,i)$ and $q_(i,j) = a_(i,j)$. Estimate f.ex. $P_(i,j)(T)$ by the fraction $hat(p)$ of $M$ runs ending in $j$, with standard error $sqrt(hat(p)(1 - hat(p))\/M)$.
 ]
 
 #pagebreak()
 == Queueing theory
-A queue is described by Kendall's notation A/B/$s$ (/capacity): A is the arrival process, B the service time distribution and $s$ the number of servers. M means Markovian (Poisson arrivals or exponential service times). In an M/M/$s$ queue, the number of customers $X(t)$ in the system (queue plus service) is a birth-and-death process.
+In a queue, customers arrive, wait in line if all servers are busy, are served, and leave. A queue is written A/B/$s$ (/capacity), where A is the arrival process, B the service time distribution and $s$ the number of servers. M means Markovian (Poisson arrivals or exponential service times). For example, M/M/1 is a queue with Poisson arrivals, exponential service times and one server. In an M/M/$s$ queue, the number of customers $X(t)$ in the system (queue plus service) is a birth-and-death process.
 
 #theorem(name: [Little's law])[
   In the long run,
@@ -138,26 +160,28 @@ A queue is described by Kendall's notation A/B/$s$ (/capacity): A is the arrival
     L = lambda_a W, quad L_Q = lambda_a W_Q, quad W = W_Q + 1/mu,
   $
   where $L$ ($L_Q$) is the mean number of customers in the system (queue), $W$ ($W_Q$) is the mean time a customer spends in the system (queue), $lambda_a$ is the rate of customers that actually enter and $1\/mu$ the mean service time.
+
+  For example, if $10$ students arrive per hour and each stays $1\/2$ hour, there are on average $L = 10 dot 1\/2 = 5$ students present.
 ]
 
 #definition(name: [Stable queue])[
   A queue is _stable_ if the number of customers $X(t)$ has a limiting distribution $bold(pi)$. For a birth-and-death process this holds if and only if $sum_(k=0)^oo theta_k < oo$, so that $pi_0 = 1 \/ sum_k theta_k > 0$. Otherwise $pi_k = 0$ for all $k$, and the queue grows without bound.
 
-  Intuitively, the servers must work faster than customers arrive. A queue with finite capacity is always stable, since the sum is finite.
+  Intuitively, the servers must work faster than customers arrive, otherwise the queue grows forever. For M/M/1, $theta_k = (lambda\/mu)^k$, and the sum is finite if and only if $lambda < mu$. A queue with finite capacity is always stable, since the sum is finite.
 ]
 
 #theorem(name: [Standard queues])[
-  Let $lambda$ be the arrival rate and $mu$ the service rate of each server.
+  Let $lambda$ be the arrival rate and $mu$ the service rate of each server. With $k$ customers and $s$ servers, $min(k, s)$ servers are busy, so the death rate is $min(k, s) mu$.
   - M/M/1: $lambda_k = lambda$ and $mu_k = mu$. Stable if and only if $rho = lambda\/mu < 1$, and then $pi_k = (1 - rho) rho^k$ is geometric, and
     $
       L = rho / (1 - rho), quad W = L / lambda = 1 / (mu - lambda).
     $
   - M/M/$s$: $lambda_k = lambda$ and $mu_k = min(k, s) mu$. Stable if and only if $lambda < s mu$. For $k >= s$ the $theta_k$ are geometric with ratio $lambda\/(s mu)$.
-  - M/M/$oo$: $lambda_k = lambda$ and $mu_k = k mu$. Always stable with $X tilde.op "Poisson"(lambda\/mu)$, so $L = lambda\/mu$ and $W = 1\/mu$.
+  - M/M/$oo$: $lambda_k = lambda$ and $mu_k = k mu$. No one waits, and it is always stable with $X tilde.op "Poisson"(lambda\/mu)$, so $L = lambda\/mu$ and $W = 1\/mu$.
 ]
 
 #remark(name: [Lost customers])[
-  If arrivals are turned away (full system or balking), not all $lambda$ arrivals enter. Since Poisson arrivals see the system in its stationary distribution, the fraction of lost customers is $pi_"full"$ and
+  Sometimes arrivals are turned away, f.ex. because the system is full (the gas station) or because customers do not want to wait (balking). Then not all $lambda$ arrivals enter. Since Poisson arrivals see the system in its stationary distribution, the fraction of lost customers is $pi_"full"$ and
   $
     lambda_a = lambda (1 - pi_"full").
   $
@@ -167,7 +191,7 @@ A queue is described by Kendall's notation A/B/$s$ (/capacity): A is the arrival
 #pagebreak()
 == Gaussian processes and Brownian motion
 #definition(name: [Gaussian process])[
-  ${X(t) : t in cal(I)}$ is a Gaussian process if $(X(t_1), dots, X(t_n))$ is multivariate normal for all $t_1, dots, t_n$. The distribution is then determined by the mean function $m(t) = EE[X(t)]$ and the covariance function $C(s, t) = "Cov"(X(s), X(t))$.
+  ${X(t) : t in cal(I)}$ is a Gaussian process if $(X(t_1), dots, X(t_n))$ is multivariate normal for all $t_1, dots, t_n$. The distribution is then determined by the mean function $m(t) = EE[X(t)]$ and the covariance function $C(s, t) = "Cov"(X(s), X(t))$. So to describe a Gaussian process, we only need $m$ and $C$.
 ]
 
 #remark(name: [Bivariate conditioning])[
@@ -175,13 +199,17 @@ A queue is described by Kendall's notation A/B/$s$ (/capacity): A is the arrival
   $
     Y | X = x tilde.op N(mu_Y + rho sigma_Y / sigma_X (x - mu_X), quad sigma_Y^2 (1 - rho^2)).
   $
+  The mean moves in the direction of the correlation: if $rho > 0$ and $X$ is above its mean, we expect $Y$ to be above its mean too. The variance is reduced by the factor $1 - rho^2$, so the stronger the correlation, the more $X$ tells us about $Y$.
 ]
+
+Brownian motion is the limit of a random walk with small steps $plus.minus sqrt(Delta t)$ as $Delta t -> 0$.
 
 #definition(name: [Brownian motion])[
   ${B(t) : t >= 0}$ is a Brownian motion with variance parameter $sigma^2$ if $B(0) = 0$, it has independent increments, $B(t) - B(s) tilde.op N(0, sigma^2 (t - s))$ for $s < t$, and continuous paths. It is _standard_ if $sigma^2 = 1$. Equivalently, it is a Gaussian process with continuous paths and
   $
     m(t) = 0 quad "and" quad C(s, t) = sigma^2 min(s, t).
   $
+  The covariance follows since for $s <= t$, $B(t) = B(s) + (B(t) - B(s))$ where the increment is independent of $B(s)$, so $"Cov"(B(s), B(t)) = "Var"(B(s)) = sigma^2 s$.
 ]
 
 #remark(name: [Is it a Brownian motion?])[
@@ -193,7 +221,7 @@ A queue is described by Kendall's notation A/B/$s$ (/capacity): A is the arrival
   $
     m(t) = 0 quad "and" quad C(s, t) = s (1 - t), quad 0 <= s <= t <= 1.
   $
-  The process $B(t) - t B(1)$ has the same distribution.
+  The process $B(t) - t B(1)$ has the same distribution. The variance $t(1 - t)$ is $0$ at both ends, and largest at $t = 1\/2$.
 ]
 
 #theorem(name: [Reflection principle])[
@@ -201,6 +229,7 @@ A queue is described by Kendall's notation A/B/$s$ (/capacity): A is the arrival
   $
     P(max_(0 <= u <= t) B(u) >= a) = P(T_a <= t) = 2 P(B(t) >= a) = 2 (1 - Phi(a / sqrt(t))).
   $
+  The idea is that once a path hits $a$, the path reflected in $a$ is equally likely. So of all paths that hit $a$ before $t$, half end above $a$. The maximum is above $a$ exactly when the path has hit $a$, which is why the first two probabilities are equal.
 ]
 
 #remark(name: [Simulation])[
