@@ -32,19 +32,6 @@
 
 _These notes are written by myself, and errors may and will occur. When in doubt, trust the book and Gunnars lectures!_
 
-// This is the second of two exam preparation sessions. Last week we covered probability theory, discrete-time Markov chains and Poisson processes. Today we cover continuous-time Markov chains, queueing theory, Gaussian processes and Brownian motion.
-
-= About the exam
-Past exams with solutions are at #link("https://www.math.ntnu.no/emner/TMA4265/exams/"). Some observations from 2024–2026:
-- The exam comes with a formula sheet. For this half of the course it contains
-  - the birth-and-death definition, Kolmogorov's forward and backward equations and the formula $pi_k = theta_k pi_0$,
-  - Little's law $L = lambda_a W$ and the limiting distributions of the M/M/1 and M/M/$oo$ queues,
-  - the conditional distribution of a multivariate normal, and the properties of Brownian motion.
-
-  Do not waste space on your A5 sheet on these!
-- The CTMC/queueing problems follow the same recipe: _explain_ the model, draw the transition diagram, write down the generator, find the stationary distribution and _interpret_ it. A simulation algorithm is often asked for.
-- Brownian motion has not been asked in 2024–2026, but it is part of the curriculum (it was asked in 2022 and 2023).
-
 = Checklist
 You should be able to:
 + Explain why a process is a CTMC or a birth-and-death process, and draw the transition diagram.
@@ -54,7 +41,7 @@ You should be able to:
 + Explain the A/B/$s$ notation, and use Little's law and the M/M/1, M/M/$s$ and M/M/$oo$ queues.
 + Find the effective arrival rate and the fraction of lost customers.
 + Condition a multivariate normal on some of its components.
-+ Compute with the covariance $min(s, t)$ of Brownian motion, check if a process is a Brownian motion, and use the reflection principle.
++ Compute probabilities for Brownian motion given its past or future values, check if a process is a Brownian motion, and use the reflection principle.
 
 #pagebreak()
 = Theory
@@ -82,7 +69,7 @@ In state $i$, each possible jump $i -> j$ happens after an independent $"Exp"(q_
   + Give the state space (f.ex. number of customers) and index set $t >= 0$.
   + Argue that all the waiting times (arrivals, services, repairs) are independent and exponential. By the memoryless property, the future then only depends on the current state.
   + Find the rates using competing exponentials. With $k$ busy servers, the time until the next service completion is $min(T_1, dots, T_k) tilde.op "Exp"(k mu)$.
-  A _birth-and-death process_ is a CTMC on ${0, 1, 2, dots}$ that only moves one step at a time: up with rate $lambda_k$ (birth) and down with rate $mu_k$ (death).
+  A _birth-and-death process_ is a CTMC on ${0, 1, 2, dots}$ that only moves one step at a time (birth with rate $lambda_k$ and death with rate $mu_k$).
 ]
 
 #definition(name: [Generator])[
@@ -123,7 +110,7 @@ The generator gives the rates. The Kolmogorov equations turn these into the prob
   As $t -> oo$, $P_(1,1)(t) -> lambda\/(lambda + mu)$, which is the stationary probability of state $1$. This was asked in 2025 (see Week 39). Learn the integrating factor method!
 ]
 
-In the long run, the rate out of each state equals the rate into it.
+In the long run, the rate out of each state equals the rate into it ("flow in" = "flow out").
 
 #theorem(name: [Stationary distribution])[
   For an irreducible CTMC, the limiting distribution $pi_j = lim_(t -> oo) P_(i,j)(t)$ (if it exists) is the solution of
@@ -191,7 +178,7 @@ In a queue, customers arrive, wait in line if all servers are busy, are served, 
 #pagebreak()
 == Gaussian processes and Brownian motion
 #definition(name: [Gaussian process])[
-  ${X(t) : t in cal(I)}$ is a Gaussian process if $(X(t_1), dots, X(t_n))$ is multivariate normal for all $t_1, dots, t_n$. The distribution is then determined by the mean function $m(t) = EE[X(t)]$ and the covariance function $C(s, t) = "Cov"(X(s), X(t))$. So to describe a Gaussian process, we only need $m$ and $C$.
+  ${X(t) : t in cal(I)}$ is a Gaussian process if $(X(t_1), dots, X(t_n))$ is multivariate normal for all $t_1, dots, t_n$. The distribution is then determined by the mean function $m(t) = EE[X(t)]$ and the covariance function $C(s, t) = "Cov"(X(s), X(t))$.
 ]
 
 #remark(name: [Bivariate conditioning])[
@@ -202,34 +189,55 @@ In a queue, customers arrive, wait in line if all servers are busy, are served, 
   The mean moves in the direction of the correlation: if $rho > 0$ and $X$ is above its mean, we expect $Y$ to be above its mean too. The variance is reduced by the factor $1 - rho^2$, so the stronger the correlation, the more $X$ tells us about $Y$.
 ]
 
-Brownian motion is the limit of a random walk with small steps $plus.minus sqrt(Delta t)$ as $Delta t -> 0$.
+Brownian motion models a quantity that moves continuously but completely at random, like a pollen grain in water or a stock price. Think of a random walk that every $Delta t$ time units takes a step $+sigma sqrt(Delta t)$ or $-sigma sqrt(Delta t)$ with probability $1\/2$ each. At time $t$ it has taken $n = t\/Delta t$ independent steps, so its position has mean $0$ and variance $n sigma^2 Delta t = sigma^2 t$, and by the central limit theorem it is approximately normal. Letting $Delta t -> 0$ gives Brownian motion. The step size $sqrt(Delta t)$ is exactly what keeps the variance finite and non-zero in the limit.
 
 #definition(name: [Brownian motion])[
-  ${B(t) : t >= 0}$ is a Brownian motion with variance parameter $sigma^2$ if $B(0) = 0$, it has independent increments, $B(t) - B(s) tilde.op N(0, sigma^2 (t - s))$ for $s < t$, and continuous paths. It is _standard_ if $sigma^2 = 1$. Equivalently, it is a Gaussian process with continuous paths and
+  ${B(t) : t >= 0}$ is a Brownian motion with variance parameter $sigma^2$ if
+  + $B(0) = 0$,
+  + it has independent increments, i.e. $B(t_2) - B(t_1)$ and $B(t_4) - B(t_3)$ are independent for $t_1 < t_2 <= t_3 < t_4$,
+  + $B(t) - B(s) tilde.op N(0, sigma^2 (t - s))$ for $s < t$,
+  + the paths $t |-> B(t)$ are continuous.
+  It is _standard_ if $sigma^2 = 1$. The first three properties are on the formula sheet.
+]
+
+#theorem(name: [Brownian motion is a Gaussian process])[
+  Brownian motion is a Gaussian process with continuous paths and
   $
     m(t) = 0 quad "and" quad C(s, t) = sigma^2 min(s, t).
   $
-  The covariance follows since for $s <= t$, $B(t) = B(s) + (B(t) - B(s))$ where the increment is independent of $B(s)$, so $"Cov"(B(s), B(t)) = "Var"(B(s)) = sigma^2 s$.
+  In particular $B(t) tilde.op N(0, sigma^2 t)$, so the typical distance from $0$ grows like $sigma sqrt(t)$.
 ]
+Any vector $(B(t_1), dots, B(t_n))$ is a linear transformation of independent normal increments, and hence multivariate normal. For the covariance, let $s <= t$ and write $B(t) = B(s) + (B(t) - B(s))$. The increment is independent of $B(s)$, so $"Cov"(B(s), B(t)) = "Var"(B(s)) = sigma^2 s$. The paths are continuous, but so rough that they are nowhere differentiable.
 
 #remark(name: [Is it a Brownian motion?])[
-  To show that a process $X$ built from $B$ is a standard Brownian motion, check that it is a Gaussian process (linear in $B$), that $X(0) = 0$, $EE[X(t)] = 0$, $"Cov"(X(s), X(t)) = min(s, t)$ and that the paths are continuous. To show that it is _not_, find one property that fails, f.ex. the variance.
+  To show that a process $X$ is a standard Brownian motion, check that it is a Gaussian process (f.ex. linear in $B$) with continuous paths, that $X(0) = 0$, $EE[X(t)] = 0$ and $"Cov"(X(s), X(t)) = min(s, t)$. To show that it is _not_, find one property that fails, f.ex. the variance. For example, $X(t) = 1/a B(a^2 t)$ is a standard Brownian motion since $"Cov"(X(s), X(t)) = 1/a^2 a^2 min(s, t)$, but $W(t) = t B(t)$ is not since $"Var"[W(t)] = t^3$ (Exam 2022).
 ]
 
-#definition(name: [Brownian bridge])[
-  The Brownian bridge is $B^0 (t) = B(t) | B(1) = 0$ for $t in [0, 1]$. It is a Gaussian process with
-  $
-    m(t) = 0 quad "and" quad C(s, t) = s (1 - t), quad 0 <= s <= t <= 1.
-  $
-  The process $B(t) - t B(1)$ has the same distribution. The variance $t(1 - t)$ is $0$ at both ends, and largest at $t = 1\/2$.
+#remark(name: [Using the past and the future])[
+  Most exam questions about Brownian motion are of one of the following types. Let $s < t$.
+  - *No information:* $B(t) tilde.op N(0, sigma^2 t)$, so $P(B(t) > a) = 1 - Phi(a\/(sigma sqrt(t)))$.
+  - *Given the past:* Write $B(t) = B(s) + (B(t) - B(s))$, where the increment is independent of $B(s)$. So the process "starts afresh" from the current value,
+    $
+      B(t) | B(s) = x tilde.op N(x, sigma^2 (t - s)).
+    $
+    Hence Brownian motion is a Markov process.
+  - *Given the future:* By the conditioning formula with $"Var"(B(t)) = sigma^2 t$ and $"Cov"(B(s), B(t)) = sigma^2 s$,
+    $
+      B(s) | B(t) = b tilde.op N(s / t b, sigma^2 (s (t - s)) / t).
+    $
+    The mean is the straight line from $(0, 0)$ to $(t, b)$. The variance is $0$ at both ends and largest in the middle. With $t = 1$ and $b = 0$ we get the _Brownian bridge_ $B^0 (s) = B(s) | B(1) = 0$, a Gaussian process with $m(s) = 0$ and $C(s, u) = s(1 - u)$ for $s <= u$ (Exam 2023 below). The process $B(s) - s B(1)$ has the same distribution.
+  If the process starts in $x_0 != 0$, f.ex. a price, work with $X(t) - x_0$, which is a Brownian motion.
 ]
 
 #theorem(name: [Reflection principle])[
-  For a standard Brownian motion, $a > 0$ and $T_a = min{t >= 0 : B(t) = a}$,
+  Let $a > 0$ and let $T_a = min{t >= 0 : B(t) = a}$ be the first time $B$ hits $a$. Then
   $
-    P(max_(0 <= u <= t) B(u) >= a) = P(T_a <= t) = 2 P(B(t) >= a) = 2 (1 - Phi(a / sqrt(t))).
+    P(T_a <= t) = P(max_(0 <= u <= t) B(u) >= a) = 2 P(B(t) >= a) = 2 (1 - Phi(a / (sigma sqrt(t)))).
   $
-  The idea is that once a path hits $a$, the path reflected in $a$ is equally likely. So of all paths that hit $a$ before $t$, half end above $a$. The maximum is above $a$ exactly when the path has hit $a$, which is why the first two probabilities are equal.
+  The first equality holds since the paths are continuous, so the maximum is above $a$ exactly when the path has hit $a$. For the second, once the path hits $a$ at time $T_a$, it starts afresh from $a$ and is equally likely to end above or below $a$ at time $t$ (reflect the rest of the path in $a$). So $P(B(t) >= a | T_a <= t) = 1\/2$, and since $B(t) >= a$ requires $T_a <= t$,
+  $
+    P(B(t) >= a) = P(T_a <= t) dot 1/2.
+  $
 ]
 
 #remark(name: [Simulation])[
@@ -287,11 +295,20 @@ Brownian motion is the limit of a random walk with small steps $plus.minus sqrt(
       v_0 = 1/20 + v_1, quad v_1 = 1/32 + 12/32 v_0 + 20/32 dot 0.
     $
     Inserting the second into the first, $5/8 v_0 = 1/20 + 1/32$, so $v_0 = 0.13$ hours $= 7.8$ minutes.
-  + With $theta_0 = 1$, $theta_1 = 20\/12 = 5\/3$ and $theta_2 = (20\/12)^2 = 25\/9$, we get $sum_k theta_k = 49\/9$ and
+  + Solve the matrix system $bf(A)^top bold(pi) = bold(0)$, but replace the last row with the $pi_0 + pi_1 + pi_2 = 1$. This gives
     $
+      mat(
+        -20, 12, 0;
+        20, -32, 12;
+        1, 1, 1
+      )
+      mat(pi_0; pi_1; pi_2)
+      =
+      mat(0; 0; 1)
+      quad ==> quad
       bold(pi) = (9/49, 15/49, 25/49) approx (0.18, 0.31, 0.51).
     $
-  + A customer is lost when arriving to $2$ cars. Poisson arrivals see the stationary distribution, so the fraction lost is $pi_2 = 25\/49 approx 51%$. The effective arrival rate is $lambda_a = 20 dot 24\/49 approx 9.8$ cars per hour.
+  + A customer is lost when arriving to $2$ cars. Poisson arrivals see the stationary distribution, so the fraction lost is $pi_2 = 25\/49 approx 51%$. The effective arrival rate is $lambda_a = 20 dot 25\/49 approx 10.2$ cars per hour.
 ]
 
 #pagebreak()
@@ -354,26 +371,56 @@ Brownian motion is the limit of a random walk with small steps $plus.minus sqrt(
 ]
 
 #pagebreak()
-#problem(name: [Exam 2022, Problem 4 b)–d)])[
-  Guests arrive to a museum according to a Poisson process with rate $lambda = 10$ guests per hour. Each guest who arrives is either quick or slow. A quick guest spends a time in the museum that follows an exponential distribution with expected value $0.25$ hours, and a slow guest spends a time that follows an exponential distribution with expected value $1$ hour. For each guest, there is a probability $p = 0.9$ that the guest is quick. All guests are independent of each other and the arrival process, and the museum is always open. Let $X_"quick" (t)$ be the number of quick guests in the museum.
-  + Explain why ${X_"quick" (t) : t >= 0}$ is an M/M/$oo$ queue, and determine its birth and death rates.
-  + You can assume as known that the long-run fraction of time with $0$ slow guests is $0.3679$. Calculate the long-run fraction of time with $0$ quick guests, and with $0$ guests in total. How much money can be saved per day by turning off the lights ($2000$ kroner per hour) when the museum is empty?
-  + Explain why the total number of guests $X(t)$ is not a birth-and-death process. A long time has passed, and there is one guest in the museum. What is the probability that this guest is quick?
+#problem(name: [Exam 2021, Problem 3 b) and d)])[
+  Customers arrive to a store according to a Poisson process with rate $lambda = 60$ per hour. There is one server, and service times are independent and exponential with mean $1\/mu = 6$ minutes. An arriving customer always joins the queue if there are two or less customers in the service area. If there are three or more, the customer joins with probability $0 < p < 1$, and otherwise leaves. Let $X(t)$ be the number of customers queuing or receiving service.
+  + Explain why $X$ is a birth-and-death process. Determine the birth and death rates as functions of $p$, and draw the transition diagram.
+  + Derive the limiting distribution as a function of $p$. What is the necessary condition on $p$ for it to exist? Give an intuitive explanation.
+  + _(Extra, not part of the exam)_ Let $p = 0.1$. What fraction of the customers are lost, and how long does an entering customer spend in the store on average?
 ]
 #solution[
-  + By thinning, quick guests arrive according to a Poisson process with rate $p lambda = 9$ per hour. Each quick guest stays an independent $"Exp"(4)$ time, and all guests are "served" at the same time (no queue), so this is an M/M/$oo$ queue with
+  + The state space is ${0, 1, 2, dots}$ and the index set is $t >= 0$. The time until the next arrival is $"Exp"(60)$. With $3$ or more customers, each arrival joins independently with probability $p$, so by thinning the joining customers form a Poisson process with rate $60 p$. The time until the current service is finished is $"Exp"(mu)$ with $mu = 10$ per hour. All clocks are independent and exponential, so by the memoryless property the future only depends on the current number of customers. Customers arrive and leave one at a time, so $X$ is a birth-and-death process with
     $
-      lambda_k = 9, quad mu_k = 4 k.
+      lambda_i = cases(
+        60 quad & i = 0\, 1\, 2,
+        60 p & i >= 3,
+      )
+      quad quad mu_i = 10, quad i >= 1.
     $
-  + In the long run $X_"quick" tilde.op "Poisson"(9\/4)$, so the fraction of time with no quick guests is $e^(-9\/4) approx 0.105$. (Similarly, $X_"slow" tilde.op "Poisson"(1 dot 1)$, which gives $e^(-1) = 0.3679$.) By thinning the two processes are independent, so
+    #transition-figure()[
+      #transition-diagram(
+        ($0$, $1$, $2$, $3$, $4$, $dots.c$),
+        (
+          (0, $60$, 0, 0, 0, 0),
+          ($10$, 0, $60$, 0, 0, 0),
+          (0, $10$, 0, $60$, 0, 0),
+          (0, 0, $10$, 0, $60p$, 0),
+          (0, 0, 0, $10$, 0, $60p$),
+          (0, 0, 0, 0, $10$, 0),
+        ),
+        positions: ((0, 0), (1.5, 0), (3, 0), (4.5, 0), (6, 0), (7.5, 0)),
+        node-radius: 4.5mm,
+      )
+    ]
+  + With $lambda\/mu = 6$, the formula sheet gives
     $
-      P("empty") = e^(-9\/4) e^(-1) = e^(-3.25) approx 0.039.
+      theta_k = cases(
+        6^k quad & k < 3,
+        6^3 (6 p)^(k - 3) & k >= 3,
+      )
+      quad quad sum_(k=0)^oo theta_k = 1 + 6 + 36 + 216 sum_(j=0)^oo (6 p)^j = 43 + 216 / (1 - 6 p),
     $
-    The savings are $0.039 dot 24 dot 2000 approx 1861$ kroner per day.
-  + In state $1$, the rate of departure depends on whether the guest is quick ($4$) or slow ($1$), which is not determined by $X(t)$ alone. Hence the death rate is not a function of the state. Using independence and the Poisson probabilities,
+    where the geometric series converges if and only if $6 p < 1$. Then $pi_0 = 1 \/ (43 + 216\/(1 - 6p))$ and $pi_k = theta_k pi_0$. If $p >= 1\/6$, the sum is infinite and $pi_k = 0$ for all $k$, so there is no limiting distribution.
+
+    The condition is $p < 1\/6$, i.e. $60 p < 10$. When the queue is long, customers join at rate $60 p$ and leave at rate $10$. If they join faster than they are served, the queue grows forever. The states $0, 1, 2$ do not matter, since they are only finitely many.
+  + With $p = 0.1$, $6 p = 0.6$ and $sum_k theta_k = 43 + 540 = 583$. Poisson arrivals see the stationary distribution (as in the gas station example), and an arriving customer is lost if there are $3$ or more customers (probability $540\/583 approx 0.93$) _and_ the customer decides to leave (probability $0.9$). So the fraction lost is
     $
-      P("quick" | X = 1) = (P(X_"q" = 1) P(X_"s" = 0)) / (P(X_"q" = 1) P(X_"s" = 0) + P(X_"q" = 0) P(X_"s" = 1)) = (9\/4) / (9\/4 + 1) = 9/13 approx 0.69.
+      0.9 dot 540 / 583 approx 0.83, quad "and" quad lambda_a = 60 (1 - 0.83) approx 9.98 "per hour".
     $
+    Using $sum_(j=0)^oo j a^j = a\/(1 - a)^2$ and $sum_(j=0)^oo a^j = 1\/(1 - a)$, so that $sum_(j=0)^oo (j + 3) 0.6^j = 0.6\/0.4^2 + 3\/0.4 = 3.75 + 7.5$,
+    $
+      L = sum_(k=0)^oo k pi_k = 1/583 (6 + 2 dot 36 + 216 sum_(j=0)^oo (j + 3) 0.6^j) = 1/583 (78 + 216 (3.75 + 7.5)) = 2508/583 approx 4.30.
+    $
+    By Little's law, $W = L\/lambda_a approx 0.43$ hours $approx 26$ minutes.
 ]
 
 #pagebreak()
@@ -393,44 +440,47 @@ Brownian motion is the limit of a random walk with small steps $plus.minus sqrt(
   + $EE[Y | X = x] = 20 + 0.9 (x - 10)$ is a straight line with slope $0.9$ through $(10, 20)$, going from $15.5"m"$ at $x = 5"m"$ to $24.5"m"$ at $x = 15"m"$.
 ]
 
-#problem(name: [Exam 2023, Problem 4])[
-  Given standard Brownian motion ${B(t) : t >= 0}$, the Brownian bridge ${B^0 (t) : t in [0, 1]}$ can be defined as $B^0 (t) = B(t) | B(1) = 0$.
-  + Derive the mean function $m(t) = EE[B^0 (t)]$ and covariance function $C(s, t) = "Cov"(B^0 (s), B^0 (t))$ for $s, t in [0, 1]$.
-  + Write pseudocode to simulate a realization of the Brownian bridge at $t_i = i\/m$, $i = 0, dots, m$, using a function `rnorm(n)` that returns $n$ i.i.d. standard normal variables.
+#problem(name: [Exam 2020, Problem 3])[
+  Assume that we model the stock price of DNB as a Brownian motion ${B(t) : t >= 0}$, where $t$ is measured in hours, with variance parameter $sigma^2 = 5^2 "kr"^2$. When the stock market opens at 08:00, the stock price is $150 "kr"$.
+  + Compute the probability that the stock price will exceed $170 "kr"$ at 12:00.
+  + When the market closes at 16:00, we observe that the stock price is $200 "kr"$. Compute the conditional probability that the stock price at 12:00 exceeded $170 "kr"$.
+  + _(Extra, cf. Exam 2013 and 2014)_ Without the information from 16:00, what is the probability that the stock price reaches $170 "kr"$ at some time before 12:00?
 ]
 #solution[
-  + Let $s <= t$. Since $"Cov"(B(s), B(t)) = min(s, t)$,
+  Let $t = 0$ be 08:00, so that 12:00 is $t = 4$ and 16:00 is $t = 8$. Then $W(t) = B(t) - 150$ is a Brownian motion starting in $0$ with $sigma = 5$.
+  + $W(4) tilde.op N(0, 25 dot 4)$, so
     $
-      mat(B(s); B(t); B(1)) tilde.op N_3 (bold(0), mat(s, s, s; s, t, t; s, t, 1)).
+      P(B(4) > 170) = P(W(4) > 20) = P(Z > 20 / 10) = 1 - Phi(2) approx 0.023.
     $
-    Condition $bold(x)_A = (B(s), B(t))$ on $x_B = B(1) = 0$. With $bf(Sigma)_(A,B) = (s, t)^top$ and $Sigma_B = 1$,
+  + We observe $W(8) = 50$. By the formula for conditioning on the future with $s = 4$ and $t = 8$,
     $
-      EE[bold(x)_A | x_B = 0] = bold(0) + bf(Sigma)_(A,B) dot 1 dot (0 - 0) = bold(0),
+      W(4) | W(8) = 50 tilde.op N(4/8 dot 50, 25 dot (4 dot 4)/8) = N(25, 50),
     $
+    so
     $
-      "Var"[bold(x)_A | x_B = 0] = mat(s, s; s, t) - mat(s; t) mat(s, t) = mat(s(1 - s), s(1 - t); s(1 - t), t(1 - t)).
+      P(W(4) > 20 | W(8) = 50) = P(Z > (20 - 25) / sqrt(50)) = P(Z > -0.71) approx 0.76.
     $
-    Hence $m(t) = 0$ and $C(s, t) = s(1 - t)$ for $s <= t$.
-  + The variance is $0$ at $t = 0$ and $t = 1$, so we simulate the interior points and add the known endpoints.
-    + Set $t_i = i\/m$ for $i = 1, dots, m - 1$.
-    + Build the covariance matrix $Sigma_(i,j) = min(t_i, t_j) (1 - max(t_i, t_j))$.
-    + Compute the Cholesky factor $bf(L)$ with $bf(Sigma) = bf(L) bf(L)^top$.
-    + Draw `z = rnorm(m-1)` and set $bold(b) = bf(L) bold(z)$, which is $N(bold(0), bf(Sigma))$.
-    + Return $(0, t_1, dots, t_(m-1), 1)$ and $(0, b_1, dots, b_(m-1), 0)$.
-    A simpler alternative: simulate $B$ by cumulative sums $B(t_i) = sum_(k=1)^i Z_k \/ sqrt(m)$ and return $B(t_i) - t_i B(1)$.
+    Knowing that the price ended high makes it much more likely that it was high at 12:00 too.
+  + By the reflection principle,
+    $
+      P(max_(0 <= u <= 4) W(u) >= 20) = 2 P(W(4) >= 20) approx 2 dot 0.023 = 0.046.
+    $
 ]
 
-#problem(name: [Exam 2022, Problem 6])[
-  Let ${B(t) : t >= 0}$ be standard Brownian motion.
-  + Show that $X(t) = 1/a B(a^2 t)$ is a standard Brownian motion for $a > 0$.
-  + Show that $W(t) = t B(t)$ is not a Brownian motion.
+
+#problem(name: [Checking BM conditions])[
+  Define the stochastic process ${X(t) : t >= 0}$ with variance parameter $sigma^2 > 0$ through the three properties:
+  - For $0 <= s < t$, the increment $X(t) - X(s)$ is normal with mean $0$ and variance $sigma^2 integral_s^t e^(-x) dif x$.
+  - For $0 <= t_1 < t_2 <= t_3 < t_4$, the two increments $X(t_2) - X(t_1)$ and $X(t_4) - X(t_3)$ are independent.
+  - $X(0) = 0$.
+  Derive $"Var"[X(t)]$. Is ${X(t) : t >= 0}$ a Brownian motion? A continuous-time Markov chain? A Gaussian process?
 ]
 #solution[
-  + $X$ is a linear transformation of $B$, so it is a Gaussian process with continuous paths and $X(0) = 0$. The mean is $0$, and for $s <= t$
+  - *Variance:* Since $X(0) = 0$, $X(t) = X(t) - X(0)$ is the increment from $0$ to $t$. Using the first property with $s = 0$,
     $
-      "Cov"(X(s), X(t)) = 1/a^2 "Cov"(B(a^2 s), B(a^2 t)) = 1/a^2 a^2 s = s = min(s, t).
+      "Var"[X(t)] = sigma^2 integral_0^t e^(-x) dif x = sigma^2 (1 - e^(-t)).
     $
-    These are the mean and covariance functions of standard Brownian motion.
-  + $"Var"[W(t)] = t^2 "Var"[B(t)] = t^3$. Brownian motion has variance $sigma^2 t$, which is linear in $t$, so $W$ is not a Brownian motion.
+  - *Brownian motion:* No. For a BM, $"Var"[X(t)] = sigma^2 t$. Also, the increment $X(t) - X(s)$ has variance $sigma^2 (e^(-s) - e^(-t))$, which depends on _where_ the interval is and not only on its length $t - s$.
+  - *CTMC:* By the independent increments, the future only depends on the present value, so $X$ has the Markov property. However, the state space is $RR$ and not countable, so it is not a Markov _chain_.
+  - *Gaussian process:* Yes. Any $(X(t_1), dots, X(t_n))$ is a linear transformation of the independent Gaussian increments, and hence multivariate normal. As for BM, $"Cov"(X(s), X(t)) = "Var"[X(s)] = sigma^2 (1 - e^(-s))$ for $s <= t$.
 ]
-
